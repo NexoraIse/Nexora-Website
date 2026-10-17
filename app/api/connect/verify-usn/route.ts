@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { getAuthenticatedMember } from '@/lib/connect/auth'
-import { consumeConnectAuthAttempt, verifySignupUsn } from '@/lib/connect/usn'
+import { consumeConnectUsnLookupAttempt, verifySignupUsn } from '@/lib/connect/usn'
 import { prisma } from '@/lib/prisma'
 import { rethrowNextControlFlow, requestErrorResponse } from '@/lib/connect/validation'
 
 export async function GET(req: Request) {
   try {
-    const rateLimit = await consumeConnectAuthAttempt(req, 'usn')
+    const rateLimit = await consumeConnectUsnLookupAttempt(req)
     if (!rateLimit.allowed) {
       return NextResponse.json(
         { error: 'Too many USN verification attempts. Please try again later.' },

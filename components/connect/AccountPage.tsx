@@ -4,20 +4,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, Check, ChevronRight, Eye, FolderKanban, LockKeyhole, Plus, Save, Upload, UserRound, X } from 'lucide-react'
+import { ArrowRight, Check, ChevronRight, LockKeyhole, Plus, Save, Upload, UserRound, X } from 'lucide-react'
 import { ConnectShell } from './ConnectShell'
 import { KnowledgeEditor } from './KnowledgeEditor'
 import { Button, Feedback, Field, PageHeading, Panel, StatusPill, TextField } from './ConnectUI'
-
-type Project = {
-  title: string
-  description: string
-  technologies: string
-  repositoryUrl: string
-  demoUrl: string
-  seekingCollaborators: boolean
-  preferredTeammateSkills: string
-}
 
 type SocialLink = { label: string; url: string }
 type Profile = {
@@ -32,7 +22,6 @@ type Profile = {
   skills: string[]
   interests: string[]
   skillsInDevelopment: string[]
-  helpAreas: string[]
   location: string | null
   phone: string | null
   phonePublic: boolean
@@ -43,12 +32,10 @@ type Profile = {
   reviewNote: string | null
   currentRole: string | null
   company: string | null
-  professionalJourney: string | null
   openToCollaborate: boolean
   mentoringAvailable: boolean
   referralAvailable: boolean
   socialLinks: SocialLink[]
-  projects: Array<Omit<Project, 'technologies' | 'preferredTeammateSkills'> & { technologies: string[]; preferredTeammateSkills: string[] }>
 }
 
 type Draft = {
@@ -64,11 +51,9 @@ type Draft = {
   contactEmailPublic: boolean
   currentRole: string
   company: string
-  professionalJourney: string
   skills: string
   interests: string
   skillsInDevelopment: string
-  helpAreas: string
   openToCollaborate: boolean
   mentoringAvailable: boolean
   referralAvailable: boolean
@@ -88,11 +73,9 @@ const emptyDraft: Draft = {
   contactEmailPublic: false,
   currentRole: '',
   company: '',
-  professionalJourney: '',
   skills: '',
   interests: '',
   skillsInDevelopment: '',
-  helpAreas: '',
   openToCollaborate: false,
   mentoringAvailable: false,
   referralAvailable: false,
@@ -113,11 +96,9 @@ function fromProfile(profile: Profile): Draft {
     contactEmailPublic: profile.contactEmailPublic,
     currentRole: profile.currentRole ?? '',
     company: profile.company ?? '',
-    professionalJourney: profile.professionalJourney ?? '',
     skills: profile.skills.join(', '),
     interests: profile.interests.join(', '),
     skillsInDevelopment: profile.skillsInDevelopment.join(', '),
-    helpAreas: profile.helpAreas.join(', '),
     openToCollaborate: profile.openToCollaborate,
     mentoringAvailable: profile.mentoringAvailable,
     referralAvailable: profile.referralAvailable,
@@ -129,16 +110,6 @@ function parseList(value: string) {
   return value.split(',').map((item) => item.trim()).filter(Boolean)
 }
 
-const emptyProject = (): Project => ({
-  title: '',
-  description: '',
-  technologies: '',
-  repositoryUrl: '',
-  demoUrl: '',
-  seekingCollaborators: false,
-  preferredTeammateSkills: '',
-})
-
 export default function AccountPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -148,7 +119,6 @@ export default function AccountPage() {
   const [draft, setDraft] = useState<Draft>(emptyDraft)
   const [usnVerified, setUsnVerified] = useState(false)
   const [officialName, setOfficialName] = useState('')
-  const [projects, setProjects] = useState<Project[]>([])
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([])
   const [feedback, setFeedback] = useState<{ message: string; kind: 'error' | 'success' | 'info' } | null>(null)
   const [busy, setBusy] = useState(false)
@@ -175,14 +145,6 @@ export default function AccountPage() {
           const loaded = data.profile as Profile
           setProfile(loaded)
           setDraft(fromProfile(loaded))
-          setProjects(loaded.projects.map((project) => ({
-            ...project,
-            description: project.description ?? '',
-            technologies: project.technologies.join(', '),
-            repositoryUrl: project.repositoryUrl ?? '',
-            demoUrl: project.demoUrl ?? '',
-            preferredTeammateSkills: project.preferredTeammateSkills.join(', '),
-          })))
           setSocialLinks(loaded.socialLinks)
         } else {
           setDraft((current) => ({
@@ -282,19 +244,10 @@ export default function AccountPage() {
       skills: parseList(draft.skills),
       interests: parseList(draft.interests),
       skillsInDevelopment: parseList(draft.skillsInDevelopment),
-      helpAreas: parseList(draft.helpAreas),
       avatarUrl: draft.avatarUrl || null,
       phone: draft.phone || null,
       contactEmail: draft.contactEmail || null,
       socialLinks: socialLinks.filter((item) => item.label.trim() && item.url.trim()),
-      projects: projects.filter((project) => project.title.trim()).map((project) => ({
-        ...project,
-        technologies: parseList(project.technologies),
-        preferredTeammateSkills: parseList(project.preferredTeammateSkills),
-        description: project.description || null,
-        repositoryUrl: project.repositoryUrl || null,
-        demoUrl: project.demoUrl || null,
-      })),
     }
     if (profile) {
       if (Number(draft.graduationYear) === profile.graduationYear) delete body.graduationYear
@@ -326,14 +279,6 @@ export default function AccountPage() {
       const saved = data.profile as Profile
       setProfile(saved)
       setDraft(fromProfile(saved))
-      setProjects(saved.projects.map((project) => ({
-        ...project,
-        description: project.description ?? '',
-        technologies: project.technologies.join(', '),
-        repositoryUrl: project.repositoryUrl ?? '',
-        demoUrl: project.demoUrl ?? '',
-        preferredTeammateSkills: project.preferredTeammateSkills.join(', '),
-      })))
       setSocialLinks(saved.socialLinks)
       window.sessionStorage.removeItem('connect-usn')
       setFeedback({
@@ -387,8 +332,8 @@ export default function AccountPage() {
           <Panel className="mx-auto max-w-xl p-8 text-center">
             <span className="connect-empty-icon"><LockKeyhole size={22} /></span>
             <p className="connect-eyebrow mt-5">Almost there</p>
-            <h1 className="mt-2 font-clash text-3xl text-white">Verify your email first.</h1>
-            <p className="mt-3 text-sm leading-6 text-[#aab6c2]">Follow the confirmation link we sent to your inbox. Once that’s done, this space will be ready for you.</p>
+            <h1 className="mt-2 font-clash text-3xl text-white">Use a verified Google account.</h1>
+            <p className="mt-3 text-sm leading-6 text-[#aab6c2]">This Google account does not have a verified email address. Sign out and continue with a verified Google account to set up your Connect profile.</p>
             <Button variant="secondary" className="mt-6" onClick={signOut}>Sign out</Button>
           </Panel>
         </div>
@@ -398,22 +343,22 @@ export default function AccountPage() {
 
   return (
     <ConnectShell>
-      <div className="mx-auto max-w-[1440px] px-5 pb-20 pt-12 sm:px-8 sm:pt-16 lg:px-12 lg:pt-20">
+      <div className="connect-account-page mx-auto max-w-[1240px] px-5 pb-20 pt-12 sm:px-8 sm:pt-16 lg:px-12 lg:pt-20">
         <PageHeading
-          eyebrow={profile ? 'Your Connect space' : 'The first step'}
+          eyebrow={profile ? 'CONNECT / ACCOUNT' : 'CONNECT / SETUP'}
           title={profile
-            ? <>Make it <span className="connect-title-accent">yours.</span></>
+            ? <>Your profile<span className="text-[#7bb7aa]">.</span></>
             : usnVerified
-              ? <>Start with<br className="hidden sm:block" /> <span className="connect-title-accent">your story.</span></>
-              : <>Confirm your<br className="hidden sm:block" /> <span className="connect-title-accent">student number.</span></>}
+              ? <>Tell us about <span className="text-[#7bb7aa]">you.</span></>
+              : <>Verify your <span className="text-[#7bb7aa]">details.</span></>}
           description={profile
-            ? 'Your profile is the beginning of your presence in the ISE community. Keep it current and make it yours.'
+            ? 'Keep your details current so classmates and graduates can find and connect with you.'
             : usnVerified
-              ? 'Your official name is confirmed. Add a few details so your classmates can get to know you.'
+              ? 'Your official name is confirmed. Add the details you’d like to share with the community.'
               : 'Enter your official student number. We’ll check it against the department list before you continue.'}
+          titleClassName="connect-account-title"
           actions={
             <div className="flex flex-wrap gap-2">
-              {profile && <Link href="/connect/dashboard#knowledge-page" className="connect-button connect-button-secondary"><FolderKanban size={15} /> Your personal page</Link>}
               {profile && <Link href="/connect/activity" className="connect-button connect-button-secondary">Activity</Link>}
               <Button variant="quiet" onClick={signOut} disabled={busy}>Sign out</Button>
             </div>
@@ -421,17 +366,19 @@ export default function AccountPage() {
         />
 
         {profile && (
-          <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-4">
-            <StatusPill status={profile.approvalStatus} />
-            <p className="min-w-0 flex-1 text-xs leading-5 text-[#aab6c2]">
-              {profile.reviewNote || (profile.approvalStatus === 'APPROVED'
-                ? 'Your profile has been reviewed.'
-                : profile.approvalStatus === 'PENDING'
-                  ? 'The Connect team is checking your details. Your profile will appear here once it’s ready to share.'
-                  : 'If you have questions about your profile, get in touch with the Connect team.')}
-            </p>
+          <div className="connect-review-banner mb-8">
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+              <StatusPill status={profile.approvalStatus} />
+              <p className="min-w-0 flex-1 text-xs leading-5 text-[#aab6c2]">
+                {profile.reviewNote || (profile.approvalStatus === 'APPROVED'
+                  ? 'Your profile has been reviewed.'
+                  : profile.approvalStatus === 'PENDING'
+                    ? 'The Connect team is checking your details. Your profile will appear here once it’s ready to share.'
+                    : 'If you have questions about your profile, get in touch with the Connect team.')}
+              </p>
+            </div>
             {profile.approvalStatus === 'APPROVED' && (
-              <Link href={`/connect/members/${encodeURIComponent(profile.slug)}`} className="connect-inline-link">View public profile <ChevronRight size={14} /></Link>
+              <Link href={`/connect/members/${encodeURIComponent(profile.slug)}`} className="connect-inline-link shrink-0">View public profile <ChevronRight size={14} /></Link>
             )}
           </div>
         )}
@@ -471,12 +418,11 @@ export default function AccountPage() {
             </p>
           </Panel>
         ) : (
-        <form onSubmit={handleSubmit} className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_330px]">
-          <div className="space-y-5">
+        <form onSubmit={handleSubmit} className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-8">
+          <div className="space-y-6">
             <Panel className="p-5 sm:p-7">
-              <div className="mb-6 flex items-center gap-3">
-                <span className="connect-section-icon"><UserRound size={16} /></span>
-                <div><h2 className="font-clash text-xl text-white">The essentials</h2><p className="mt-1 text-xs text-[#82919e]">Your name is checked with the department.</p></div>
+              <div className="connect-form-section-heading">
+                <div><p className="connect-form-step">01 / BASICS</p><h2 className="connect-form-title">Your details</h2><p className="connect-form-description">Your name and student number are verified against department records.</p></div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Student number (USN)" value={draft.usn} readOnly disabled />
@@ -536,9 +482,8 @@ export default function AccountPage() {
             </Panel>
 
             <Panel className="p-5 sm:p-7">
-              <div className="mb-6 flex items-center gap-3">
-                <span className="connect-section-icon"><FolderKanban size={16} /></span>
-                <div><h2 className="font-clash text-xl text-white">What you do</h2><p className="mt-1 text-xs text-[#82919e]">Share the skills, interests and work you’d like to be known for.</p></div>
+              <div className="connect-form-section-heading">
+                <div><p className="connect-form-step">02 / ABOUT</p><h2 className="connect-form-title">Work & interests</h2><p className="connect-form-description">A few details help others find people with shared interests.</p></div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Current role" value={draft.currentRole} onChange={(event) => update('currentRole', event.target.value)} placeholder="e.g. Frontend developer" />
@@ -546,50 +491,25 @@ export default function AccountPage() {
                 <Field label="Skills" value={draft.skills} onChange={(event) => update('skills', event.target.value)} placeholder="React, Python, UI design" hint="Separate items with commas." />
                 <Field label="Interests" value={draft.interests} onChange={(event) => update('interests', event.target.value)} placeholder="Open source, robotics…" hint="Separate items with commas." />
                 <Field label="Skills you’re developing" value={draft.skillsInDevelopment} onChange={(event) => update('skillsInDevelopment', event.target.value)} placeholder="Cloud, data science…" hint="Separate items with commas." />
-                <Field label="Ways you can help" value={draft.helpAreas} onChange={(event) => update('helpAreas', event.target.value)} placeholder="Code reviews, mentoring…" hint="Separate items with commas." />
-                <TextField label="Your journey" className="sm:col-span-2" value={draft.professionalJourney} onChange={(event) => update('professionalJourney', event.target.value)} maxLength={20000} placeholder="A little more about your path so far…" />
               </div>
             </Panel>
 
             <Panel className="p-5 sm:p-7">
-              <div className="mb-6 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="connect-section-icon"><FolderKanban size={16} /></span>
-                  <div><h2 className="font-clash text-xl text-white">Projects</h2><p className="mt-1 text-xs text-[#82919e]">Show what you’ve made — and what you’d like to make next.</p></div>
-                </div>
-                <Button type="button" variant="secondary" onClick={() => setProjects((current) => [...current, emptyProject()])}><Plus size={15} /> Add project</Button>
+              <div className="connect-form-section-heading">
+                <div><p className="connect-form-step">03 / CONTACT</p><h2 className="connect-form-title">Ways to reach you</h2><p className="connect-form-description">Contact details stay private unless you choose to show them.</p></div>
               </div>
-              {projects.length === 0 && <p className="rounded-xl border border-dashed border-white/10 px-4 py-6 text-center text-xs text-[#81919e]">No projects yet. Add one when you’re ready.</p>}
-              <div className="space-y-4">
-                {projects.map((project, index) => (
-                  <div key={index} className="connect-subpanel">
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-[#7edaf2]">Project {String(index + 1).padStart(2, '0')}</span>
-                      <button type="button" onClick={() => setProjects((current) => current.filter((_, itemIndex) => itemIndex !== index))} className="connect-remove-button" aria-label={`Remove project ${index + 1}`}><X size={15} /></button>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <Field label="Title" value={project.title} onChange={(event) => setProjects((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, title: event.target.value } : item))} placeholder="Project name" />
-                      <Field label="Tools and technologies" value={project.technologies} onChange={(event) => setProjects((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, technologies: event.target.value } : item))} placeholder="React, Python, Figma" />
-                      <TextField label="A short description" className="sm:col-span-2" value={project.description} onChange={(event) => setProjects((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, description: event.target.value } : item))} placeholder="What does it do?" />
-                      <Field label="Code or project link" type="url" value={project.repositoryUrl} onChange={(event) => setProjects((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, repositoryUrl: event.target.value } : item))} placeholder="https://…" />
-                      <Field label="Try it out (optional)" type="url" value={project.demoUrl} onChange={(event) => setProjects((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, demoUrl: event.target.value } : item))} placeholder="https://…" />
-                      <label className="connect-toggle-row sm:col-span-2">
-                        <span><strong>Looking for collaborators</strong><small>Show that you’re open to teaming up on this project.</small></span>
-                        <input type="checkbox" checked={project.seekingCollaborators} onChange={(event) => setProjects((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, seekingCollaborators: event.target.checked } : item))} />
-                      </label>
-                      {project.seekingCollaborators && <Field label="Skills you’d like in a teammate" className="sm:col-span-2" value={project.preferredTeammateSkills} onChange={(event) => setProjects((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, preferredTeammateSkills: event.target.value } : item))} placeholder="Backend, visual design…" />}
-                    </div>
-                  </div>
-                ))}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Contact email" type="email" value={draft.contactEmail} onChange={(event) => update('contactEmail', event.target.value)} placeholder="you@example.com" />
+                <Field label="Phone (optional)" type="tel" value={draft.phone} onChange={(event) => update('phone', event.target.value)} placeholder="+91…" />
+                <Toggle title="Show my email publicly" checked={draft.contactEmailPublic} onChange={(value) => update('contactEmailPublic', value)} />
+                <Toggle title="Show my phone publicly" checked={draft.phonePublic} onChange={(value) => update('phonePublic', value)} />
               </div>
+              <p className="mt-4 text-[10px] leading-5 text-[#81919e]">Contact details stay private unless you explicitly turn on public visibility.</p>
             </Panel>
 
             <Panel className="p-5 sm:p-7">
-              <div className="mb-6 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="connect-section-icon"><ArrowRight size={16} /></span>
-                  <div><h2 className="font-clash text-xl text-white">Around the web</h2><p className="mt-1 text-xs text-[#82919e]">Add one or more links to places you work and create.</p></div>
-                </div>
+              <div className="connect-form-section-heading flex-wrap">
+                <div><p className="connect-form-step">04 / LINKS</p><h2 className="connect-form-title">Around the web</h2><p className="connect-form-description">Add a portfolio, professional profile, or personal site.</p></div>
                 <Button type="button" variant="secondary" onClick={() => setSocialLinks((current) => [...current, { label: '', url: '' }])}><Plus size={15} /> Add link</Button>
               </div>
               {socialLinks.length === 0 && <p className="rounded-xl border border-dashed border-white/10 px-4 py-6 text-center text-xs text-[#81919e]">Add a portfolio, GitHub, LinkedIn or personal site.</p>}
@@ -605,11 +525,14 @@ export default function AccountPage() {
             </Panel>
           </div>
 
-          <aside className="space-y-5 xl:sticky xl:top-6">
+          <aside className="space-y-5 xl:sticky xl:top-24">
             <Panel className="p-5 sm:p-6">
-              <p className="connect-eyebrow">Your presence</p>
-              <h2 className="mt-2 font-clash text-xl text-white">You choose what’s shared.</h2>
-              <label className="mt-5 block">
+              <div className="mb-5">
+                <p className="connect-form-step">PREFERENCES</p>
+                <h2 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-white">Visibility & availability</h2>
+                <p className="mt-2 text-xs leading-5 text-[#9aaab6]">You decide what’s shared and how you’d like to contribute.</p>
+              </div>
+              <label className="block">
                 <span className="mb-2 block text-[12px] font-medium text-[#d8e2e9]">Profile visibility</span>
                 <select className="connect-input" value={draft.visibility} onChange={(event) => update('visibility', event.target.value as Draft['visibility'])}>
                   <option value="PRIVATE">Private · only you can see it</option>
@@ -623,20 +546,10 @@ export default function AccountPage() {
               </div>
             </Panel>
             <Panel className="p-5 sm:p-6">
-              <p className="connect-eyebrow">Contact preferences</p>
-              <div className="mt-4 space-y-4">
-                <Field label="Contact email" type="email" value={draft.contactEmail} onChange={(event) => update('contactEmail', event.target.value)} placeholder="you@example.com" />
-                <Toggle title="Show my email publicly" checked={draft.contactEmailPublic} onChange={(value) => update('contactEmailPublic', value)} />
-                <Field label="Phone (optional)" type="tel" value={draft.phone} onChange={(event) => update('phone', event.target.value)} placeholder="+91…" />
-                <Toggle title="Show my phone publicly" checked={draft.phonePublic} onChange={(value) => update('phonePublic', value)} />
-              </div>
-              <p className="mt-4 text-[10px] leading-5 text-[#81919e]">Contact details stay private unless you explicitly turn on public visibility.</p>
-            </Panel>
-            <Panel className="p-5 sm:p-6">
               <div className="flex items-start gap-3">
-                <span className="connect-section-icon"><Eye size={15} /></span>
                 <div>
-                  <h3 className="font-medium text-white">Review before public</h3>
+                  <p className="connect-form-step">PROFILE REVIEW</p>
+                  <h3 className="mt-2 font-medium text-white">Shared after review</h3>
                   <p className="mt-2 text-xs leading-5 text-[#9aaab6]">The Connect team checks your details before your profile is shared.</p>
                   <p className="mt-3 flex items-center gap-1.5 text-[10px] text-[#82d8ef]"><Check size={13} /> USN is never shown on your public profile.</p>
                 </div>

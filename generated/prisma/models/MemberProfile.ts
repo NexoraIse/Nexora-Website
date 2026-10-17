@@ -55,7 +55,6 @@ export type MemberProfileMinAggregateOutputType = {
   reviewedAt: Date | null
   currentRole: string | null
   company: string | null
-  professionalJourney: string | null
   openToCollaborate: boolean | null
   mentoringAvailable: boolean | null
   referralAvailable: boolean | null
@@ -84,7 +83,6 @@ export type MemberProfileMaxAggregateOutputType = {
   reviewedAt: Date | null
   currentRole: string | null
   company: string | null
-  professionalJourney: string | null
   openToCollaborate: boolean | null
   mentoringAvailable: boolean | null
   referralAvailable: boolean | null
@@ -104,7 +102,6 @@ export type MemberProfileCountAggregateOutputType = {
   skills: number
   interests: number
   skillsInDevelopment: number
-  helpAreas: number
   location: number
   phone: number
   phonePublic: number
@@ -117,7 +114,6 @@ export type MemberProfileCountAggregateOutputType = {
   reviewedAt: number
   currentRole: number
   company: number
-  professionalJourney: number
   openToCollaborate: number
   mentoringAvailable: number
   referralAvailable: number
@@ -156,7 +152,6 @@ export type MemberProfileMinAggregateInputType = {
   reviewedAt?: true
   currentRole?: true
   company?: true
-  professionalJourney?: true
   openToCollaborate?: true
   mentoringAvailable?: true
   referralAvailable?: true
@@ -185,7 +180,6 @@ export type MemberProfileMaxAggregateInputType = {
   reviewedAt?: true
   currentRole?: true
   company?: true
-  professionalJourney?: true
   openToCollaborate?: true
   mentoringAvailable?: true
   referralAvailable?: true
@@ -205,7 +199,6 @@ export type MemberProfileCountAggregateInputType = {
   skills?: true
   interests?: true
   skillsInDevelopment?: true
-  helpAreas?: true
   location?: true
   phone?: true
   phonePublic?: true
@@ -218,7 +211,6 @@ export type MemberProfileCountAggregateInputType = {
   reviewedAt?: true
   currentRole?: true
   company?: true
-  professionalJourney?: true
   openToCollaborate?: true
   mentoringAvailable?: true
   referralAvailable?: true
@@ -325,7 +317,6 @@ export type MemberProfileGroupByOutputType = {
   skills: string[]
   interests: string[]
   skillsInDevelopment: string[]
-  helpAreas: string[]
   location: string | null
   phone: string | null
   phonePublic: boolean
@@ -338,7 +329,6 @@ export type MemberProfileGroupByOutputType = {
   reviewedAt: Date | null
   currentRole: string | null
   company: string | null
-  professionalJourney: string | null
   openToCollaborate: boolean
   mentoringAvailable: boolean
   referralAvailable: boolean
@@ -381,7 +371,6 @@ export type MemberProfileWhereInput = {
   skills?: Prisma.StringNullableListFilter<"MemberProfile">
   interests?: Prisma.StringNullableListFilter<"MemberProfile">
   skillsInDevelopment?: Prisma.StringNullableListFilter<"MemberProfile">
-  helpAreas?: Prisma.StringNullableListFilter<"MemberProfile">
   location?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   phone?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   phonePublic?: Prisma.BoolFilter<"MemberProfile"> | boolean
@@ -394,7 +383,6 @@ export type MemberProfileWhereInput = {
   reviewedAt?: Prisma.DateTimeNullableFilter<"MemberProfile"> | Date | string | null
   currentRole?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   company?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
-  professionalJourney?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   openToCollaborate?: Prisma.BoolFilter<"MemberProfile"> | boolean
   mentoringAvailable?: Prisma.BoolFilter<"MemberProfile"> | boolean
   referralAvailable?: Prisma.BoolFilter<"MemberProfile"> | boolean
@@ -403,7 +391,6 @@ export type MemberProfileWhereInput = {
   usnClaim?: Prisma.XOR<Prisma.UsnClaimScalarRelationFilter, Prisma.UsnClaimWhereInput>
   reviewedBy?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
   socialLinks?: Prisma.MemberSocialLinkListRelationFilter
-  projects?: Prisma.MemberProjectListRelationFilter
   experiences?: Prisma.MemberExperienceListRelationFilter
   achievements?: Prisma.MemberAchievementListRelationFilter
   knowledgePage?: Prisma.XOR<Prisma.MemberKnowledgePageNullableScalarRelationFilter, Prisma.MemberKnowledgePageWhereInput> | null
@@ -422,7 +409,6 @@ export type MemberProfileOrderByWithRelationInput = {
   skills?: Prisma.SortOrder
   interests?: Prisma.SortOrder
   skillsInDevelopment?: Prisma.SortOrder
-  helpAreas?: Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   phonePublic?: Prisma.SortOrder
@@ -435,7 +421,6 @@ export type MemberProfileOrderByWithRelationInput = {
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   currentRole?: Prisma.SortOrderInput | Prisma.SortOrder
   company?: Prisma.SortOrderInput | Prisma.SortOrder
-  professionalJourney?: Prisma.SortOrderInput | Prisma.SortOrder
   openToCollaborate?: Prisma.SortOrder
   mentoringAvailable?: Prisma.SortOrder
   referralAvailable?: Prisma.SortOrder
@@ -444,7 +429,6 @@ export type MemberProfileOrderByWithRelationInput = {
   usnClaim?: Prisma.UsnClaimOrderByWithRelationInput
   reviewedBy?: Prisma.AdminOrderByWithRelationInput
   socialLinks?: Prisma.MemberSocialLinkOrderByRelationAggregateInput
-  projects?: Prisma.MemberProjectOrderByRelationAggregateInput
   experiences?: Prisma.MemberExperienceOrderByRelationAggregateInput
   achievements?: Prisma.MemberAchievementOrderByRelationAggregateInput
   knowledgePage?: Prisma.MemberKnowledgePageOrderByWithRelationInput
@@ -466,7 +450,6 @@ export type MemberProfileWhereUniqueInput = Prisma.AtLeast<{
   skills?: Prisma.StringNullableListFilter<"MemberProfile">
   interests?: Prisma.StringNullableListFilter<"MemberProfile">
   skillsInDevelopment?: Prisma.StringNullableListFilter<"MemberProfile">
-  helpAreas?: Prisma.StringNullableListFilter<"MemberProfile">
   location?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   phone?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   phonePublic?: Prisma.BoolFilter<"MemberProfile"> | boolean
@@ -479,7 +462,6 @@ export type MemberProfileWhereUniqueInput = Prisma.AtLeast<{
   reviewedAt?: Prisma.DateTimeNullableFilter<"MemberProfile"> | Date | string | null
   currentRole?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   company?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
-  professionalJourney?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   openToCollaborate?: Prisma.BoolFilter<"MemberProfile"> | boolean
   mentoringAvailable?: Prisma.BoolFilter<"MemberProfile"> | boolean
   referralAvailable?: Prisma.BoolFilter<"MemberProfile"> | boolean
@@ -488,7 +470,6 @@ export type MemberProfileWhereUniqueInput = Prisma.AtLeast<{
   usnClaim?: Prisma.XOR<Prisma.UsnClaimScalarRelationFilter, Prisma.UsnClaimWhereInput>
   reviewedBy?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
   socialLinks?: Prisma.MemberSocialLinkListRelationFilter
-  projects?: Prisma.MemberProjectListRelationFilter
   experiences?: Prisma.MemberExperienceListRelationFilter
   achievements?: Prisma.MemberAchievementListRelationFilter
   knowledgePage?: Prisma.XOR<Prisma.MemberKnowledgePageNullableScalarRelationFilter, Prisma.MemberKnowledgePageWhereInput> | null
@@ -507,7 +488,6 @@ export type MemberProfileOrderByWithAggregationInput = {
   skills?: Prisma.SortOrder
   interests?: Prisma.SortOrder
   skillsInDevelopment?: Prisma.SortOrder
-  helpAreas?: Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   phonePublic?: Prisma.SortOrder
@@ -520,7 +500,6 @@ export type MemberProfileOrderByWithAggregationInput = {
   reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   currentRole?: Prisma.SortOrderInput | Prisma.SortOrder
   company?: Prisma.SortOrderInput | Prisma.SortOrder
-  professionalJourney?: Prisma.SortOrderInput | Prisma.SortOrder
   openToCollaborate?: Prisma.SortOrder
   mentoringAvailable?: Prisma.SortOrder
   referralAvailable?: Prisma.SortOrder
@@ -548,7 +527,6 @@ export type MemberProfileScalarWhereWithAggregatesInput = {
   skills?: Prisma.StringNullableListFilter<"MemberProfile">
   interests?: Prisma.StringNullableListFilter<"MemberProfile">
   skillsInDevelopment?: Prisma.StringNullableListFilter<"MemberProfile">
-  helpAreas?: Prisma.StringNullableListFilter<"MemberProfile">
   location?: Prisma.StringNullableWithAggregatesFilter<"MemberProfile"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"MemberProfile"> | string | null
   phonePublic?: Prisma.BoolWithAggregatesFilter<"MemberProfile"> | boolean
@@ -561,7 +539,6 @@ export type MemberProfileScalarWhereWithAggregatesInput = {
   reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"MemberProfile"> | Date | string | null
   currentRole?: Prisma.StringNullableWithAggregatesFilter<"MemberProfile"> | string | null
   company?: Prisma.StringNullableWithAggregatesFilter<"MemberProfile"> | string | null
-  professionalJourney?: Prisma.StringNullableWithAggregatesFilter<"MemberProfile"> | string | null
   openToCollaborate?: Prisma.BoolWithAggregatesFilter<"MemberProfile"> | boolean
   mentoringAvailable?: Prisma.BoolWithAggregatesFilter<"MemberProfile"> | boolean
   referralAvailable?: Prisma.BoolWithAggregatesFilter<"MemberProfile"> | boolean
@@ -580,7 +557,6 @@ export type MemberProfileCreateInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -592,7 +568,6 @@ export type MemberProfileCreateInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -601,7 +576,6 @@ export type MemberProfileCreateInput = {
   usnClaim: Prisma.UsnClaimCreateNestedOneWithoutProfileInput
   reviewedBy?: Prisma.AdminCreateNestedOneWithoutReviewedMemberProfilesInput
   socialLinks?: Prisma.MemberSocialLinkCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageCreateNestedOneWithoutProfileInput
@@ -620,7 +594,6 @@ export type MemberProfileUncheckedCreateInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -633,14 +606,12 @@ export type MemberProfileUncheckedCreateInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectUncheckedCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceUncheckedCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementUncheckedCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedCreateNestedOneWithoutProfileInput
@@ -658,7 +629,6 @@ export type MemberProfileUpdateInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -670,7 +640,6 @@ export type MemberProfileUpdateInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -679,7 +648,6 @@ export type MemberProfileUpdateInput = {
   usnClaim?: Prisma.UsnClaimUpdateOneRequiredWithoutProfileNestedInput
   reviewedBy?: Prisma.AdminUpdateOneWithoutReviewedMemberProfilesNestedInput
   socialLinks?: Prisma.MemberSocialLinkUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUpdateOneWithoutProfileNestedInput
@@ -698,7 +666,6 @@ export type MemberProfileUncheckedUpdateInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -711,14 +678,12 @@ export type MemberProfileUncheckedUpdateInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUncheckedUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUncheckedUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUncheckedUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedUpdateOneWithoutProfileNestedInput
@@ -737,7 +702,6 @@ export type MemberProfileCreateManyInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -750,7 +714,6 @@ export type MemberProfileCreateManyInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -769,7 +732,6 @@ export type MemberProfileUpdateManyMutationInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -781,7 +743,6 @@ export type MemberProfileUpdateManyMutationInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -801,7 +762,6 @@ export type MemberProfileUncheckedUpdateManyInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -814,7 +774,6 @@ export type MemberProfileUncheckedUpdateManyInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -849,7 +808,6 @@ export type MemberProfileCountOrderByAggregateInput = {
   skills?: Prisma.SortOrder
   interests?: Prisma.SortOrder
   skillsInDevelopment?: Prisma.SortOrder
-  helpAreas?: Prisma.SortOrder
   location?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   phonePublic?: Prisma.SortOrder
@@ -862,7 +820,6 @@ export type MemberProfileCountOrderByAggregateInput = {
   reviewedAt?: Prisma.SortOrder
   currentRole?: Prisma.SortOrder
   company?: Prisma.SortOrder
-  professionalJourney?: Prisma.SortOrder
   openToCollaborate?: Prisma.SortOrder
   mentoringAvailable?: Prisma.SortOrder
   referralAvailable?: Prisma.SortOrder
@@ -895,7 +852,6 @@ export type MemberProfileMaxOrderByAggregateInput = {
   reviewedAt?: Prisma.SortOrder
   currentRole?: Prisma.SortOrder
   company?: Prisma.SortOrder
-  professionalJourney?: Prisma.SortOrder
   openToCollaborate?: Prisma.SortOrder
   mentoringAvailable?: Prisma.SortOrder
   referralAvailable?: Prisma.SortOrder
@@ -924,7 +880,6 @@ export type MemberProfileMinOrderByAggregateInput = {
   reviewedAt?: Prisma.SortOrder
   currentRole?: Prisma.SortOrder
   company?: Prisma.SortOrder
-  professionalJourney?: Prisma.SortOrder
   openToCollaborate?: Prisma.SortOrder
   mentoringAvailable?: Prisma.SortOrder
   referralAvailable?: Prisma.SortOrder
@@ -1027,10 +982,6 @@ export type MemberProfileCreateskillsInDevelopmentInput = {
   set: string[]
 }
 
-export type MemberProfileCreatehelpAreasInput = {
-  set: string[]
-}
-
 export type EnumMemberTypeFieldUpdateOperationsInput = {
   set?: $Enums.MemberType
 }
@@ -1046,11 +997,6 @@ export type MemberProfileUpdateinterestsInput = {
 }
 
 export type MemberProfileUpdateskillsInDevelopmentInput = {
-  set?: string[]
-  push?: string | string[]
-}
-
-export type MemberProfileUpdatehelpAreasInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -1075,20 +1021,6 @@ export type MemberProfileUpdateOneRequiredWithoutSocialLinksNestedInput = {
   upsert?: Prisma.MemberProfileUpsertWithoutSocialLinksInput
   connect?: Prisma.MemberProfileWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.MemberProfileUpdateToOneWithWhereWithoutSocialLinksInput, Prisma.MemberProfileUpdateWithoutSocialLinksInput>, Prisma.MemberProfileUncheckedUpdateWithoutSocialLinksInput>
-}
-
-export type MemberProfileCreateNestedOneWithoutProjectsInput = {
-  create?: Prisma.XOR<Prisma.MemberProfileCreateWithoutProjectsInput, Prisma.MemberProfileUncheckedCreateWithoutProjectsInput>
-  connectOrCreate?: Prisma.MemberProfileCreateOrConnectWithoutProjectsInput
-  connect?: Prisma.MemberProfileWhereUniqueInput
-}
-
-export type MemberProfileUpdateOneRequiredWithoutProjectsNestedInput = {
-  create?: Prisma.XOR<Prisma.MemberProfileCreateWithoutProjectsInput, Prisma.MemberProfileUncheckedCreateWithoutProjectsInput>
-  connectOrCreate?: Prisma.MemberProfileCreateOrConnectWithoutProjectsInput
-  upsert?: Prisma.MemberProfileUpsertWithoutProjectsInput
-  connect?: Prisma.MemberProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.MemberProfileUpdateToOneWithWhereWithoutProjectsInput, Prisma.MemberProfileUpdateWithoutProjectsInput>, Prisma.MemberProfileUncheckedUpdateWithoutProjectsInput>
 }
 
 export type MemberProfileCreateNestedOneWithoutExperiencesInput = {
@@ -1158,7 +1090,6 @@ export type MemberProfileCreateWithoutReviewedByInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1170,7 +1101,6 @@ export type MemberProfileCreateWithoutReviewedByInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -1178,7 +1108,6 @@ export type MemberProfileCreateWithoutReviewedByInput = {
   updatedAt?: Date | string
   usnClaim: Prisma.UsnClaimCreateNestedOneWithoutProfileInput
   socialLinks?: Prisma.MemberSocialLinkCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageCreateNestedOneWithoutProfileInput
@@ -1197,7 +1126,6 @@ export type MemberProfileUncheckedCreateWithoutReviewedByInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1209,14 +1137,12 @@ export type MemberProfileUncheckedCreateWithoutReviewedByInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectUncheckedCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceUncheckedCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementUncheckedCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedCreateNestedOneWithoutProfileInput
@@ -1264,7 +1190,6 @@ export type MemberProfileScalarWhereInput = {
   skills?: Prisma.StringNullableListFilter<"MemberProfile">
   interests?: Prisma.StringNullableListFilter<"MemberProfile">
   skillsInDevelopment?: Prisma.StringNullableListFilter<"MemberProfile">
-  helpAreas?: Prisma.StringNullableListFilter<"MemberProfile">
   location?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   phone?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   phonePublic?: Prisma.BoolFilter<"MemberProfile"> | boolean
@@ -1277,7 +1202,6 @@ export type MemberProfileScalarWhereInput = {
   reviewedAt?: Prisma.DateTimeNullableFilter<"MemberProfile"> | Date | string | null
   currentRole?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   company?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
-  professionalJourney?: Prisma.StringNullableFilter<"MemberProfile"> | string | null
   openToCollaborate?: Prisma.BoolFilter<"MemberProfile"> | boolean
   mentoringAvailable?: Prisma.BoolFilter<"MemberProfile"> | boolean
   referralAvailable?: Prisma.BoolFilter<"MemberProfile"> | boolean
@@ -1296,7 +1220,6 @@ export type MemberProfileCreateWithoutUsnClaimInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1308,7 +1231,6 @@ export type MemberProfileCreateWithoutUsnClaimInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -1316,7 +1238,6 @@ export type MemberProfileCreateWithoutUsnClaimInput = {
   updatedAt?: Date | string
   reviewedBy?: Prisma.AdminCreateNestedOneWithoutReviewedMemberProfilesInput
   socialLinks?: Prisma.MemberSocialLinkCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageCreateNestedOneWithoutProfileInput
@@ -1334,7 +1255,6 @@ export type MemberProfileUncheckedCreateWithoutUsnClaimInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1347,14 +1267,12 @@ export type MemberProfileUncheckedCreateWithoutUsnClaimInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectUncheckedCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceUncheckedCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementUncheckedCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedCreateNestedOneWithoutProfileInput
@@ -1388,7 +1306,6 @@ export type MemberProfileUpdateWithoutUsnClaimInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1400,7 +1317,6 @@ export type MemberProfileUpdateWithoutUsnClaimInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1408,7 +1324,6 @@ export type MemberProfileUpdateWithoutUsnClaimInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewedBy?: Prisma.AdminUpdateOneWithoutReviewedMemberProfilesNestedInput
   socialLinks?: Prisma.MemberSocialLinkUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUpdateOneWithoutProfileNestedInput
@@ -1426,7 +1341,6 @@ export type MemberProfileUncheckedUpdateWithoutUsnClaimInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1439,14 +1353,12 @@ export type MemberProfileUncheckedUpdateWithoutUsnClaimInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUncheckedUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUncheckedUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUncheckedUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedUpdateOneWithoutProfileNestedInput
@@ -1464,7 +1376,6 @@ export type MemberProfileCreateWithoutSocialLinksInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1476,7 +1387,6 @@ export type MemberProfileCreateWithoutSocialLinksInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -1484,7 +1394,6 @@ export type MemberProfileCreateWithoutSocialLinksInput = {
   updatedAt?: Date | string
   usnClaim: Prisma.UsnClaimCreateNestedOneWithoutProfileInput
   reviewedBy?: Prisma.AdminCreateNestedOneWithoutReviewedMemberProfilesInput
-  projects?: Prisma.MemberProjectCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageCreateNestedOneWithoutProfileInput
@@ -1503,7 +1412,6 @@ export type MemberProfileUncheckedCreateWithoutSocialLinksInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1516,13 +1424,11 @@ export type MemberProfileUncheckedCreateWithoutSocialLinksInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  projects?: Prisma.MemberProjectUncheckedCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceUncheckedCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementUncheckedCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedCreateNestedOneWithoutProfileInput
@@ -1556,7 +1462,6 @@ export type MemberProfileUpdateWithoutSocialLinksInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1568,7 +1473,6 @@ export type MemberProfileUpdateWithoutSocialLinksInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1576,7 +1480,6 @@ export type MemberProfileUpdateWithoutSocialLinksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usnClaim?: Prisma.UsnClaimUpdateOneRequiredWithoutProfileNestedInput
   reviewedBy?: Prisma.AdminUpdateOneWithoutReviewedMemberProfilesNestedInput
-  projects?: Prisma.MemberProjectUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUpdateOneWithoutProfileNestedInput
@@ -1595,7 +1498,6 @@ export type MemberProfileUncheckedUpdateWithoutSocialLinksInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1608,181 +1510,11 @@ export type MemberProfileUncheckedUpdateWithoutSocialLinksInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  projects?: Prisma.MemberProjectUncheckedUpdateManyWithoutProfileNestedInput
-  experiences?: Prisma.MemberExperienceUncheckedUpdateManyWithoutProfileNestedInput
-  achievements?: Prisma.MemberAchievementUncheckedUpdateManyWithoutProfileNestedInput
-  knowledgePage?: Prisma.MemberKnowledgePageUncheckedUpdateOneWithoutProfileNestedInput
-  reports?: Prisma.ConnectReportUncheckedUpdateManyWithoutProfileNestedInput
-}
-
-export type MemberProfileCreateWithoutProjectsInput = {
-  authUserId: string
-  slug: string
-  fullName: string
-  graduationYear: number
-  memberType: $Enums.MemberType
-  bio?: string | null
-  avatarUrl?: string | null
-  skills?: Prisma.MemberProfileCreateskillsInput | string[]
-  interests?: Prisma.MemberProfileCreateinterestsInput | string[]
-  skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
-  location?: string | null
-  phone?: string | null
-  phonePublic?: boolean
-  contactEmail?: string | null
-  contactEmailPublic?: boolean
-  visibility?: $Enums.ProfileVisibility
-  approvalStatus?: $Enums.MemberApprovalStatus
-  reviewNote?: string | null
-  reviewedAt?: Date | string | null
-  currentRole?: string | null
-  company?: string | null
-  professionalJourney?: string | null
-  openToCollaborate?: boolean
-  mentoringAvailable?: boolean
-  referralAvailable?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  usnClaim: Prisma.UsnClaimCreateNestedOneWithoutProfileInput
-  reviewedBy?: Prisma.AdminCreateNestedOneWithoutReviewedMemberProfilesInput
-  socialLinks?: Prisma.MemberSocialLinkCreateNestedManyWithoutProfileInput
-  experiences?: Prisma.MemberExperienceCreateNestedManyWithoutProfileInput
-  achievements?: Prisma.MemberAchievementCreateNestedManyWithoutProfileInput
-  knowledgePage?: Prisma.MemberKnowledgePageCreateNestedOneWithoutProfileInput
-  reports?: Prisma.ConnectReportCreateNestedManyWithoutProfileInput
-}
-
-export type MemberProfileUncheckedCreateWithoutProjectsInput = {
-  authUserId: string
-  slug: string
-  usn: string
-  fullName: string
-  graduationYear: number
-  memberType: $Enums.MemberType
-  bio?: string | null
-  avatarUrl?: string | null
-  skills?: Prisma.MemberProfileCreateskillsInput | string[]
-  interests?: Prisma.MemberProfileCreateinterestsInput | string[]
-  skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
-  location?: string | null
-  phone?: string | null
-  phonePublic?: boolean
-  contactEmail?: string | null
-  contactEmailPublic?: boolean
-  visibility?: $Enums.ProfileVisibility
-  approvalStatus?: $Enums.MemberApprovalStatus
-  reviewedById?: string | null
-  reviewNote?: string | null
-  reviewedAt?: Date | string | null
-  currentRole?: string | null
-  company?: string | null
-  professionalJourney?: string | null
-  openToCollaborate?: boolean
-  mentoringAvailable?: boolean
-  referralAvailable?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  socialLinks?: Prisma.MemberSocialLinkUncheckedCreateNestedManyWithoutProfileInput
-  experiences?: Prisma.MemberExperienceUncheckedCreateNestedManyWithoutProfileInput
-  achievements?: Prisma.MemberAchievementUncheckedCreateNestedManyWithoutProfileInput
-  knowledgePage?: Prisma.MemberKnowledgePageUncheckedCreateNestedOneWithoutProfileInput
-  reports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutProfileInput
-}
-
-export type MemberProfileCreateOrConnectWithoutProjectsInput = {
-  where: Prisma.MemberProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.MemberProfileCreateWithoutProjectsInput, Prisma.MemberProfileUncheckedCreateWithoutProjectsInput>
-}
-
-export type MemberProfileUpsertWithoutProjectsInput = {
-  update: Prisma.XOR<Prisma.MemberProfileUpdateWithoutProjectsInput, Prisma.MemberProfileUncheckedUpdateWithoutProjectsInput>
-  create: Prisma.XOR<Prisma.MemberProfileCreateWithoutProjectsInput, Prisma.MemberProfileUncheckedCreateWithoutProjectsInput>
-  where?: Prisma.MemberProfileWhereInput
-}
-
-export type MemberProfileUpdateToOneWithWhereWithoutProjectsInput = {
-  where?: Prisma.MemberProfileWhereInput
-  data: Prisma.XOR<Prisma.MemberProfileUpdateWithoutProjectsInput, Prisma.MemberProfileUncheckedUpdateWithoutProjectsInput>
-}
-
-export type MemberProfileUpdateWithoutProjectsInput = {
-  authUserId?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  fullName?: Prisma.StringFieldUpdateOperationsInput | string
-  graduationYear?: Prisma.IntFieldUpdateOperationsInput | number
-  memberType?: Prisma.EnumMemberTypeFieldUpdateOperationsInput | $Enums.MemberType
-  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  skills?: Prisma.MemberProfileUpdateskillsInput | string[]
-  interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
-  skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactEmailPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  visibility?: Prisma.EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-  approvalStatus?: Prisma.EnumMemberApprovalStatusFieldUpdateOperationsInput | $Enums.MemberApprovalStatus
-  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usnClaim?: Prisma.UsnClaimUpdateOneRequiredWithoutProfileNestedInput
-  reviewedBy?: Prisma.AdminUpdateOneWithoutReviewedMemberProfilesNestedInput
-  socialLinks?: Prisma.MemberSocialLinkUpdateManyWithoutProfileNestedInput
-  experiences?: Prisma.MemberExperienceUpdateManyWithoutProfileNestedInput
-  achievements?: Prisma.MemberAchievementUpdateManyWithoutProfileNestedInput
-  knowledgePage?: Prisma.MemberKnowledgePageUpdateOneWithoutProfileNestedInput
-  reports?: Prisma.ConnectReportUpdateManyWithoutProfileNestedInput
-}
-
-export type MemberProfileUncheckedUpdateWithoutProjectsInput = {
-  authUserId?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  usn?: Prisma.StringFieldUpdateOperationsInput | string
-  fullName?: Prisma.StringFieldUpdateOperationsInput | string
-  graduationYear?: Prisma.IntFieldUpdateOperationsInput | number
-  memberType?: Prisma.EnumMemberTypeFieldUpdateOperationsInput | $Enums.MemberType
-  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  skills?: Prisma.MemberProfileUpdateskillsInput | string[]
-  interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
-  skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactEmailPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  visibility?: Prisma.EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-  approvalStatus?: Prisma.EnumMemberApprovalStatusFieldUpdateOperationsInput | $Enums.MemberApprovalStatus
-  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  socialLinks?: Prisma.MemberSocialLinkUncheckedUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUncheckedUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUncheckedUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedUpdateOneWithoutProfileNestedInput
@@ -1800,7 +1532,6 @@ export type MemberProfileCreateWithoutExperiencesInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1812,7 +1543,6 @@ export type MemberProfileCreateWithoutExperiencesInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -1821,7 +1551,6 @@ export type MemberProfileCreateWithoutExperiencesInput = {
   usnClaim: Prisma.UsnClaimCreateNestedOneWithoutProfileInput
   reviewedBy?: Prisma.AdminCreateNestedOneWithoutReviewedMemberProfilesInput
   socialLinks?: Prisma.MemberSocialLinkCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageCreateNestedOneWithoutProfileInput
   reports?: Prisma.ConnectReportCreateNestedManyWithoutProfileInput
@@ -1839,7 +1568,6 @@ export type MemberProfileUncheckedCreateWithoutExperiencesInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1852,14 +1580,12 @@ export type MemberProfileUncheckedCreateWithoutExperiencesInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectUncheckedCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementUncheckedCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedCreateNestedOneWithoutProfileInput
   reports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutProfileInput
@@ -1892,7 +1618,6 @@ export type MemberProfileUpdateWithoutExperiencesInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1904,7 +1629,6 @@ export type MemberProfileUpdateWithoutExperiencesInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1913,7 +1637,6 @@ export type MemberProfileUpdateWithoutExperiencesInput = {
   usnClaim?: Prisma.UsnClaimUpdateOneRequiredWithoutProfileNestedInput
   reviewedBy?: Prisma.AdminUpdateOneWithoutReviewedMemberProfilesNestedInput
   socialLinks?: Prisma.MemberSocialLinkUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUpdateOneWithoutProfileNestedInput
   reports?: Prisma.ConnectReportUpdateManyWithoutProfileNestedInput
@@ -1931,7 +1654,6 @@ export type MemberProfileUncheckedUpdateWithoutExperiencesInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1944,14 +1666,12 @@ export type MemberProfileUncheckedUpdateWithoutExperiencesInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUncheckedUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUncheckedUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedUpdateOneWithoutProfileNestedInput
   reports?: Prisma.ConnectReportUncheckedUpdateManyWithoutProfileNestedInput
@@ -1968,7 +1688,6 @@ export type MemberProfileCreateWithoutAchievementsInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -1980,7 +1699,6 @@ export type MemberProfileCreateWithoutAchievementsInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -1989,7 +1707,6 @@ export type MemberProfileCreateWithoutAchievementsInput = {
   usnClaim: Prisma.UsnClaimCreateNestedOneWithoutProfileInput
   reviewedBy?: Prisma.AdminCreateNestedOneWithoutReviewedMemberProfilesInput
   socialLinks?: Prisma.MemberSocialLinkCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageCreateNestedOneWithoutProfileInput
   reports?: Prisma.ConnectReportCreateNestedManyWithoutProfileInput
@@ -2007,7 +1724,6 @@ export type MemberProfileUncheckedCreateWithoutAchievementsInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -2020,14 +1736,12 @@ export type MemberProfileUncheckedCreateWithoutAchievementsInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectUncheckedCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceUncheckedCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedCreateNestedOneWithoutProfileInput
   reports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutProfileInput
@@ -2060,7 +1774,6 @@ export type MemberProfileUpdateWithoutAchievementsInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2072,7 +1785,6 @@ export type MemberProfileUpdateWithoutAchievementsInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2081,7 +1793,6 @@ export type MemberProfileUpdateWithoutAchievementsInput = {
   usnClaim?: Prisma.UsnClaimUpdateOneRequiredWithoutProfileNestedInput
   reviewedBy?: Prisma.AdminUpdateOneWithoutReviewedMemberProfilesNestedInput
   socialLinks?: Prisma.MemberSocialLinkUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUpdateOneWithoutProfileNestedInput
   reports?: Prisma.ConnectReportUpdateManyWithoutProfileNestedInput
@@ -2099,7 +1810,6 @@ export type MemberProfileUncheckedUpdateWithoutAchievementsInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2112,14 +1822,12 @@ export type MemberProfileUncheckedUpdateWithoutAchievementsInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUncheckedUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUncheckedUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedUpdateOneWithoutProfileNestedInput
   reports?: Prisma.ConnectReportUncheckedUpdateManyWithoutProfileNestedInput
@@ -2136,7 +1844,6 @@ export type MemberProfileCreateWithoutKnowledgePageInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -2148,7 +1855,6 @@ export type MemberProfileCreateWithoutKnowledgePageInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -2157,7 +1863,6 @@ export type MemberProfileCreateWithoutKnowledgePageInput = {
   usnClaim: Prisma.UsnClaimCreateNestedOneWithoutProfileInput
   reviewedBy?: Prisma.AdminCreateNestedOneWithoutReviewedMemberProfilesInput
   socialLinks?: Prisma.MemberSocialLinkCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementCreateNestedManyWithoutProfileInput
   reports?: Prisma.ConnectReportCreateNestedManyWithoutProfileInput
@@ -2175,7 +1880,6 @@ export type MemberProfileUncheckedCreateWithoutKnowledgePageInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -2188,14 +1892,12 @@ export type MemberProfileUncheckedCreateWithoutKnowledgePageInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectUncheckedCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceUncheckedCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutProfileInput
@@ -2228,7 +1930,6 @@ export type MemberProfileUpdateWithoutKnowledgePageInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2240,7 +1941,6 @@ export type MemberProfileUpdateWithoutKnowledgePageInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2249,7 +1949,6 @@ export type MemberProfileUpdateWithoutKnowledgePageInput = {
   usnClaim?: Prisma.UsnClaimUpdateOneRequiredWithoutProfileNestedInput
   reviewedBy?: Prisma.AdminUpdateOneWithoutReviewedMemberProfilesNestedInput
   socialLinks?: Prisma.MemberSocialLinkUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ConnectReportUpdateManyWithoutProfileNestedInput
@@ -2267,7 +1966,6 @@ export type MemberProfileUncheckedUpdateWithoutKnowledgePageInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2280,14 +1978,12 @@ export type MemberProfileUncheckedUpdateWithoutKnowledgePageInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUncheckedUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUncheckedUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ConnectReportUncheckedUpdateManyWithoutProfileNestedInput
@@ -2304,7 +2000,6 @@ export type MemberProfileCreateWithoutReportsInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -2316,7 +2011,6 @@ export type MemberProfileCreateWithoutReportsInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -2325,7 +2019,6 @@ export type MemberProfileCreateWithoutReportsInput = {
   usnClaim: Prisma.UsnClaimCreateNestedOneWithoutProfileInput
   reviewedBy?: Prisma.AdminCreateNestedOneWithoutReviewedMemberProfilesInput
   socialLinks?: Prisma.MemberSocialLinkCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageCreateNestedOneWithoutProfileInput
@@ -2343,7 +2036,6 @@ export type MemberProfileUncheckedCreateWithoutReportsInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -2356,14 +2048,12 @@ export type MemberProfileUncheckedCreateWithoutReportsInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedCreateNestedManyWithoutProfileInput
-  projects?: Prisma.MemberProjectUncheckedCreateNestedManyWithoutProfileInput
   experiences?: Prisma.MemberExperienceUncheckedCreateNestedManyWithoutProfileInput
   achievements?: Prisma.MemberAchievementUncheckedCreateNestedManyWithoutProfileInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedCreateNestedOneWithoutProfileInput
@@ -2396,7 +2086,6 @@ export type MemberProfileUpdateWithoutReportsInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2408,7 +2097,6 @@ export type MemberProfileUpdateWithoutReportsInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2417,7 +2105,6 @@ export type MemberProfileUpdateWithoutReportsInput = {
   usnClaim?: Prisma.UsnClaimUpdateOneRequiredWithoutProfileNestedInput
   reviewedBy?: Prisma.AdminUpdateOneWithoutReviewedMemberProfilesNestedInput
   socialLinks?: Prisma.MemberSocialLinkUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUpdateOneWithoutProfileNestedInput
@@ -2435,7 +2122,6 @@ export type MemberProfileUncheckedUpdateWithoutReportsInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2448,14 +2134,12 @@ export type MemberProfileUncheckedUpdateWithoutReportsInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUncheckedUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUncheckedUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUncheckedUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedUpdateOneWithoutProfileNestedInput
@@ -2473,7 +2157,6 @@ export type MemberProfileCreateManyReviewedByInput = {
   skills?: Prisma.MemberProfileCreateskillsInput | string[]
   interests?: Prisma.MemberProfileCreateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileCreateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileCreatehelpAreasInput | string[]
   location?: string | null
   phone?: string | null
   phonePublic?: boolean
@@ -2485,7 +2168,6 @@ export type MemberProfileCreateManyReviewedByInput = {
   reviewedAt?: Date | string | null
   currentRole?: string | null
   company?: string | null
-  professionalJourney?: string | null
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -2504,7 +2186,6 @@ export type MemberProfileUpdateWithoutReviewedByInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2516,7 +2197,6 @@ export type MemberProfileUpdateWithoutReviewedByInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2524,7 +2204,6 @@ export type MemberProfileUpdateWithoutReviewedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usnClaim?: Prisma.UsnClaimUpdateOneRequiredWithoutProfileNestedInput
   socialLinks?: Prisma.MemberSocialLinkUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUpdateOneWithoutProfileNestedInput
@@ -2543,7 +2222,6 @@ export type MemberProfileUncheckedUpdateWithoutReviewedByInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2555,14 +2233,12 @@ export type MemberProfileUncheckedUpdateWithoutReviewedByInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   socialLinks?: Prisma.MemberSocialLinkUncheckedUpdateManyWithoutProfileNestedInput
-  projects?: Prisma.MemberProjectUncheckedUpdateManyWithoutProfileNestedInput
   experiences?: Prisma.MemberExperienceUncheckedUpdateManyWithoutProfileNestedInput
   achievements?: Prisma.MemberAchievementUncheckedUpdateManyWithoutProfileNestedInput
   knowledgePage?: Prisma.MemberKnowledgePageUncheckedUpdateOneWithoutProfileNestedInput
@@ -2581,7 +2257,6 @@ export type MemberProfileUncheckedUpdateManyWithoutReviewedByInput = {
   skills?: Prisma.MemberProfileUpdateskillsInput | string[]
   interests?: Prisma.MemberProfileUpdateinterestsInput | string[]
   skillsInDevelopment?: Prisma.MemberProfileUpdateskillsInDevelopmentInput | string[]
-  helpAreas?: Prisma.MemberProfileUpdatehelpAreasInput | string[]
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phonePublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2593,7 +2268,6 @@ export type MemberProfileUncheckedUpdateManyWithoutReviewedByInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   currentRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  professionalJourney?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openToCollaborate?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mentoringAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   referralAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2608,7 +2282,6 @@ export type MemberProfileUncheckedUpdateManyWithoutReviewedByInput = {
 
 export type MemberProfileCountOutputType = {
   socialLinks: number
-  projects: number
   experiences: number
   achievements: number
   reports: number
@@ -2616,7 +2289,6 @@ export type MemberProfileCountOutputType = {
 
 export type MemberProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   socialLinks?: boolean | MemberProfileCountOutputTypeCountSocialLinksArgs
-  projects?: boolean | MemberProfileCountOutputTypeCountProjectsArgs
   experiences?: boolean | MemberProfileCountOutputTypeCountExperiencesArgs
   achievements?: boolean | MemberProfileCountOutputTypeCountAchievementsArgs
   reports?: boolean | MemberProfileCountOutputTypeCountReportsArgs
@@ -2637,13 +2309,6 @@ export type MemberProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Type
  */
 export type MemberProfileCountOutputTypeCountSocialLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MemberSocialLinkWhereInput
-}
-
-/**
- * MemberProfileCountOutputType without action
- */
-export type MemberProfileCountOutputTypeCountProjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.MemberProjectWhereInput
 }
 
 /**
@@ -2680,7 +2345,6 @@ export type MemberProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   skills?: boolean
   interests?: boolean
   skillsInDevelopment?: boolean
-  helpAreas?: boolean
   location?: boolean
   phone?: boolean
   phonePublic?: boolean
@@ -2693,7 +2357,6 @@ export type MemberProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   reviewedAt?: boolean
   currentRole?: boolean
   company?: boolean
-  professionalJourney?: boolean
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -2702,7 +2365,6 @@ export type MemberProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   usnClaim?: boolean | Prisma.UsnClaimDefaultArgs<ExtArgs>
   reviewedBy?: boolean | Prisma.MemberProfile$reviewedByArgs<ExtArgs>
   socialLinks?: boolean | Prisma.MemberProfile$socialLinksArgs<ExtArgs>
-  projects?: boolean | Prisma.MemberProfile$projectsArgs<ExtArgs>
   experiences?: boolean | Prisma.MemberProfile$experiencesArgs<ExtArgs>
   achievements?: boolean | Prisma.MemberProfile$achievementsArgs<ExtArgs>
   knowledgePage?: boolean | Prisma.MemberProfile$knowledgePageArgs<ExtArgs>
@@ -2722,7 +2384,6 @@ export type MemberProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   skills?: boolean
   interests?: boolean
   skillsInDevelopment?: boolean
-  helpAreas?: boolean
   location?: boolean
   phone?: boolean
   phonePublic?: boolean
@@ -2735,7 +2396,6 @@ export type MemberProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   reviewedAt?: boolean
   currentRole?: boolean
   company?: boolean
-  professionalJourney?: boolean
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -2757,7 +2417,6 @@ export type MemberProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   skills?: boolean
   interests?: boolean
   skillsInDevelopment?: boolean
-  helpAreas?: boolean
   location?: boolean
   phone?: boolean
   phonePublic?: boolean
@@ -2770,7 +2429,6 @@ export type MemberProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   reviewedAt?: boolean
   currentRole?: boolean
   company?: boolean
-  professionalJourney?: boolean
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -2792,7 +2450,6 @@ export type MemberProfileSelectScalar = {
   skills?: boolean
   interests?: boolean
   skillsInDevelopment?: boolean
-  helpAreas?: boolean
   location?: boolean
   phone?: boolean
   phonePublic?: boolean
@@ -2805,7 +2462,6 @@ export type MemberProfileSelectScalar = {
   reviewedAt?: boolean
   currentRole?: boolean
   company?: boolean
-  professionalJourney?: boolean
   openToCollaborate?: boolean
   mentoringAvailable?: boolean
   referralAvailable?: boolean
@@ -2813,12 +2469,11 @@ export type MemberProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MemberProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"authUserId" | "slug" | "usn" | "fullName" | "graduationYear" | "memberType" | "bio" | "avatarUrl" | "skills" | "interests" | "skillsInDevelopment" | "helpAreas" | "location" | "phone" | "phonePublic" | "contactEmail" | "contactEmailPublic" | "visibility" | "approvalStatus" | "reviewedById" | "reviewNote" | "reviewedAt" | "currentRole" | "company" | "professionalJourney" | "openToCollaborate" | "mentoringAvailable" | "referralAvailable" | "createdAt" | "updatedAt", ExtArgs["result"]["memberProfile"]>
+export type MemberProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"authUserId" | "slug" | "usn" | "fullName" | "graduationYear" | "memberType" | "bio" | "avatarUrl" | "skills" | "interests" | "skillsInDevelopment" | "location" | "phone" | "phonePublic" | "contactEmail" | "contactEmailPublic" | "visibility" | "approvalStatus" | "reviewedById" | "reviewNote" | "reviewedAt" | "currentRole" | "company" | "openToCollaborate" | "mentoringAvailable" | "referralAvailable" | "createdAt" | "updatedAt", ExtArgs["result"]["memberProfile"]>
 export type MemberProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   usnClaim?: boolean | Prisma.UsnClaimDefaultArgs<ExtArgs>
   reviewedBy?: boolean | Prisma.MemberProfile$reviewedByArgs<ExtArgs>
   socialLinks?: boolean | Prisma.MemberProfile$socialLinksArgs<ExtArgs>
-  projects?: boolean | Prisma.MemberProfile$projectsArgs<ExtArgs>
   experiences?: boolean | Prisma.MemberProfile$experiencesArgs<ExtArgs>
   achievements?: boolean | Prisma.MemberProfile$achievementsArgs<ExtArgs>
   knowledgePage?: boolean | Prisma.MemberProfile$knowledgePageArgs<ExtArgs>
@@ -2840,7 +2495,6 @@ export type $MemberProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     usnClaim: Prisma.$UsnClaimPayload<ExtArgs>
     reviewedBy: Prisma.$AdminPayload<ExtArgs> | null
     socialLinks: Prisma.$MemberSocialLinkPayload<ExtArgs>[]
-    projects: Prisma.$MemberProjectPayload<ExtArgs>[]
     experiences: Prisma.$MemberExperiencePayload<ExtArgs>[]
     achievements: Prisma.$MemberAchievementPayload<ExtArgs>[]
     knowledgePage: Prisma.$MemberKnowledgePagePayload<ExtArgs> | null
@@ -2858,7 +2512,6 @@ export type $MemberProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     skills: string[]
     interests: string[]
     skillsInDevelopment: string[]
-    helpAreas: string[]
     location: string | null
     phone: string | null
     phonePublic: boolean
@@ -2871,7 +2524,6 @@ export type $MemberProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     reviewedAt: Date | null
     currentRole: string | null
     company: string | null
-    professionalJourney: string | null
     openToCollaborate: boolean
     mentoringAvailable: boolean
     referralAvailable: boolean
@@ -3274,7 +2926,6 @@ export interface Prisma__MemberProfileClient<T, Null = never, ExtArgs extends ru
   usnClaim<T extends Prisma.UsnClaimDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsnClaimDefaultArgs<ExtArgs>>): Prisma.Prisma__UsnClaimClient<runtime.Types.Result.GetResult<Prisma.$UsnClaimPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   reviewedBy<T extends Prisma.MemberProfile$reviewedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberProfile$reviewedByArgs<ExtArgs>>): Prisma.Prisma__AdminClient<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   socialLinks<T extends Prisma.MemberProfile$socialLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberProfile$socialLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberSocialLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  projects<T extends Prisma.MemberProfile$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberProfile$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   experiences<T extends Prisma.MemberProfile$experiencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberProfile$experiencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberExperiencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   achievements<T extends Prisma.MemberProfile$achievementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberProfile$achievementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberAchievementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledgePage<T extends Prisma.MemberProfile$knowledgePageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MemberProfile$knowledgePageArgs<ExtArgs>>): Prisma.Prisma__MemberKnowledgePageClient<runtime.Types.Result.GetResult<Prisma.$MemberKnowledgePagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3319,7 +2970,6 @@ export interface MemberProfileFieldRefs {
   readonly skills: Prisma.FieldRef<"MemberProfile", 'String[]'>
   readonly interests: Prisma.FieldRef<"MemberProfile", 'String[]'>
   readonly skillsInDevelopment: Prisma.FieldRef<"MemberProfile", 'String[]'>
-  readonly helpAreas: Prisma.FieldRef<"MemberProfile", 'String[]'>
   readonly location: Prisma.FieldRef<"MemberProfile", 'String'>
   readonly phone: Prisma.FieldRef<"MemberProfile", 'String'>
   readonly phonePublic: Prisma.FieldRef<"MemberProfile", 'Boolean'>
@@ -3332,7 +2982,6 @@ export interface MemberProfileFieldRefs {
   readonly reviewedAt: Prisma.FieldRef<"MemberProfile", 'DateTime'>
   readonly currentRole: Prisma.FieldRef<"MemberProfile", 'String'>
   readonly company: Prisma.FieldRef<"MemberProfile", 'String'>
-  readonly professionalJourney: Prisma.FieldRef<"MemberProfile", 'String'>
   readonly openToCollaborate: Prisma.FieldRef<"MemberProfile", 'Boolean'>
   readonly mentoringAvailable: Prisma.FieldRef<"MemberProfile", 'Boolean'>
   readonly referralAvailable: Prisma.FieldRef<"MemberProfile", 'Boolean'>
@@ -3779,30 +3428,6 @@ export type MemberProfile$socialLinksArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.MemberSocialLinkScalarFieldEnum | Prisma.MemberSocialLinkScalarFieldEnum[]
-}
-
-/**
- * MemberProfile.projects
- */
-export type MemberProfile$projectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the MemberProject
-   */
-  select?: Prisma.MemberProjectSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the MemberProject
-   */
-  omit?: Prisma.MemberProjectOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MemberProjectInclude<ExtArgs> | null
-  where?: Prisma.MemberProjectWhereInput
-  orderBy?: Prisma.MemberProjectOrderByWithRelationInput | Prisma.MemberProjectOrderByWithRelationInput[]
-  cursor?: Prisma.MemberProjectWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.MemberProjectScalarFieldEnum | Prisma.MemberProjectScalarFieldEnum[]
 }
 
 /**

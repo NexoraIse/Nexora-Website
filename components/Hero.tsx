@@ -5,9 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar, BookOpen, Bell } from 'lucide-react';
 import gsap from 'gsap';
-import { AnimatePresence, motion, animate, useInView } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import Marquee from './Marquee';
 import ContourBackdrop from './ContourBackdrop';
+import HomeSectionPreviews from './HomeSectionPreviews';
 
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!%&';
 const FINAL_TEXT = 'NEXORA';
@@ -64,47 +65,6 @@ function HeroClouds() {
           </svg>
         </div>
       ))}
-    </div>
-  );
-}
-
-/* ─── Verified Department & Club Stats ─── */
-const STATS = [
-  { value: 2016, suffix: '', label: 'Established Year' },
-  { value: 60,   suffix: '', label: 'Annual Intake' },
-  { value: 100,  suffix: '+', label: 'Research Papers' },
-  { value: 30,   suffix: '+', label: 'Tech Events & Sprints' },
-];
-
-function StatBlock({ value, suffix = '', label }: { value: number; suffix?: string; label: string }) {
-  const numberRef = useRef<HTMLSpanElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(containerRef, { once: true, margin: '-80px' });
-
-  useEffect(() => {
-    if (!inView || !numberRef.current) return;
-    const controls = animate(0, value, {
-      duration: 1.4,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (v) => {
-        if (numberRef.current) numberRef.current.textContent = Math.round(v).toLocaleString();
-      },
-    });
-    return () => controls.stop();
-  }, [inView, value]);
-
-  return (
-    <div ref={containerRef} className="flex flex-col items-center text-center">
-      <span
-        className="font-clash font-bold leading-none text-[var(--theme-bg-hero,#dce6ef)] tabular-nums"
-        style={{ fontSize: 'clamp(2.2rem, 6.5vw, 4.5rem)' }}
-      >
-        <span ref={numberRef}>0</span>
-        {suffix}
-      </span>
-      <span className="mt-1 font-semibold uppercase tracking-[0.2em] text-[var(--theme-primary,#00f0ff)]/70 text-xs sm:text-sm font-mono">
-        {label}
-      </span>
     </div>
   );
 }
@@ -362,53 +322,7 @@ export default function Hero({ introStarted }: { introStarted: boolean }) {
             </div>
           </section>
 
-          {/* Department & Club Milestones Stats Row */}
-          <section className="px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32 pb-20 sm:pb-28">
-            <div className="h-px bg-[var(--theme-primary,#00f0ff)]/20 mb-12 sm:mb-16" />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 md:gap-12">
-              {STATS.map((s) => (
-                <StatBlock key={s.label} value={s.value} suffix={s.suffix} label={s.label} />
-              ))}
-            </div>
-          </section>
-
-          {/* Bottom Action Callout */}
-          <section
-            className="px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32 py-20 sm:py-28 md:py-36
-              border-t border-[var(--theme-primary,#00f0ff)]/10
-              flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8"
-          >
-            <div>
-              <p
-                className="font-clash font-bold leading-[0.9] text-[var(--theme-bg-hero,#dce6ef)]"
-                style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}
-              >
-                Ready to Build?
-                <br />
-                <span className="text-[var(--theme-primary,#00f0ff)]">Connect With Nexora.</span>
-              </p>
-              <p className="mt-2 text-xs sm:text-sm text-[var(--theme-primary,#00f0ff)]/70 uppercase tracking-widest font-mono">
-                AJIET Campus · Kottara Chowki, Mangaluru
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4">
-              <Link
-                href="/events"
-                data-cursor="Explore"
-                className="group flex items-center gap-4 border border-[var(--theme-primary,#00f0ff)]/30
-                  px-6 py-4 sm:px-8 sm:py-5
-                  hover:bg-[var(--theme-primary,#00f0ff)]/10 hover:border-[var(--theme-primary,#00f0ff)] transition-all duration-300"
-              >
-                <span className="font-clash font-bold uppercase tracking-[0.2em] text-[var(--theme-bg-hero,#dce6ef)] text-sm">
-                  Explore Events
-                </span>
-                <ArrowRight
-                  className="w-5 h-5 text-[var(--theme-primary,#00f0ff)] group-hover:translate-x-1 transition-transform duration-300"
-                />
-              </Link>
-            </div>
-          </section>
+          <HomeSectionPreviews />
         </div>
       </div>
     </>

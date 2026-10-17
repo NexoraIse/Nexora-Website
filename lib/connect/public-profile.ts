@@ -10,34 +10,16 @@ export const publicMemberProfileSelect = {
   skills: true,
   interests: true,
   skillsInDevelopment: true,
-  helpAreas: true,
   location: true,
-  phone: true,
-  phonePublic: true,
   contactEmail: true,
   contactEmailPublic: true,
   currentRole: true,
   company: true,
-  professionalJourney: true,
   openToCollaborate: true,
   mentoringAvailable: true,
   referralAvailable: true,
   socialLinks: {
     select: { id: true, label: true, url: true, sortOrder: true },
-    orderBy: { sortOrder: 'asc' },
-  },
-  projects: {
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      technologies: true,
-      repositoryUrl: true,
-      demoUrl: true,
-      seekingCollaborators: true,
-      preferredTeammateSkills: true,
-      sortOrder: true,
-    },
     orderBy: { sortOrder: 'asc' },
   },
   experiences: {
@@ -75,9 +57,7 @@ type PublicMemberProfile = Prisma.MemberProfileGetPayload<{
 export function toPublicMemberProfile(profile: PublicMemberProfile) {
   return {
     ...profile,
-    phone: profile.phonePublic ? profile.phone : null,
     contactEmail: profile.contactEmailPublic ? profile.contactEmail : null,
-    phonePublic: undefined,
     contactEmailPublic: undefined,
   }
 }

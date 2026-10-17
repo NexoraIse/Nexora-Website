@@ -167,8 +167,8 @@ export default function ActivityPage() {
             <span className="connect-empty-icon"><ShieldAlert size={22} /></span>
             <p className="connect-eyebrow mt-5">Community care</p>
             <h1 className="mt-2 font-clash text-3xl text-white">Sign in to continue.</h1>
-            <p className="mt-3 text-sm leading-6 text-[#aab6c2]">Sign in with your confirmed email to contact the Connect team.</p>
-            <Link href="/connect/sign-in" className="connect-button connect-button-primary mt-6">Sign in</Link>
+            <p className="mt-3 text-sm leading-6 text-[#aab6c2]">Continue with Google to contact the Connect team.</p>
+            <Link href="/connect/sign-in" className="connect-button connect-button-primary mt-6">Continue with Google</Link>
           </Panel>
         </div>
       </ConnectShell>

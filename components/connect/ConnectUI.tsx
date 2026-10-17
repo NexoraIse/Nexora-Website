@@ -6,17 +6,21 @@ export function PageHeading({
   title,
   description,
   actions,
+  className = '',
+  titleClassName = '',
 }: {
   eyebrow: string
   title: ReactNode
   description?: string
   actions?: ReactNode
+  className?: string
+  titleClassName?: string
 }) {
   return (
-    <div className="mb-8 flex flex-col gap-5 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
+    <div className={`mb-8 flex flex-col gap-5 sm:mb-10 sm:flex-row sm:items-end sm:justify-between ${className}`}>
       <div className="max-w-3xl">
         <p className="connect-eyebrow">{eyebrow}</p>
-        <h1 className="mt-3 font-clash text-[clamp(2.35rem,5.4vw,4.3rem)] font-medium leading-[1.02] tracking-[-0.045em] text-white">
+        <h1 className={`mt-3 font-clash text-[clamp(2.35rem,5.4vw,4.3rem)] font-medium leading-[1.02] tracking-[-0.045em] text-white ${titleClassName}`}>
           {title}
         </h1>
         {description && <p className="mt-4 max-w-xl text-sm leading-6 text-[#aab6c2] sm:text-[15px]">{description}</p>}

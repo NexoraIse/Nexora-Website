@@ -74,7 +74,7 @@ export const MEMBERS: TeamMember[] = [
     tag: 'STU_005.DAT',
     badge: 'Frontend Developer',
     bio: 'Engineered the verified achievements showcase, interactive filter transitions, and responsive multimedia presentation gallery.',
-    image: '',
+    image: '/members/manvith.png',
     github: 'https://github.com/kutharmanvith',
     linkedin: 'https://linkedin.com/in/manvith-kuthar',
     skills: ['React', 'TypeScript', 'CSS Animations', 'Component Architecture'],

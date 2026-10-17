@@ -32,12 +32,14 @@ const CREDITS_ROW_DURATION = 300;
 
 const NAV_COMMANDS: Record<string, string> = {
   home: '/',
-  events: '/events',
-  learn: '/learn',
-  notices: '/notices',
-  achievements: '/achievements',
   about: '/about',
+  events: '/events',
+  notices: '/notices',
+  learn: '/learn',
   practice: '/practice',
+  achievements: '/achievements',
+  members: '/members',
+  connect: '/connect',
 };
 
 const NO_ARG_COMMANDS = new Set([

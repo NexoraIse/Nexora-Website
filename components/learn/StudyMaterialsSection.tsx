@@ -146,16 +146,16 @@ export default function StudyMaterialsSection({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-6 lg:gap-y-4">
             {/* Left Column */}
-            <div className="divide-y divide-[var(--theme-primary,#00f0ff)]/15">
+            <div className="grid content-start gap-4">
               {leftCol.map((item) => (
-                <div key={item.id} className="py-5 group">
-                  <div className="flex items-center justify-between font-mono text-xs text-white/50">
+                <div key={item.id} className="group min-w-0 rounded-xl border border-[var(--theme-primary,#00f0ff)]/15 bg-[#080f18]/95 p-5 shadow-[0_12px_32px_rgba(0,0,0,0.18)] transition-colors hover:border-[var(--theme-primary,#00f0ff)]/35 sm:p-6">
+                  <div className="flex items-center justify-between gap-3 font-mono text-xs text-slate-300">
                     <span className="text-[var(--theme-primary,#00f0ff)] font-semibold uppercase tracking-wider">
                       {item.semester ? `Semester ${item.semester}` : "General"} · {item.subject}
                     </span>
-                    <span className="flex items-center gap-1.5 text-white/40">
+                    <span className="flex shrink-0 items-center gap-1.5 text-slate-400">
                       <FileText className="h-3 w-3" />
                       {item.fileType || "PDF"}
                     </span>
@@ -165,15 +165,15 @@ export default function StudyMaterialsSection({
                     {item.title}
                   </h3>
 
-                  <p className="mt-1.5 font-cabinet text-xs sm:text-sm text-white/70 leading-relaxed">
+                  <p className="mt-1.5 font-cabinet text-xs sm:text-sm text-slate-300 leading-relaxed">
                     {item.description}
                   </p>
 
                   <div className="mt-3 flex items-center justify-between gap-4">
                     {item.tags && item.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 font-mono text-[10px] text-white/40">
+                      <div className="flex flex-wrap gap-1.5 font-mono text-[10px] text-slate-300">
                         {item.tags.map((tag) => (
-                          <span key={tag} className="border border-[var(--theme-primary,#00f0ff)]/20 px-1.5 py-0.5">
+                          <span key={tag} className="border border-[var(--theme-primary,#00f0ff)]/25 bg-black/20 px-1.5 py-0.5">
                             #{tag}
                           </span>
                         ))}
@@ -204,14 +204,14 @@ export default function StudyMaterialsSection({
             </div>
 
             {/* Right Column */}
-            <div className="divide-y divide-[var(--theme-primary,#00f0ff)]/15">
+            <div className="grid content-start gap-4">
               {rightCol.map((item) => (
-                <div key={item.id} className="py-5 group">
-                  <div className="flex items-center justify-between font-mono text-xs text-white/50">
+                <div key={item.id} className="group min-w-0 rounded-xl border border-[var(--theme-primary,#00f0ff)]/15 bg-[#080f18]/95 p-5 shadow-[0_12px_32px_rgba(0,0,0,0.18)] transition-colors hover:border-[var(--theme-primary,#00f0ff)]/35 sm:p-6">
+                  <div className="flex items-center justify-between gap-3 font-mono text-xs text-slate-300">
                     <span className="text-[var(--theme-primary,#00f0ff)] font-semibold uppercase tracking-wider">
                       {item.semester ? `Semester ${item.semester}` : "General"} · {item.subject}
                     </span>
-                    <span className="flex items-center gap-1.5 text-white/40">
+                    <span className="flex shrink-0 items-center gap-1.5 text-slate-400">
                       <FileText className="h-3 w-3" />
                       {item.fileType || "PDF"}
                     </span>
@@ -221,15 +221,15 @@ export default function StudyMaterialsSection({
                     {item.title}
                   </h3>
 
-                  <p className="mt-1.5 font-cabinet text-xs sm:text-sm text-white/70 leading-relaxed">
+                  <p className="mt-1.5 font-cabinet text-xs sm:text-sm text-slate-300 leading-relaxed">
                     {item.description}
                   </p>
 
                   <div className="mt-3 flex items-center justify-between gap-4">
                     {item.tags && item.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 font-mono text-[10px] text-white/40">
+                      <div className="flex flex-wrap gap-1.5 font-mono text-[10px] text-slate-300">
                         {item.tags.map((tag) => (
-                          <span key={tag} className="border border-[var(--theme-primary,#00f0ff)]/20 px-1.5 py-0.5">
+                          <span key={tag} className="border border-[var(--theme-primary,#00f0ff)]/25 bg-black/20 px-1.5 py-0.5">
                             #{tag}
                           </span>
                         ))}

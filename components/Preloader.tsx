@@ -23,39 +23,30 @@ export default function Preloader({ onFinish }: PreloaderProps) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    const duration = 3000; // 3 seconds linear count
+    const duration = 1200;
     const startTime = performance.now();
-    let animationFrameId: number;
+    let completeTimer: number | undefined;
+    let finishTimer: number | undefined;
+    const interval = window.setInterval(() => {
+      const progress = Math.min((performance.now() - startTime) / duration, 1);
+      setDisplayCount(Math.round(progress * 100));
+      if (progress < 1) return;
 
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const currentCount = Math.round(progress * 100);
-
-      setDisplayCount(currentCount);
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(animate);
-      } else {
-        // Ensure all letters are fully lit
-        setDisplayCount(100);
-
-        // Small delay to let user see the full lit text
-        setTimeout(() => {
-          setComplete(true);
-          setTimeout(() => {
-            document.body.style.overflow = "";
-            setHide(true);
-            if (onFinish) onFinish();
-          }, 1000); // Duration for sliding up
-        }, 800);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
+      window.clearInterval(interval);
+      completeTimer = window.setTimeout(() => {
+        setComplete(true);
+        finishTimer = window.setTimeout(() => {
+          document.body.style.overflow = "";
+          setHide(true);
+          onFinish?.();
+        }, 700);
+      }, 250);
+    }, 50);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      window.clearInterval(interval);
+      if (completeTimer) window.clearTimeout(completeTimer);
+      if (finishTimer) window.clearTimeout(finishTimer);
       document.body.style.overflow = "";
     };
   }, [onFinish]);
@@ -64,13 +55,13 @@ export default function Preloader({ onFinish }: PreloaderProps) {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-black text-white transition-all duration-1000 ease-[cubic-bezier(0.76,0,0.24,1)] select-none ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-black text-white transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] select-none ${
         complete ? "-translate-y-full rounded-b-[50%]" : "translate-y-0 rounded-b-none"
       }`}
     >
       {/* Smooth Progress Bar at Top */}
       <div
-        className="absolute top-0 left-0 h-1 bg-white transition-all duration-75 ease-linear"
+        className="absolute top-0 left-0 h-1 bg-white transition-all duration-50 ease-linear"
         style={{ width: `${displayCount}%` }}
       />
 

@@ -65,7 +65,6 @@ export const ModelName = {
   ConnectAuthRateLimit: 'ConnectAuthRateLimit',
   MemberProfile: 'MemberProfile',
   MemberSocialLink: 'MemberSocialLink',
-  MemberProject: 'MemberProject',
   MemberExperience: 'MemberExperience',
   MemberAchievement: 'MemberAchievement',
   MemberKnowledgePage: 'MemberKnowledgePage',
@@ -295,7 +294,6 @@ export const MemberProfileScalarFieldEnum = {
   skills: 'skills',
   interests: 'interests',
   skillsInDevelopment: 'skillsInDevelopment',
-  helpAreas: 'helpAreas',
   location: 'location',
   phone: 'phone',
   phonePublic: 'phonePublic',
@@ -308,7 +306,6 @@ export const MemberProfileScalarFieldEnum = {
   reviewedAt: 'reviewedAt',
   currentRole: 'currentRole',
   company: 'company',
-  professionalJourney: 'professionalJourney',
   openToCollaborate: 'openToCollaborate',
   mentoringAvailable: 'mentoringAvailable',
   referralAvailable: 'referralAvailable',
@@ -330,24 +327,6 @@ export const MemberSocialLinkScalarFieldEnum = {
 } as const
 
 export type MemberSocialLinkScalarFieldEnum = (typeof MemberSocialLinkScalarFieldEnum)[keyof typeof MemberSocialLinkScalarFieldEnum]
-
-
-export const MemberProjectScalarFieldEnum = {
-  id: 'id',
-  profileId: 'profileId',
-  title: 'title',
-  description: 'description',
-  technologies: 'technologies',
-  repositoryUrl: 'repositoryUrl',
-  demoUrl: 'demoUrl',
-  seekingCollaborators: 'seekingCollaborators',
-  preferredTeammateSkills: 'preferredTeammateSkills',
-  sortOrder: 'sortOrder',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type MemberProjectScalarFieldEnum = (typeof MemberProjectScalarFieldEnum)[keyof typeof MemberProjectScalarFieldEnum]
 
 
 export const MemberExperienceScalarFieldEnum = {

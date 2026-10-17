@@ -71,7 +71,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         ref={audioRef}
         src="/song.mp3"
         loop
-        preload="auto"
+        preload="none"
         onPlay={() => {
           playRequestedRef.current = false;
           setMusicPlaying(true);

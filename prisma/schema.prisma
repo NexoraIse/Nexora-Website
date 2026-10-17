@@ -295,7 +295,6 @@ model MemberProfile {
   skills              String[]             @default([])
   interests           String[]             @default([])
   skillsInDevelopment String[]             @default([]) @map("skills_in_development")
-  helpAreas           String[]             @default([]) @map("help_areas")
   location            String?              @db.VarChar(120)
   phone               String?              @db.VarChar(40)
   phonePublic         Boolean              @default(false) @map("phone_public")
@@ -308,7 +307,6 @@ model MemberProfile {
   reviewedAt          DateTime?            @map("reviewed_at") @db.Timestamptz
   currentRole         String?              @map("current_role") @db.VarChar(160)
   company             String?              @db.VarChar(160)
-  professionalJourney String?              @map("professional_journey") @db.Text
   openToCollaborate   Boolean              @default(false) @map("open_to_collaborate")
   mentoringAvailable  Boolean              @default(false) @map("mentoring_available")
   referralAvailable   Boolean              @default(false) @map("referral_available")
@@ -318,7 +316,6 @@ model MemberProfile {
   usnClaim      UsnClaim             @relation(fields: [usn], references: [usn], onDelete: Restrict)
   reviewedBy    Admin?               @relation("MemberProfileReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
   socialLinks   MemberSocialLink[]
-  projects      MemberProject[]
   experiences   MemberExperience[]
   achievements  MemberAchievement[]
   knowledgePage MemberKnowledgePage?
@@ -345,26 +342,6 @@ model MemberSocialLink {
   @@unique([profileId, url])
   @@index([profileId, sortOrder])
   @@map("connect_member_social_links")
-}
-
-model MemberProject {
-  id                      String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  profileId               String        @map("profile_id") @db.Uuid
-  title                   String        @db.VarChar(160)
-  description             String?       @db.Text
-  technologies            String[]      @default([])
-  repositoryUrl           String?       @map("repository_url") @db.VarChar(2048)
-  demoUrl                 String?       @map("demo_url") @db.VarChar(2048)
-  seekingCollaborators    Boolean       @default(false) @map("seeking_collaborators")
-  preferredTeammateSkills String[]      @default([]) @map("preferred_teammate_skills")
-  sortOrder               Int           @default(0) @map("sort_order")
-  profile                 MemberProfile @relation(fields: [profileId], references: [authUserId], onDelete: Cascade)
-  createdAt               DateTime      @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt               DateTime      @updatedAt @map("updated_at") @db.Timestamptz
-
-  @@index([profileId, sortOrder])
-  @@index([seekingCollaborators])
-  @@map("connect_member_projects")
 }
 
 model MemberExperience {

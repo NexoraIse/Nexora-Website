@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useParams } from 'next/navigation'
+import { motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, CalendarDays, ExternalLink, Flag, Handshake, MapPin, ShieldCheck, Sparkles } from 'lucide-react'
 import { ConnectShell } from './ConnectShell'
 import { ConnectMarkdown } from './ConnectMarkdown'
@@ -19,18 +20,14 @@ type PublicProfile = {
   skills: string[]
   interests: string[]
   skillsInDevelopment: string[]
-  helpAreas: string[]
   location: string | null
-  phone: string | null
   contactEmail: string | null
   currentRole: string | null
   company: string | null
-  professionalJourney: string | null
   openToCollaborate: boolean
   mentoringAvailable: boolean
   referralAvailable: boolean
   socialLinks: Array<{ id: string; label: string; url: string }>
-  projects: Array<{ id: string; title: string; description: string | null; technologies: string[]; repositoryUrl: string | null; demoUrl: string | null; seekingCollaborators: boolean; preferredTeammateSkills: string[] }>
   experiences: Array<{ id: string; type: string; role: string; organization: string | null; description: string | null; startedAt: string | null; endedAt: string | null; isCurrent: boolean }>
   achievements: Array<{ id: string; title: string; description: string | null; achievedAt: string | null; url: string | null }>
   knowledgePage: { publishedMarkdown: string | null; publishedAt: string | null } | null
@@ -42,6 +39,7 @@ function initials(name: string) {
 
 export default function PublicProfilePage() {
   const params = useParams<{ slug: string }>()
+  const prefersReducedMotion = useReducedMotion()
   const [profile, setProfile] = useState<PublicProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -81,133 +79,198 @@ export default function PublicProfilePage() {
 
   return (
     <ConnectShell>
-      <div className="mx-auto max-w-[1180px] px-5 pb-20 pt-10 sm:px-8 sm:pt-14 lg:px-12">
-        <Link href="/connect" className="connect-back-link"><ArrowLeft size={14} /> Back to the community</Link>
-        <section className="connect-profile-hero mt-5">
-          <div className="connect-profile-orbit" aria-hidden />
-          <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+      <div className="connect-public-profile mx-auto max-w-[1180px] px-5 pb-20 pt-10 sm:px-8 sm:pt-14 lg:px-12">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <Link href="/connect" className="connect-back-link mb-0"><ArrowLeft size={14} /> Community</Link>
+          <span className="connect-profile-page-label">MEMBER DIRECTORY</span>
+        </div>
+        <motion.section
+          className="connect-profile-showcase"
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="connect-profile-member-card">
+            <div className="connect-profile-portrait">
               <div className="connect-avatar connect-avatar-large">
                 {profile.avatarUrl
-                  ? <Image src={profile.avatarUrl} alt="" width={104} height={104} unoptimized className="h-full w-full rounded-[28px] object-cover" />
+                  ? <Image src={profile.avatarUrl} alt={`${profile.fullName} profile photo`} width={420} height={360} unoptimized className="h-full w-full object-cover" />
                   : initials(profile.fullName)}
               </div>
-              <div>
-                <p className="connect-eyebrow">{profile.memberType === 'ALUMNUS' ? 'ISE alumni' : 'ISE student'} · Class of {profile.graduationYear}</p>
-                <h1 className="mt-2 font-clash text-[clamp(2.5rem,6vw,4.6rem)] font-medium leading-none tracking-[-0.055em] text-white">{profile.fullName}</h1>
-                {(profile.currentRole || profile.company) && (
-                  <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#c1cdd5]">
-                    {profile.currentRole && <span>{profile.currentRole}</span>}
-                    {profile.currentRole && profile.company && <span className="text-[#6e818f]">at</span>}
-                    {profile.company && <span>{profile.company}</span>}
-                  </p>
-                )}
-                {profile.location && <p className="mt-2 flex items-center gap-1.5 text-xs text-[#93a4b1]"><MapPin size={13} /> {profile.location}</p>}
+            </div>
+            <div className="connect-profile-member-details">
+              <p className="connect-profile-kicker">{profile.memberType === 'ALUMNUS' ? 'ISE ALUMNI' : 'ISE STUDENT'} <span aria-hidden="true">/</span> CLASS OF {profile.graduationYear}</p>
+              <h2>{profile.fullName}</h2>
+              {profile.location && <p className="connect-profile-location"><MapPin size={14} /> {profile.location}</p>}
+              {profile.socialLinks.length > 0 && (
+                <div className="connect-profile-socials" aria-label="Social and portfolio links">
+                  {profile.socialLinks.map((link) => (
+                    <a key={link.id} href={link.url} target="_blank" rel="noreferrer" aria-label={link.label} title={link.label}>
+                      {link.label}
+                      <ArrowUpRight size={13} />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="connect-profile-introduction">
+            <h1>{profile.currentRole || 'Information Science'}</h1>
+            {profile.company && <p className="connect-profile-company">at {profile.company}</p>}
+            <p className="connect-profile-bio">
+              {profile.bio || 'A member of the ISE community at AJIET. Explore their background, interests, and ways to connect below.'}
+            </p>
+            {(profile.openToCollaborate || profile.mentoringAvailable || profile.referralAvailable) && (
+              <div className="connect-profile-availability" aria-label="Availability">
+                {profile.openToCollaborate && <span className="connect-feature-pill"><Handshake size={14} /> Open to collaborate</span>}
+                {profile.mentoringAvailable && <span className="connect-feature-pill"><Sparkles size={14} /> Available to mentor</span>}
+                {profile.referralAvailable && <span className="connect-feature-pill"><BriefcaseBusiness size={14} /> Open to referrals</span>}
               </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {profile.contactEmail && <a href={`mailto:${profile.contactEmail}`} className="connect-button connect-button-primary"><span>Say hello</span><ArrowUpRight size={15} /></a>}
-              <Link href={`/connect/activity?slug=${encodeURIComponent(profile.slug)}`} className="connect-button connect-button-secondary"><Flag size={14} /> Report</Link>
-            </div>
-          </div>
-          <div className="relative z-10 mt-8 flex flex-wrap gap-2">
-            {profile.openToCollaborate && <span className="connect-feature-pill"><Handshake size={13} /> Open to collaborate</span>}
-            {profile.mentoringAvailable && <span className="connect-feature-pill"><Sparkles size={13} /> Available to mentor</span>}
-            {profile.referralAvailable && <span className="connect-feature-pill"><BriefcaseBusiness size={13} /> Open to referrals</span>}
-          </div>
-        </section>
-
-        <div className="mt-6 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_330px]">
-          <div className="space-y-5">
-            {profile.bio && <Panel className="p-5 sm:p-7"><p className="connect-eyebrow">A little about me</p><p className="mt-3 whitespace-pre-line text-sm leading-7 text-[#c1cdd5]">{profile.bio}</p></Panel>}
-            {profile.professionalJourney && <Panel className="p-5 sm:p-7"><p className="connect-eyebrow">The journey</p><p className="mt-3 whitespace-pre-line text-sm leading-7 text-[#c1cdd5]">{profile.professionalJourney}</p></Panel>}
-
-            {profile.projects.length > 0 && (
-              <Panel className="p-5 sm:p-7">
-                <div className="mb-5 flex items-center gap-3"><span className="connect-section-icon"><BriefcaseBusiness size={16} /></span><div><p className="connect-eyebrow">Things I’ve made</p><h2 className="mt-1 font-clash text-2xl text-white">Selected projects</h2></div></div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {profile.projects.map((project) => (
-                    <article key={project.id} className="connect-subpanel">
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="font-clash text-lg text-white">{project.title}</h3>
-                        {project.seekingCollaborators && <span className="connect-card-indicator" title="Seeking collaborators"><Handshake size={13} /></span>}
-                      </div>
-                      {project.description && <p className="mt-2 text-xs leading-5 text-[#aab6c2]">{project.description}</p>}
-                      <div className="mt-3 flex flex-wrap gap-1.5">{project.technologies.map((technology) => <span className="connect-chip" key={technology}>{technology}</span>)}</div>
-                      {project.seekingCollaborators && project.preferredTeammateSkills.length > 0 && <p className="mt-3 text-[10px] text-[#83d9f0]">Looking for: {project.preferredTeammateSkills.join(', ')}</p>}
-                      <div className="mt-4 flex gap-4">
-                        {project.repositoryUrl && <a href={project.repositoryUrl} target="_blank" rel="noreferrer" className="connect-inline-link">Repository <ExternalLink size={12} /></a>}
-                        {project.demoUrl && <a href={project.demoUrl} target="_blank" rel="noreferrer" className="connect-inline-link">Live demo <ExternalLink size={12} /></a>}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </Panel>
             )}
+            <div className="connect-profile-actions">
+              {profile.contactEmail && <a href={`mailto:${profile.contactEmail}`} className="connect-button connect-button-primary"><span>Get in touch</span><ArrowUpRight size={15} /></a>}
+              <Link href={`/connect/activity?slug=${encodeURIComponent(profile.slug)}`} className="connect-button connect-button-secondary"><Flag size={14} /> Report profile</Link>
+            </div>
+            <div className="connect-profile-stat-row">
+              <ProfileStat value={String(profile.experiences.length).padStart(2, '0')} label={profile.experiences.length === 1 ? 'Experience' : 'Experiences'} />
+              <ProfileStat value={String(profile.achievements.length).padStart(2, '0')} label={profile.achievements.length === 1 ? 'Achievement' : 'Achievements'} />
+            </div>
+          </div>
+        </motion.section>
 
+        <div className="connect-profile-layout">
+          <div className="connect-profile-main">
             {profile.experiences.length > 0 && (
-              <Panel className="p-5 sm:p-7">
-                <div className="mb-5 flex items-center gap-3"><span className="connect-section-icon"><CalendarDays size={16} /></span><div><p className="connect-eyebrow">Along the way</p><h2 className="mt-1 font-clash text-2xl text-white">Experience</h2></div></div>
-                <div className="space-y-5">
-                  {profile.experiences.map((experience) => (
-                    <article key={experience.id} className="connect-timeline-item">
-                      <span className="connect-timeline-dot" />
-                      <p className="text-[10px] uppercase tracking-[0.14em] text-[#83d9f0]">{experience.type.replaceAll('_', ' ')}</p>
-                      <h3 className="mt-1 font-medium text-white">{experience.role}</h3>
-                      {experience.organization && <p className="mt-1 text-xs text-[#aab6c2]">{experience.organization}</p>}
-                      {experience.description && <p className="mt-2 text-xs leading-5 text-[#aab6c2]">{experience.description}</p>}
-                      <p className="mt-2 text-[10px] text-[#82919e]">{experience.startedAt ? new Date(experience.startedAt).getFullYear() : '—'} — {experience.isCurrent ? 'Present' : experience.endedAt ? new Date(experience.endedAt).getFullYear() : '—'}</p>
-                    </article>
+              <ProfileSection
+                label="BACKGROUND"
+                title="Experience"
+                icon={<CalendarDays size={17} />}
+                prefersReducedMotion={prefersReducedMotion}
+              >
+                <div className="connect-profile-timeline">
+                  {profile.experiences.map((experience, index) => (
+                    <motion.article
+                      key={experience.id}
+                      className="connect-timeline-item"
+                      initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.25 }}
+                      transition={{ duration: 0.35, delay: Math.min(index * 0.07, 0.28) }}
+                    >
+                      <p className="connect-experience-type">{experience.type.replaceAll('_', ' ')}</p>
+                      <h3 className="connect-experience-role">{experience.role}</h3>
+                      {experience.organization && <p className="connect-experience-organization">{experience.organization}</p>}
+                      {experience.description && <p className="connect-experience-description">{experience.description}</p>}
+                      <p className="connect-experience-dates">{experience.startedAt ? new Date(experience.startedAt).getFullYear() : '—'} — {experience.isCurrent ? 'Present' : experience.endedAt ? new Date(experience.endedAt).getFullYear() : '—'}</p>
+                    </motion.article>
                   ))}
                 </div>
-              </Panel>
+              </ProfileSection>
             )}
 
             {profile.achievements.length > 0 && (
-              <Panel className="p-5 sm:p-7">
-                <p className="connect-eyebrow">Milestones</p><h2 className="mt-1 font-clash text-2xl text-white">Achievements</h2>
-                <div className="mt-5 space-y-4">
-                  {profile.achievements.map((achievement) => (
-                    <article key={achievement.id} className="flex items-start justify-between gap-4 border-t border-white/[0.07] pt-4 first:border-0 first:pt-0">
-                      <div><h3 className="text-sm font-medium text-white">{achievement.title}</h3>{achievement.description && <p className="mt-1 text-xs leading-5 text-[#aab6c2]">{achievement.description}</p>}</div>
+              <ProfileSection
+                label="HIGHLIGHTS"
+                title="Achievements"
+                prefersReducedMotion={prefersReducedMotion}
+              >
+                <div className="connect-profile-achievements">
+                  {profile.achievements.map((achievement, index) => (
+                    <motion.article
+                      key={achievement.id}
+                      className="connect-profile-achievement"
+                      initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.25 }}
+                      transition={{ duration: 0.35, delay: Math.min(index * 0.06, 0.24) }}
+                    >
+                      <div>
+                        <h3>{achievement.title}</h3>
+                        {achievement.description && <p>{achievement.description}</p>}
+                      </div>
                       {achievement.url && <a href={achievement.url} target="_blank" rel="noreferrer" aria-label={`View ${achievement.title}`} className="connect-card-arrow"><ExternalLink size={14} /></a>}
-                    </article>
+                    </motion.article>
                   ))}
                 </div>
-              </Panel>
+              </ProfileSection>
             )}
+
             {profile.knowledgePage?.publishedMarkdown && (
-              <Panel className="p-5 sm:p-7">
-                <p className="connect-eyebrow">Notes from the field</p><h2 className="mt-1 font-clash text-2xl text-white">Knowledge page</h2>
-                {profile.knowledgePage.publishedAt && <p className="mt-2 text-[10px] text-[#82919e]">Published {new Date(profile.knowledgePage.publishedAt).toLocaleDateString()}</p>}
+              <ProfileSection
+                label="KNOWLEDGE"
+                title="Notes from the field"
+                prefersReducedMotion={prefersReducedMotion}
+              >
+                {profile.knowledgePage.publishedAt && <p className="connect-profile-published">Published {new Date(profile.knowledgePage.publishedAt).toLocaleDateString()}</p>}
                 <div className="connect-markdown-preview mt-4"><ConnectMarkdown markdown={profile.knowledgePage.publishedMarkdown} /></div>
-              </Panel>
+              </ProfileSection>
             )}
           </div>
 
-          <aside className="space-y-5 lg:sticky lg:top-6">
-            <Panel className="p-5 sm:p-6">
-              <p className="connect-eyebrow">The toolkit</p>
-              <div className="mt-4 space-y-4">
-                <SkillGroup title="Skills" items={profile.skills} />
-                <SkillGroup title="Curious about" items={profile.interests} />
-                <SkillGroup title="Currently learning" items={profile.skillsInDevelopment} />
-                <SkillGroup title="Happy to help with" items={profile.helpAreas} />
-              </div>
-            </Panel>
-            {profile.socialLinks.length > 0 && (
-              <Panel className="p-5 sm:p-6">
-                <p className="connect-eyebrow">Find me elsewhere</p>
-                <div className="mt-3 space-y-1">
-                  {profile.socialLinks.map((link) => <a key={link.id} href={link.url} target="_blank" rel="noreferrer" className="connect-social-link">{link.label}<ArrowUpRight size={14} /></a>)}
+          <aside className="connect-profile-aside">
+            {(profile.skills.length > 0 || profile.interests.length > 0 || profile.skillsInDevelopment.length > 0) && (
+              <Panel className="connect-profile-card p-5 sm:p-6">
+                <ProfileSectionHeading label="AT A GLANCE" title="Toolkit" />
+                <div className="mt-5 space-y-5">
+                  <SkillGroup title="Skills" items={profile.skills} />
+                  <SkillGroup title="Interested in" items={profile.interests} />
+                  <SkillGroup title="Currently learning" items={profile.skillsInDevelopment} />
                 </div>
               </Panel>
             )}
-            <div className="flex items-center gap-2 px-1 text-[10px] text-[#738490]"><ShieldCheck size={13} className="text-[#7ad7ef]" /> Student details confirmed by ISE</div>
+            <div className="connect-profile-verified"><ShieldCheck size={15} /> ISE affiliation confirmed</div>
           </aside>
         </div>
       </div>
     </ConnectShell>
+  )
+}
+
+function ProfileStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="connect-profile-stat">
+      <strong>{value}</strong>
+      <span>{label}</span>
+    </div>
+  )
+}
+
+function ProfileSection({
+  label,
+  title,
+  icon,
+  prefersReducedMotion,
+  children,
+}: {
+  label: string
+  title: string
+  icon?: ReactNode
+  prefersReducedMotion: boolean | null
+  children: ReactNode
+}) {
+  return (
+    <motion.section
+      className="connect-profile-card connect-profile-section"
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <ProfileSectionHeading label={label} title={title} icon={icon} />
+      <div className="connect-profile-section-content">{children}</div>
+    </motion.section>
+  )
+}
+
+function ProfileSectionHeading({ label, title, icon }: { label: string; title: string; icon?: ReactNode }) {
+  return (
+    <div className="connect-profile-section-heading">
+      <div>
+        <p className="connect-eyebrow">{label}</p>
+        <h2>{title}</h2>
+      </div>
+      {icon && <span className="connect-profile-heading-icon" aria-hidden="true">{icon}</span>}
+    </div>
   )
 }
 

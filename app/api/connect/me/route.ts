@@ -26,7 +26,6 @@ import {
 
 const profileInclude = {
   socialLinks: { orderBy: { sortOrder: 'asc' as const } },
-  projects: { orderBy: { sortOrder: 'asc' as const } },
   experiences: { orderBy: { sortOrder: 'asc' as const } },
   achievements: { orderBy: { sortOrder: 'asc' as const } },
   knowledgePage: true,
@@ -72,13 +71,13 @@ export async function POST(req: Request) {
     const user = await getVerifiedMember()
     if (!user) {
       return NextResponse.json(
-        { error: 'Sign in with a verified email address to create a profile.' },
+        { error: 'Continue with a Google account that has a verified email address to create a profile.' },
         { status: 401 }
       )
     }
     if (!user.email || !user.email_confirmed_at) {
       return NextResponse.json(
-        { error: 'Continue with a verified Google account or confirm your email before creating a profile.' },
+        { error: 'Continue with a Google account that has a verified email address to create a profile.' },
         { status: 401 }
       )
     }
@@ -147,13 +146,11 @@ export async function POST(req: Request) {
         body.skillsInDevelopment === undefined
           ? []
           : stringArray(body.skillsInDevelopment, 'skillsInDevelopment'),
-      helpAreas: body.helpAreas === undefined ? [] : stringArray(body.helpAreas, 'helpAreas'),
       location: optionalString(body.location, 'location', 120),
       phone: optionalString(body.phone, 'phone', 40),
       contactEmail: optionalEmail(body.contactEmail ?? user.email, 'contactEmail'),
       currentRole: optionalString(body.currentRole, 'currentRole', 160),
       company: optionalString(body.company, 'company', 160),
-      professionalJourney: optionalString(body.professionalJourney, 'professionalJourney', 20_000),
       openToCollaborate:
         body.openToCollaborate === undefined
           ? false
@@ -264,7 +261,6 @@ export async function PATCH(req: Request) {
       ['phone', 'phone', 40],
       ['currentRole', 'currentRole', 160],
       ['company', 'company', 160],
-      ['professionalJourney', 'professionalJourney', 20_000],
     ] as const
 
     for (const [inputKey, field, maxLength] of stringFields) {
@@ -278,8 +274,7 @@ export async function PATCH(req: Request) {
       else if (inputKey === 'location') data.location = value
       else if (inputKey === 'phone') data.phone = value
       else if (inputKey === 'currentRole') data.currentRole = value
-      else if (inputKey === 'company') data.company = value
-      else data.professionalJourney = value
+      else data.company = value
     }
     if (body.contactEmail !== undefined) {
       data.contactEmail = optionalEmail(body.contactEmail, 'contactEmail')
@@ -289,15 +284,13 @@ export async function PATCH(req: Request) {
       ['skills', 30, 60],
       ['interests', 30, 60],
       ['skillsInDevelopment', 30, 60],
-      ['helpAreas', 30, 60],
     ] as const
     for (const [field, maxItems, maxLength] of arrayFields) {
       if (body[field] === undefined) continue
       const value = stringArray(body[field], field, maxItems, maxLength)
       if (field === 'skills') data.skills = value
       else if (field === 'interests') data.interests = value
-      else if (field === 'skillsInDevelopment') data.skillsInDevelopment = value
-      else data.helpAreas = value
+      else data.skillsInDevelopment = value
     }
 
     const booleanFields = [
@@ -328,43 +321,6 @@ export async function PATCH(req: Request) {
           return {
             label: requiredString(item.label, `socialLinks[${index}].label`, 60),
             url: validatedHttpUrl(item.url, `socialLinks[${index}].url`),
-            sortOrder: index,
-          }
-        }),
-      }
-    }
-
-    if (body.projects !== undefined) {
-      if (!Array.isArray(body.projects) || body.projects.length > 20) {
-        throw new ConnectRequestError('projects must contain no more than 20 items.')
-      }
-      data.projects = {
-        deleteMany: {},
-        create: body.projects.map((item, index) => {
-          if (!isRecord(item)) throw new ConnectRequestError(`projects[${index}] must be an object.`)
-          return {
-            title: requiredString(item.title, `projects[${index}].title`, 160),
-            description: optionalString(item.description, `projects[${index}].description`, 5000),
-            technologies:
-              item.technologies === undefined
-                ? []
-                : stringArray(item.technologies, `projects[${index}].technologies`, 20, 40),
-            repositoryUrl:
-              item.repositoryUrl === undefined || item.repositoryUrl === null || item.repositoryUrl === ''
-                ? null
-                : validatedHttpUrl(item.repositoryUrl, `projects[${index}].repositoryUrl`),
-            demoUrl:
-              item.demoUrl === undefined || item.demoUrl === null || item.demoUrl === ''
-                ? null
-                : validatedHttpUrl(item.demoUrl, `projects[${index}].demoUrl`),
-            seekingCollaborators:
-              item.seekingCollaborators === undefined
-                ? false
-                : booleanValue(item.seekingCollaborators, `projects[${index}].seekingCollaborators`),
-            preferredTeammateSkills:
-              item.preferredTeammateSkills === undefined
-                ? []
-                : stringArray(item.preferredTeammateSkills, `projects[${index}].preferredTeammateSkills`, 20, 60),
             sortOrder: index,
           }
         }),

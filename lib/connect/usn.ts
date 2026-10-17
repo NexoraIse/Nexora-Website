@@ -6,7 +6,6 @@ import { CONNECT_SUPPORT_EMAIL, normalizeSignupUsn } from '@/lib/connect/validat
 
 const authAttemptLimit = 10
 const windowDurationMs = 15 * 60 * 1000
-type RateLimitScope = 'usn' | 'signin' | 'password-reset' | 'signup-resend'
 
 export type UsnVerification =
   | { valid: true; usn: string; fullName: string }
@@ -19,22 +18,19 @@ function getClientIp(req: Request): string {
   return ip
 }
 
-function getIpHash(scope: RateLimitScope, ip: string): string {
+function getIpHash(ip: string): string {
   const secret = env.CONNECT_LOOKUP_HMAC_SECRET
   if (secret.length < 32) {
     throw new Error('CONNECT_LOOKUP_HMAC_SECRET must be configured with at least 32 characters.')
   }
-  return createHmac('sha256', secret).update(`${scope}:${ip}`).digest('hex')
+  return createHmac('sha256', secret).update(`usn:${ip}`).digest('hex')
 }
 
-export async function consumeConnectAuthAttempt(
-  req: Request,
-  scope: RateLimitScope
-): Promise<{
+export async function consumeConnectUsnLookupAttempt(req: Request): Promise<{
   allowed: boolean
   retryAfter?: number
 }> {
-  const ipHash = getIpHash(scope, getClientIp(req))
+  const ipHash = getIpHash(getClientIp(req))
   const [limitState] = await prisma.$queryRaw<
     Array<{ attempts: number; window_started_at: Date }>
   >(Prisma.sql`

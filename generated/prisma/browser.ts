@@ -88,11 +88,6 @@ export type MemberProfile = Prisma.MemberProfileModel
  */
 export type MemberSocialLink = Prisma.MemberSocialLinkModel
 /**
- * Model MemberProject
- * 
- */
-export type MemberProject = Prisma.MemberProjectModel
-/**
  * Model MemberExperience
  * 
  */

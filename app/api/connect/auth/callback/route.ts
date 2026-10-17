@@ -29,14 +29,8 @@ export async function GET(req: Request) {
   }
 
   if (!code) {
-    const failurePath = next.startsWith('/connect/reset-password')
-      ? '/connect/reset-password'
-      : '/connect/sign-in'
-    const failure = new URL(failurePath, appUrl.origin)
-    failure.searchParams.set(
-      'authError',
-      requestUrl.searchParams.has('error') ? 'google_auth_failed' : 'confirmation_failed'
-    )
+    const failure = new URL('/connect/sign-in', appUrl.origin)
+    failure.searchParams.set('authError', 'google_auth_failed')
     return NextResponse.redirect(failure)
   }
 
@@ -45,11 +39,8 @@ export async function GET(req: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     const destination = new URL(next, appUrl.origin)
     if (error) {
-      const failurePath = next.startsWith('/connect/reset-password')
-        ? '/connect/reset-password'
-        : '/connect/sign-in'
-      const failure = new URL(failurePath, appUrl.origin)
-      failure.searchParams.set('authError', 'confirmation_failed')
+      const failure = new URL('/connect/sign-in', appUrl.origin)
+      failure.searchParams.set('authError', 'google_auth_failed')
       return NextResponse.redirect(failure)
     }
     const { data: userData, error: userError } = await supabase.auth.getUser()
@@ -79,11 +70,8 @@ export async function GET(req: Request) {
     return NextResponse.redirect(destination)
   } catch (error) {
     console.error('Connect auth callback failed:', error)
-    const failurePath = next.startsWith('/connect/reset-password')
-      ? '/connect/reset-password'
-      : '/connect/sign-in'
-    const destination = new URL(failurePath, appUrl.origin)
-    destination.searchParams.set('authError', 'confirmation_failed')
+    const destination = new URL('/connect/sign-in', appUrl.origin)
+    destination.searchParams.set('authError', 'google_auth_failed')
     return NextResponse.redirect(destination)
   }
 }

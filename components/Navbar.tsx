@@ -12,14 +12,14 @@ import { emit } from '@/hooks/useEventBus';
 
 export const NAV_LINKS = [
   { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
   { href: '/events', label: 'Events' },
   { href: '/notices', label: 'Notices' },
   { href: '/learn', label: 'Learning Hub' },
   { href: '/practice', label: 'Practice' },
   { href: '/achievements', label: 'Achievements' },
-  { href: '/connect', label: 'Connect' },
   { href: '/members', label: 'Members' },
-  { href: '/about', label: 'About' },
+  { href: '/connect', label: 'Connect' },
 ];
 
 /* ──────────── Terminal-style mobile menu ──────────── */
@@ -196,9 +196,14 @@ const Navbar = () => {
     if (!link) return;
     const bar = link.querySelector<HTMLElement>('.nav-bar');
     if (!bar) return;
+    const targetLink = NAV_LINKS[index];
+    const isActive = targetLink && (pathname === targetLink.href || (targetLink.href !== '/' && pathname.startsWith(`${targetLink.href}/`)));
     gsap.killTweensOf(bar);
-    gsap.to(bar, { scaleX: 0, transformOrigin: 'right center', duration: 0.25, ease: 'power2.in' });
-    gsap.to(link, { color: isHomePage ? '#12304a' : '#ffffff', duration: 0.2, ease: 'power1.in' });
+    gsap.to(bar, { scaleX: isActive ? 1 : 0, transformOrigin: 'right center', duration: 0.25, ease: 'power2.in' });
+    const normalColor = isHomePage
+      ? (isActive ? '#075b76' : '#12304a')
+      : (isActive ? 'var(--theme-primary, #00f0ff)' : '#ffffff');
+    gsap.to(link, { color: normalColor, duration: 0.2, ease: 'power1.in' });
   };
 
   return (
@@ -245,40 +250,45 @@ const Navbar = () => {
 
         {/* ── Desktop Links ── */}
         <div className="hidden xl:flex items-center gap-1.5 2xl:gap-3">
-          {NAV_LINKS.map((link, i) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              ref={(el) => { linkRefs.current[i] = el; }}
-              onMouseEnter={() => handleMouseEnter(i)}
-              onMouseLeave={() => {
-                handleMouseLeave(i);
-                setHoveredLink(null);
-              }}
-              onFocus={() => setHoveredLink(link.href)}
-              data-cursor={link.label}
-              onBlur={() => setHoveredLink(null)}
-              onPointerEnter={() => setHoveredLink(link.href)}
-              className={`relative font-semibold uppercase cursor-pointer
-                ${isHomePage ? 'text-[#12304a]' : pathname === link.href || (link.href !== '/' && pathname.startsWith(`${link.href}/`)) ? 'text-[var(--theme-primary,#00f0ff)]' : 'text-white'}
-                isolate rounded-full px-2.5 py-1.5 text-xs tracking-wide lg:text-sm lg:tracking-wide`}
-              style={{ textDecoration: 'none' }}
-            >
-              {hoveredLink === link.href && (
-                <motion.span
-                  layoutId="navbar-link-highlight"
-                  aria-hidden
-                  className="absolute inset-0 -z-10 rounded-full border border-sky-200/15 bg-sky-300/15 shadow-[inset_0_1px_rgba(255,255,255,0.12)]"
-                  transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+          {NAV_LINKS.map((link, i) => {
+            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(`${link.href}/`));
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                ref={(el) => { linkRefs.current[i] = el; }}
+                onMouseEnter={() => handleMouseEnter(i)}
+                onMouseLeave={() => {
+                  handleMouseLeave(i);
+                  setHoveredLink(null);
+                }}
+                onFocus={() => setHoveredLink(link.href)}
+                data-cursor={link.label}
+                onBlur={() => setHoveredLink(null)}
+                onPointerEnter={() => setHoveredLink(link.href)}
+                className={`relative font-semibold uppercase cursor-pointer whitespace-nowrap
+                  ${isHomePage
+                    ? (isActive ? 'text-[#075b76] font-bold' : 'text-[#12304a]')
+                    : (isActive ? 'text-[var(--theme-primary,#00f0ff)]' : 'text-white')}
+                  isolate rounded-full px-2 py-1 text-xs tracking-wide xl:px-2.5 xl:py-1.5 2xl:px-3 2xl:text-sm`}
+                style={{ textDecoration: 'none' }}
+              >
+                {hoveredLink === link.href && (
+                  <motion.span
+                    layoutId="navbar-link-highlight"
+                    aria-hidden
+                    className="absolute inset-0 -z-10 rounded-full border border-sky-200/15 bg-sky-300/15 shadow-[inset_0_1px_rgba(255,255,255,0.12)]"
+                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                  />
+                )}
+                {link.label}
+                <span
+                  className="nav-bar absolute left-0 -bottom-1 w-full h-[2px] bg-[var(--theme-primary,#00f0ff)]"
+                  style={{ transform: isActive ? 'scaleX(1)' : 'scaleX(0)', transformOrigin: 'left center', display: 'block' }}
                 />
-              )}
-              {link.label}
-              <span
-                className="nav-bar absolute left-0 -bottom-1 w-full h-[2px] bg-[var(--theme-primary,#00f0ff)]"
-                style={{ transform: 'scaleX(0)', transformOrigin: 'left center', display: 'block' }}
-              />
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
 
         {/* ── Right actions ── */}

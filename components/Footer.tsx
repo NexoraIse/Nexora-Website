@@ -6,13 +6,14 @@ import { ArrowUp, Globe, Mail } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About Department" },
   { href: "/events", label: "Events & Hackathons" },
   { href: "/notices", label: "Department Notices" },
   { href: "/learn", label: "Learning Resources" },
+  { href: "/practice", label: "Practice & Coding" },
   { href: "/achievements", label: "Student Achievements" },
-  { href: "/connect", label: "Nexora Connect" },
   { href: "/members", label: "Club Members & Team" },
-  { href: "/about", label: "About Department" },
+  { href: "/connect", label: "Nexora Connect" },
 ];
 
 const RESOURCE_LINKS = [
