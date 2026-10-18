@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { BookOpenText, Eye, FileText, Save, Send, ShieldCheck } from 'lucide-react'
-import { Button, Feedback, PageHeading, Panel, StatusPill } from './ConnectUI'
+import { BookOpenText, Eye, FileText, Save, Send } from 'lucide-react'
+import { Button, Feedback, PageHeading, Panel } from './ConnectUI'
 import { ConnectMarkdown } from './ConnectMarkdown'
 
 type KnowledgeData = {
@@ -60,16 +60,13 @@ I enjoy **[the kind of problems or projects you like]**. Lately I have been expl
 `
 
 export function KnowledgeEditor({
-  profileApprovalStatus,
   embedded = false,
 }: {
-  profileApprovalStatus?: string | null
   embedded?: boolean
 }) {
   const [page, setPage] = useState<KnowledgeData | null>(null)
   const [markdown, setMarkdown] = useState('')
   const [showPreview, setShowPreview] = useState(false)
-  const [approval, setApproval] = useState<string | null>(profileApprovalStatus ?? null)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [feedback, setFeedback] = useState<{ message: string; kind: 'error' | 'success' | 'info' } | null>(null)
@@ -79,7 +76,7 @@ export function KnowledgeEditor({
     void (async () => {
       try {
         const pageRequest = fetch('/api/connect/me/knowledge', { cache: 'no-store' })
-        const sessionRequest = profileApprovalStatus === undefined
+        const sessionRequest = !embedded
           ? fetch('/api/connect/auth/session', { cache: 'no-store' })
           : null
         const [pageResponse, sessionResponse] = await Promise.all([pageRequest, sessionRequest])
@@ -93,7 +90,6 @@ export function KnowledgeEditor({
         if (!pageResponse.ok) throw new Error(data.error || 'Unable to load your writing right now. Please try again.')
         setPage(data.page)
         setMarkdown(data.page?.draftMarkdown ?? data.page?.publishedMarkdown ?? '')
-        if (session) setApproval(session.profile?.approvalStatus ?? null)
       } catch (error) {
         if (active) setFeedback({ message: error instanceof Error ? error.message : 'Unable to load your writing right now. Please try again.', kind: 'error' })
       } finally {
@@ -101,7 +97,7 @@ export function KnowledgeEditor({
       }
     })()
     return () => { active = false }
-  }, [profileApprovalStatus])
+  }, [embedded])
 
   async function save(publish: boolean) {
     setBusy(true)
@@ -126,6 +122,13 @@ export function KnowledgeEditor({
       setBusy(false)
     }
   }
+
+  const saveActions = (
+    <div className="connect-writing-actions">
+      <Button variant="secondary" loading={busy} onClick={() => void save(false)}><Save size={15} /> Save for later</Button>
+      <Button loading={busy} onClick={() => void save(true)}><Send size={15} /> Share on my profile</Button>
+    </div>
+  )
 
   if (loading) {
     const skeleton = <div className="connect-skeleton h-64" />
@@ -152,20 +155,15 @@ export function KnowledgeEditor({
   const editor = (
     <>
       {feedback && <Feedback message={feedback.message} kind={feedback.kind} />}
-      {approval !== 'APPROVED' && (
-        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-[#f0c56b]/20 bg-[#f0c56b]/[0.06] p-4 text-xs leading-5 text-[#ddc891]">
-          <ShieldCheck size={16} className="mt-0.5 shrink-0" />
-          Your profile needs to be reviewed before this page can be shared publicly. You can save a private draft in the meantime.
-        </div>
-      )}
 
-      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <Panel className="overflow-hidden">
+      {!embedded && saveActions}
+      <div className="connect-writing-layout">
+        <Panel className="connect-writing-editor overflow-hidden">
           <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-4 sm:px-7">
             <div className="flex items-center gap-2.5"><FileText size={16} className="text-[#7bd9f1]" /><span className="text-sm font-medium text-white">Your story, in your words</span></div>
             <span className="font-mono text-[10px] text-[#81919e]">{markdown.length.toLocaleString()} / 50,000</span>
           </div>
-          <div className="flex gap-2 border-b border-white/[0.07] px-4 py-3 sm:px-6">
+          <div className="connect-writing-tabs" role="group">
             <button
               type="button"
               aria-pressed={!showPreview}
@@ -201,22 +199,18 @@ export function KnowledgeEditor({
               data-lenis-prevent
             />
           )}
-          <div className="flex flex-col gap-3 border-t border-white/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div className="connect-writing-editor-footer">
             <p className="text-[10px] leading-5 text-[#81919e]">Markdown works here: use # for headings, - for lists, and [link text](https://...) for links.</p>
-            <div className="flex flex-wrap gap-2">
-              {!markdown.trim() && (
-                <Button type="button" variant="quiet" disabled={busy} onClick={() => setMarkdown(STARTER_TEMPLATE)}>
-                  Use starter template
-                </Button>
-              )}
-              <Button variant="secondary" loading={busy} onClick={() => void save(false)}><Save size={15} /> Save for later</Button>
-              <Button loading={busy} disabled={approval !== 'APPROVED'} onClick={() => void save(true)}><Send size={15} /> Share on my profile</Button>
-            </div>
+            {!markdown.trim() && (
+              <Button type="button" variant="quiet" disabled={busy} onClick={() => setMarkdown(STARTER_TEMPLATE)}>
+                Use starter template
+              </Button>
+            )}
           </div>
         </Panel>
 
-        <aside className="space-y-5">
-          <Panel className="p-5 sm:p-6">
+        <aside className="connect-writing-aside">
+          <Panel className="connect-writing-side-panel">
             <div className="flex items-center gap-2"><Eye size={15} className="text-[#7bd9f1]" /><h3 className="font-clash text-lg text-white">Currently shared</h3></div>
             <p className="mt-2 text-[11px] text-[#81919e]">
               {page?.publishedAt ? `Last shared ${new Date(page.publishedAt).toLocaleDateString()}` : 'Nothing shared yet.'}
@@ -227,16 +221,16 @@ export function KnowledgeEditor({
                 : <p className="text-[#81919e]">Your page will appear on your public profile after you share it.</p>}
             </div>
           </Panel>
-          <Panel className="p-5 sm:p-6">
+          <Panel className="connect-writing-side-panel">
             <p className="connect-eyebrow">Your space to express yourself</p>
             <p className="mt-3 text-xs leading-5 text-[#aab6c2]">
-              This is a flexible personal page—not just a résumé. Tell your story, describe experiences or achievements, share lessons and suggestions, or add links to work you are proud of. You can draft with GPT, check it is accurate and comfortable to share, then paste it here.
+              There are no rules for what your page has to be. Share a college memory, a project in progress, an interview story, a lesson learned the hard way, a resource you love, or a goal you are chasing. Alumni can pass on advice; students can show what they are building and find collaborators. Go wild: add links, images, or GIFs, and make this page completely yours.
             </p>
             <p className="mt-3 text-xs leading-5 text-[#aab6c2]">
-              Saving keeps a private draft. Sharing adds it to your public profile after approval, when your profile visibility is set to public. Do not include private details you are not comfortable making public.
+              Save a draft while you figure out what you want to say, then share it whenever you are ready. Shared writing appears on your profile when your profile visibility is public. Just leave out anything you would rather keep private.
             </p>
           </Panel>
-          <Panel className="p-5 sm:p-6">
+          <Panel className="connect-writing-side-panel">
             <p className="connect-eyebrow">Markdown basics</p>
             <pre className="mt-3 whitespace-pre-wrap text-[11px] leading-6 text-[#aab6c2]">{'# A heading\n## A smaller heading\n- A list item\n[Link text](https://example.com)'}</pre>
           </Panel>
@@ -247,16 +241,19 @@ export function KnowledgeEditor({
 
   if (embedded) {
     return (
-      <section id="knowledge-page" className="mt-12 scroll-mt-8">
-        <div className="mb-6">
-          <p className="connect-eyebrow">Your story and experience</p>
-          <h2 className="mt-2 font-clash text-3xl text-white">A page for anything you want to share.</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-[#aab6c2]">
-            Use this Markdown page to tell your story in your own way: experiences, achievements, lessons, suggestions, guidance, projects, or links. It gives a fuller picture than a short profile can. Start from the template if you like, write your own, or draft it with GPT and paste it here.
-          </p>
-          <p className="mt-2 max-w-3xl text-xs leading-5 text-[#81919e]">
-            Save a private draft whenever you like. Share it on your profile when you are ready for public visibility; sharing is available after approval and appears publicly when your profile visibility is set to public.
-          </p>
+      <section id="knowledge-page" className="connect-writing-section scroll-mt-8">
+        <div className="connect-writing-header">
+          <div>
+            <p className="connect-eyebrow">Your story and experience</p>
+            <h2 className="mt-2 font-clash text-3xl text-white">A page for anything you want to share.</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-[#aab6c2]">
+              Seriously—share whatever feels like you. A college experience, a project you are proud of (or still figuring out), an interview that taught you something, a life lesson, a useful resource, a big idea, or a tiny win. Current students can show what they are working on and find people to build with; alumni can share the advice or stories they wish they had heard sooner. There is no perfect format and no need to have it all figured out. Add links, images, or GIFs, get creative, and make this page your own.
+            </p>
+            <p className="mt-2 max-w-3xl text-xs leading-5 text-[#81919e]">
+              Start with a few lines or write a whole story—save a private draft any time and share it when you feel ready. Shared writing appears on your profile when your profile visibility is public. Keep personal details private if you would not want the whole community to see them.
+            </p>
+          </div>
+          {saveActions}
         </div>
         {editor}
       </section>
@@ -270,7 +267,6 @@ export function KnowledgeEditor({
         eyebrow="Your writing"
         title={<>Share what you’ve <span className="connect-title-accent">learned.</span></>}
         description="A flexible page to share experiences, achievements, lessons, advice, useful links, or anything else you would like the community to know."
-        actions={approval && <StatusPill status={approval} />}
       />
       {editor}
     </div>

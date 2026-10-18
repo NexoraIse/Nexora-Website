@@ -4,10 +4,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, Check, ChevronRight, LockKeyhole, Plus, Save, Upload, UserRound, X } from 'lucide-react'
+import { ArrowRight, Eye, LockKeyhole, Plus, Save, Upload, UserRound, X } from 'lucide-react'
 import { ConnectShell } from './ConnectShell'
 import { KnowledgeEditor } from './KnowledgeEditor'
-import { Button, Feedback, Field, PageHeading, Panel, StatusPill, TextField } from './ConnectUI'
+import { Button, Feedback, Field, PageHeading, Panel, TextField } from './ConnectUI'
 
 type SocialLink = { label: string; url: string }
 type Profile = {
@@ -28,8 +28,6 @@ type Profile = {
   contactEmail: string | null
   contactEmailPublic: boolean
   visibility: 'PUBLIC' | 'PRIVATE'
-  approvalStatus: string
-  reviewNote: string | null
   currentRole: string | null
   company: string | null
   openToCollaborate: boolean
@@ -79,7 +77,7 @@ const emptyDraft: Draft = {
   openToCollaborate: false,
   mentoringAvailable: false,
   referralAvailable: false,
-  visibility: 'PRIVATE',
+  visibility: 'PUBLIC',
 }
 
 function fromProfile(profile: Profile): Draft {
@@ -282,9 +280,7 @@ export default function AccountPage() {
       setSocialLinks(saved.socialLinks)
       window.sessionStorage.removeItem('connect-usn')
       setFeedback({
-        message: profile
-          ? saved.approvalStatus === 'PENDING' ? 'Saved. Changes to your identity need another review.' : 'Your profile changes are saved.'
-          : 'Your profile is waiting for review. You can keep improving it in the meantime.',
+        message: profile ? 'Your profile changes are saved.' : 'Your profile is ready to share.',
         kind: 'success',
       })
     } catch (error) {
@@ -343,14 +339,14 @@ export default function AccountPage() {
 
   return (
     <ConnectShell>
-      <div className="connect-account-page mx-auto max-w-[1240px] px-5 pb-20 pt-12 sm:px-8 sm:pt-16 lg:px-12 lg:pt-20">
+      <div className="connect-account-page mx-auto max-w-[1240px] px-5 pb-28 pt-12 sm:px-8 sm:pt-16 lg:px-12 lg:pt-20">
         <PageHeading
           eyebrow={profile ? 'CONNECT / ACCOUNT' : 'CONNECT / SETUP'}
           title={profile
-            ? <>Your profile<span className="text-[#7bb7aa]">.</span></>
+            ? <>Your profile<span className="text-[#e2e8f0]">.</span></>
             : usnVerified
-              ? <>Tell us about <span className="text-[#7bb7aa]">you.</span></>
-              : <>Verify your <span className="text-[#7bb7aa]">details.</span></>}
+              ? <>Tell us about <span className="text-[#e2e8f0]">you.</span></>
+              : <>Verify your <span className="text-[#e2e8f0]">details.</span></>}
           description={profile
             ? 'Keep your details current so classmates and graduates can find and connect with you.'
             : usnVerified
@@ -358,36 +354,20 @@ export default function AccountPage() {
               : 'Enter your official student number. We’ll check it against the department list before you continue.'}
           titleClassName="connect-account-title"
           actions={
-            <div className="flex flex-wrap gap-2">
+            <div className="connect-account-actions">
               {profile && <Link href="/connect/activity" className="connect-button connect-button-secondary">Activity</Link>}
               <Button variant="quiet" onClick={signOut} disabled={busy}>Sign out</Button>
             </div>
           }
         />
 
-        {profile && (
-          <div className="connect-review-banner mb-8">
-            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
-              <StatusPill status={profile.approvalStatus} />
-              <p className="min-w-0 flex-1 text-xs leading-5 text-[#aab6c2]">
-                {profile.reviewNote || (profile.approvalStatus === 'APPROVED'
-                  ? 'Your profile has been reviewed.'
-                  : profile.approvalStatus === 'PENDING'
-                    ? 'The Connect team is checking your details. Your profile will appear here once it’s ready to share.'
-                    : 'If you have questions about your profile, get in touch with the Connect team.')}
-              </p>
-            </div>
-            {profile.approvalStatus === 'APPROVED' && (
-              <Link href={`/connect/members/${encodeURIComponent(profile.slug)}`} className="connect-inline-link shrink-0">View public profile <ChevronRight size={14} /></Link>
-            )}
-          </div>
-        )}
-
         {!profile && !usnVerified ? (
-          <Panel className="mx-auto max-w-xl p-5 sm:p-8">
-            <div className="mb-5">
-              <h2 className="font-clash text-2xl text-white">Find your name on the list</h2>
-              <p className="mt-2 text-sm leading-6 text-[#9aaab6]">Enter your student number exactly as it appears in your department records. We’ll fetch your official name if it matches.</p>
+          <Panel className="connect-profile-card mx-auto max-w-xl p-5 sm:p-8">
+            <div className="connect-form-section-heading">
+              <div>
+                <h2 className="font-clash text-2xl text-white">Find your name on the list</h2>
+                <p className="connect-form-description">Enter your student number exactly as it appears in your department records. We’ll fetch your official name if it matches.</p>
+              </div>
             </div>
             <Field
               label="Official student number (USN)"
@@ -418,87 +398,116 @@ export default function AccountPage() {
             </p>
           </Panel>
         ) : (
-        <form onSubmit={handleSubmit} className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-8">
-          <div className="space-y-6">
-            <Panel className="p-5 sm:p-7">
+        <form id="connect-profile-form" onSubmit={handleSubmit} className="connect-account-layout">
+          <div className="connect-account-main">
+            <Panel className="connect-profile-card p-5 sm:p-7">
               <div className="connect-form-section-heading">
                 <div><p className="connect-form-step">01 / BASICS</p><h2 className="connect-form-title">Your details</h2><p className="connect-form-description">Your name and student number are verified against department records.</p></div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Student number (USN)" value={draft.usn} readOnly disabled />
-                <Field label="Name on department records" value={profile?.fullName ?? officialName} readOnly disabled />
-                <Field label="Graduation year" type="number" min="1980" max={new Date().getFullYear() + 8} value={draft.graduationYear} onChange={(event) => update('graduationYear', event.target.value)} required />
-                <label className="block">
-                  <span className="mb-2 block text-[12px] font-medium text-[#d8e2e9]">I am a</span>
-                  <select className="connect-input" value={draft.memberType} onChange={(event) => update('memberType', event.target.value as Draft['memberType'])}>
-                    <option value="STUDENT">Current student</option>
-                    <option value="ALUMNUS">Alumnus / alumna</option>
-                  </select>
+              <div className="connect-profile-fields">
+                <label className="connect-profile-field">
+                  <span>Student number (USN)</span>
+                  <span className="connect-readonly-field">
+                    <LockKeyhole aria-hidden="true" size={15} />
+                    <input className="connect-input" value={draft.usn} readOnly disabled />
+                  </span>
                 </label>
-                <TextField label="A short introduction" className="sm:col-span-2" value={draft.bio} onChange={(event) => update('bio', event.target.value)} maxLength={600} placeholder="A couple of lines about what you care about…" />
-                <div className="sm:col-span-2">
-                  <span className="mb-2 block text-[12px] font-medium text-[#d8e2e9]">Profile photo</span>
-                  <div className="flex flex-wrap items-center gap-4 rounded-xl border border-white/[0.08] bg-black/10 p-3">
-                    <div className="connect-avatar h-16 w-16 rounded-xl">
+                <label className="connect-profile-field">
+                  <span>Name on department records</span>
+                  <span className="connect-readonly-field">
+                    <LockKeyhole aria-hidden="true" size={15} />
+                    <input className="connect-input" value={profile?.fullName ?? officialName} readOnly disabled />
+                  </span>
+                </label>
+                <Field label="Graduation year" type="number" min="1980" max={new Date().getFullYear() + 8} value={draft.graduationYear} onChange={(event) => update('graduationYear', event.target.value)} required />
+                <div className="connect-profile-field">
+                  <span className="connect-field-label">I am a</span>
+                  <div className="connect-segmented" role="group" aria-label="I am a">
+                    <button type="button" aria-pressed={draft.memberType === 'STUDENT'} onClick={() => update('memberType', 'STUDENT')}>Current student</button>
+                    <button type="button" aria-pressed={draft.memberType === 'ALUMNUS'} onClick={() => update('memberType', 'ALUMNUS')}>Alumnus / alumna</button>
+                  </div>
+                </div>
+                <TextField label="A short introduction" className="connect-profile-field-full" value={draft.bio} onChange={(event) => update('bio', event.target.value)} maxLength={600} placeholder="A couple of lines about what you care about…" />
+                <div className="connect-profile-field-full">
+                  <span className="connect-field-label">Profile photo</span>
+                  <div className="connect-photo-row">
+                    <div className="connect-avatar connect-photo-avatar">
                       {draft.avatarUrl && !avatarPreviewFailed
                         ? <Image src={draft.avatarUrl} alt="Profile photo preview" width={64} height={64} unoptimized className="h-full w-full object-cover" onError={() => setAvatarPreviewFailed(true)} />
                         : <UserRound size={22} />}
                     </div>
-                    <div className="min-w-0 flex-1">
+                    <div className="connect-photo-controls">
                       <p className="text-xs text-[#c1cdd5]">Upload a JPG, PNG, or WebP photo (up to 5 MB).</p>
                       <p className="mt-1 text-[10px] leading-5 text-[#81919e]">Stored securely in Nexora’s Cloudinary media folder. It appears on your public profile only when you choose to share your profile.</p>
                       {avatarFeedback && <p role="status" className={`mt-1 text-[11px] ${avatarFeedback.startsWith('Photo uploaded') ? 'text-[#82d8ef]' : 'text-[#f0a6a6]'}`}>{avatarFeedback}</p>}
+                      <input
+                        ref={avatarInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        className="sr-only"
+                        aria-label="Choose a profile photo"
+                        disabled={avatarUploading || busy}
+                        onChange={(event) => void uploadAvatar(event.target.files?.[0])}
+                      />
+                      <Button type="button" variant="secondary" loading={avatarUploading} disabled={busy} onClick={() => avatarInputRef.current?.click()}>
+                        <Upload size={15} /> {draft.avatarUrl ? 'Change photo' : 'Upload photo'}
+                      </Button>
+                      <Field
+                        label="Or use a photo link"
+                        type="url"
+                        value={draft.avatarUrl}
+                        onChange={(event) => {
+                          setAvatarPreviewFailed(false)
+                          setAvatarFeedback(null)
+                          update('avatarUrl', event.target.value)
+                        }}
+                        placeholder="https://example.com/your-photo.jpg"
+                        hint="Paste a direct, publicly accessible image URL. Your photo link is saved with your profile."
+                      />
                     </div>
-                    <input
-                      ref={avatarInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      className="sr-only"
-                      aria-label="Choose a profile photo"
-                      disabled={avatarUploading || busy}
-                      onChange={(event) => void uploadAvatar(event.target.files?.[0])}
-                    />
-                    <Button type="button" variant="secondary" loading={avatarUploading} disabled={busy} onClick={() => avatarInputRef.current?.click()}>
-                      <Upload size={15} /> {draft.avatarUrl ? 'Change photo' : 'Upload photo'}
-                    </Button>
-                  </div>
-                  <div className="mt-4">
-                    <Field
-                      label="Or use a photo link"
-                      type="url"
-                      value={draft.avatarUrl}
-                      onChange={(event) => {
-                        setAvatarPreviewFailed(false)
-                        setAvatarFeedback(null)
-                        update('avatarUrl', event.target.value)
-                      }}
-                      placeholder="https://example.com/your-photo.jpg"
-                      hint="Paste a direct, publicly accessible image URL. Your photo link is saved with your profile."
-                    />
                   </div>
                 </div>
                 <Field label="Location" value={draft.location} onChange={(event) => update('location', event.target.value)} placeholder="Mangaluru, India" />
               </div>
             </Panel>
 
-            <Panel className="p-5 sm:p-7">
+            <Panel className="connect-profile-card p-5 sm:p-7">
               <div className="connect-form-section-heading">
                 <div><p className="connect-form-step">02 / ABOUT</p><h2 className="connect-form-title">Work & interests</h2><p className="connect-form-description">A few details help others find people with shared interests.</p></div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Current role" value={draft.currentRole} onChange={(event) => update('currentRole', event.target.value)} placeholder="e.g. Frontend developer" />
-                <Field label="Company or organization" value={draft.company} onChange={(event) => update('company', event.target.value)} placeholder="Optional" />
-                <Field label="Skills" value={draft.skills} onChange={(event) => update('skills', event.target.value)} placeholder="React, Python, UI design" hint="Separate items with commas." />
-                <Field label="Interests" value={draft.interests} onChange={(event) => update('interests', event.target.value)} placeholder="Open source, robotics…" hint="Separate items with commas." />
-                <Field label="Skills you’re developing" value={draft.skillsInDevelopment} onChange={(event) => update('skillsInDevelopment', event.target.value)} placeholder="Cloud, data science…" hint="Separate items with commas." />
+              <div className="connect-profile-fields">
+                <Field
+                  label="Current role or how you’d describe yourself"
+                  value={draft.currentRole}
+                  onChange={(event) => update('currentRole', event.target.value)}
+                  placeholder={draft.memberType === 'STUDENT' ? 'e.g. ISE student, aspiring developer' : 'e.g. Software engineer, researcher'}
+                />
+                <Field
+                  label="Company or organization"
+                  value={draft.company}
+                  onChange={(event) => update('company', event.target.value)}
+                  placeholder={draft.memberType === 'STUDENT' ? 'e.g. Google, Nexora club' : 'e.g. Company, university or organization'}
+                />
+                <div>
+                  <Field label="Skills" value={draft.skills} onChange={(event) => update('skills', event.target.value)} placeholder="React, Python, UI design" hint="Separate items with commas." />
+                  <ValueChips value={draft.skills} />
+                </div>
+                <div>
+                  <Field label="Interests" value={draft.interests} onChange={(event) => update('interests', event.target.value)} placeholder="Open source, robotics…" hint="Separate items with commas." />
+                  <ValueChips value={draft.interests} />
+                </div>
+                <div>
+                  <Field label="Skills you’re developing" value={draft.skillsInDevelopment} onChange={(event) => update('skillsInDevelopment', event.target.value)} placeholder="Cloud, data science…" hint="Separate items with commas." />
+                  <ValueChips value={draft.skillsInDevelopment} />
+                </div>
               </div>
             </Panel>
 
-            <Panel className="p-5 sm:p-7">
+            <Panel className="connect-profile-card p-5 sm:p-7">
               <div className="connect-form-section-heading">
                 <div><p className="connect-form-step">03 / CONTACT</p><h2 className="connect-form-title">Ways to reach you</h2><p className="connect-form-description">Contact details stay private unless you choose to show them.</p></div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="connect-profile-fields">
                 <Field label="Contact email" type="email" value={draft.contactEmail} onChange={(event) => update('contactEmail', event.target.value)} placeholder="you@example.com" />
                 <Field label="Phone (optional)" type="tel" value={draft.phone} onChange={(event) => update('phone', event.target.value)} placeholder="+91…" />
                 <Toggle title="Show my email publicly" checked={draft.contactEmailPublic} onChange={(value) => update('contactEmailPublic', value)} />
@@ -507,63 +516,62 @@ export default function AccountPage() {
               <p className="mt-4 text-[10px] leading-5 text-[#81919e]">Contact details stay private unless you explicitly turn on public visibility.</p>
             </Panel>
 
-            <Panel className="p-5 sm:p-7">
-              <div className="connect-form-section-heading flex-wrap">
+            <Panel className="connect-profile-card p-5 sm:p-7">
+              <div className="connect-form-section-heading">
                 <div><p className="connect-form-step">04 / LINKS</p><h2 className="connect-form-title">Around the web</h2><p className="connect-form-description">Add a portfolio, professional profile, or personal site.</p></div>
-                <Button type="button" variant="secondary" onClick={() => setSocialLinks((current) => [...current, { label: '', url: '' }])}><Plus size={15} /> Add link</Button>
               </div>
-              {socialLinks.length === 0 && <p className="rounded-xl border border-dashed border-white/10 px-4 py-6 text-center text-xs text-[#81919e]">Add a portfolio, GitHub, LinkedIn or personal site.</p>}
-              <div className="space-y-3">
+              {socialLinks.length === 0 && <p className="connect-links-empty text-xs text-[#81919e]">Add a portfolio, GitHub, LinkedIn or personal site.</p>}
+              <div className="connect-link-list">
                 {socialLinks.map((link, index) => (
-                  <div key={index} className="grid gap-3 sm:grid-cols-[0.7fr_1.3fr_auto]">
+                  <div key={index} className="connect-link-row">
                     <Field label={index === 0 ? 'Label' : `Label ${index + 1}`} value={link.label} onChange={(event) => setSocialLinks((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, label: event.target.value } : item))} placeholder="GitHub" />
                     <Field label={index === 0 ? 'URL' : `URL ${index + 1}`} type="url" value={link.url} onChange={(event) => setSocialLinks((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, url: event.target.value } : item))} placeholder="https://…" />
-                    <button type="button" onClick={() => setSocialLinks((current) => current.filter((_, itemIndex) => itemIndex !== index))} className="connect-remove-button mt-7" aria-label={`Remove link ${index + 1}`}><X size={15} /></button>
+                    <button type="button" onClick={() => setSocialLinks((current) => current.filter((_, itemIndex) => itemIndex !== index))} className="connect-remove-button" aria-label={`Remove link ${index + 1}`}><X size={15} /></button>
                   </div>
                 ))}
               </div>
+              <Button type="button" variant="quiet" className="connect-add-link" onClick={() => setSocialLinks((current) => [...current, { label: '', url: '' }])}><Plus size={15} /> Add link</Button>
             </Panel>
           </div>
 
-          <aside className="space-y-5 xl:sticky xl:top-24">
-            <Panel className="p-5 sm:p-6">
-              <div className="mb-5">
-                <p className="connect-form-step">PREFERENCES</p>
-                <h2 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-white">Visibility & availability</h2>
-                <p className="mt-2 text-xs leading-5 text-[#9aaab6]">You decide what’s shared and how you’d like to contribute.</p>
+          <aside className="connect-profile-preferences">
+            <Panel className="connect-profile-card p-5 sm:p-6">
+              <div className="connect-form-section-heading">
+                <div>
+                  <p className="connect-form-step">PREFERENCES</p>
+                  <h2 className="connect-form-title">Visibility & availability</h2>
+                  <p className="connect-form-description">You decide what’s shared and how you’d like to contribute.</p>
+                </div>
               </div>
-              <label className="block">
-                <span className="mb-2 block text-[12px] font-medium text-[#d8e2e9]">Profile visibility</span>
-                <select className="connect-input" value={draft.visibility} onChange={(event) => update('visibility', event.target.value as Draft['visibility'])}>
-                  <option value="PRIVATE">Private · only you can see it</option>
-                  <option value="PUBLIC">Public · visible to everyone after review</option>
-                </select>
-              </label>
-              <div className="mt-4 space-y-3">
+              <div className="connect-profile-field">
+                <span className="connect-field-label">Profile visibility</span>
+                <div className="connect-segmented" role="group" aria-label="Profile visibility">
+                  <button type="button" aria-pressed={draft.visibility === 'PUBLIC'} onClick={() => update('visibility', 'PUBLIC')}>Public · visible to everyone</button>
+                  <button type="button" aria-pressed={draft.visibility === 'PRIVATE'} onClick={() => update('visibility', 'PRIVATE')}>Private · hidden from public</button>
+                </div>
+              </div>
+              <div className="connect-preference-toggles">
                 <Toggle title="Open to collaborate" checked={draft.openToCollaborate} onChange={(value) => update('openToCollaborate', value)} />
                 <Toggle title="Available to mentor" checked={draft.mentoringAvailable} onChange={(value) => update('mentoringAvailable', value)} />
                 <Toggle title="Open to referrals" checked={draft.referralAvailable} onChange={(value) => update('referralAvailable', value)} />
               </div>
             </Panel>
-            <Panel className="p-5 sm:p-6">
-              <div className="flex items-start gap-3">
-                <div>
-                  <p className="connect-form-step">PROFILE REVIEW</p>
-                  <h3 className="mt-2 font-medium text-white">Shared after review</h3>
-                  <p className="mt-2 text-xs leading-5 text-[#9aaab6]">The Connect team checks your details before your profile is shared.</p>
-                  <p className="mt-3 flex items-center gap-1.5 text-[10px] text-[#82d8ef]"><Check size={13} /> USN is never shown on your public profile.</p>
-                </div>
-              </div>
-            </Panel>
-            <div>
-              {feedback && <Feedback message={feedback.message} kind={feedback.kind} />}
-              <Button type="submit" loading={busy} disabled={avatarUploading} className="mt-3 w-full"><Save size={16} /> {profile ? 'Save changes' : 'Create profile'}</Button>
-              {profile && <p className="mt-2 text-center text-[10px] text-[#788995]">Only your profile is changed when you save.</p>}
-            </div>
           </aside>
+          <div className="connect-profile-save-bar">
+            {feedback && <Feedback message={feedback.message} kind={feedback.kind} />}
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <Button type="submit" loading={busy} disabled={avatarUploading} className="w-full sm:w-auto"><Save size={16} /> {profile ? 'Save changes' : 'Create profile'}</Button>
+              {feedback?.kind === 'success' && profile?.visibility === 'PUBLIC' && (
+                <Link href={`/connect/members/${encodeURIComponent(profile.slug)}`} className="connect-button connect-button-secondary w-full sm:w-auto">
+                  <Eye size={16} /> View profile
+                </Link>
+              )}
+            </div>
+            {profile && <p className="mt-2 text-xs text-[#788995]">Only your profile is changed when you save.</p>}
+          </div>
         </form>
         )}
-        {profile && <KnowledgeEditor profileApprovalStatus={profile.approvalStatus} embedded />}
+        {profile && <KnowledgeEditor embedded />}
       </div>
     </ConnectShell>
   )
@@ -575,5 +583,15 @@ function Toggle({ title, checked, onChange }: { title: string; checked: boolean;
       <span><strong>{title}</strong></span>
       <input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} />
     </label>
+  )
+}
+
+function ValueChips({ value }: { value: string }) {
+  const items = parseList(value)
+  if (items.length === 0) return null
+  return (
+    <div className="connect-value-chips" aria-hidden="true">
+      {items.map((item, index) => <span key={`${item}-${index}`}>{item}</span>)}
+    </div>
   )
 }

@@ -117,6 +117,15 @@ export async function POST(req: Request) {
       throw new ConnectRequestError('memberType must be STUDENT or ALUMNUS.')
     }
     const memberType: 'STUDENT' | 'ALUMNUS' = body.memberType
+    const requestedVisibility = body.visibility
+    if (
+      requestedVisibility !== undefined &&
+      requestedVisibility !== 'PUBLIC' &&
+      requestedVisibility !== 'PRIVATE'
+    ) {
+      throw new ConnectRequestError('visibility must be PUBLIC or PRIVATE.')
+    }
+    const visibility: 'PUBLIC' | 'PRIVATE' = requestedVisibility ?? 'PUBLIC'
 
     const rosterEntry = await prisma.usnRosterEntry.findFirst({
       where: { usn, isActive: true },
@@ -149,6 +158,7 @@ export async function POST(req: Request) {
       location: optionalString(body.location, 'location', 120),
       phone: optionalString(body.phone, 'phone', 40),
       contactEmail: optionalEmail(body.contactEmail ?? user.email, 'contactEmail'),
+      visibility,
       currentRole: optionalString(body.currentRole, 'currentRole', 160),
       company: optionalString(body.company, 'company', 160),
       openToCollaborate:
@@ -227,12 +237,11 @@ export async function PATCH(req: Request) {
       select: { approvalStatus: true, phone: true, contactEmail: true },
     })
     if (!current) return NextResponse.json({ error: 'Create a profile before editing it.' }, { status: 404 })
-    if (current.approvalStatus === 'REJECTED' || current.approvalStatus === 'SUSPENDED') {
+    if (current.approvalStatus === 'SUSPENDED') {
       return NextResponse.json({ error: 'This profile cannot be edited while it is restricted.' }, { status: 403 })
     }
 
     const data: Prisma.MemberProfileUpdateInput = {}
-    let changedIdentity = false
 
     if (body.fullName !== undefined) {
       throw new ConnectRequestError('The profile name is managed by the official USN roster.')
@@ -244,14 +253,12 @@ export async function PATCH(req: Request) {
         1980,
         new Date().getFullYear() + 8
       )
-      changedIdentity = true
     }
     if (body.memberType !== undefined) {
       if (body.memberType !== 'STUDENT' && body.memberType !== 'ALUMNUS') {
         throw new ConnectRequestError('memberType must be STUDENT or ALUMNUS.')
       }
       data.memberType = body.memberType
-      changedIdentity = true
     }
 
     const stringFields = [
@@ -408,13 +415,6 @@ export async function PATCH(req: Request) {
     if (body.contactEmailPublic === true && body.contactEmail === undefined && !current.contactEmail && user.email) {
       data.contactEmail = user.email
     }
-    if (changedIdentity) {
-      data.approvalStatus = 'PENDING'
-      data.reviewedBy = { disconnect: true }
-      data.reviewedAt = null
-      data.reviewNote = null
-    }
-
     const profile = await prisma.memberProfile.update({
       where: { authUserId: user.id },
       data,

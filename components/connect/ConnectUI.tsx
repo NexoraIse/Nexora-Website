@@ -94,16 +94,12 @@ export function Feedback({ message, kind = 'error' }: { message: string; kind?: 
 }
 
 export function StatusPill({ status }: { status: string }) {
-  const tone = status === 'APPROVED' || status === 'RESOLVED'
+  const tone = status === 'RESOLVED'
     ? 'positive'
-    : status === 'REJECTED' || status === 'SUSPENDED' || status === 'DISMISSED'
+    : status === 'DISMISSED'
       ? 'negative'
       : 'pending'
   const labels: Record<string, string> = {
-    PENDING: 'Being checked',
-    APPROVED: 'Profile is public',
-    REJECTED: 'Update needed',
-    SUSPENDED: 'Temporarily hidden',
     OPEN: 'Received',
     IN_REVIEW: 'Being reviewed',
     RESOLVED: 'Resolved',
