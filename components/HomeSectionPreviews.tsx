@@ -19,10 +19,12 @@ type CommunityProfile = {
   graduationYear: number
   memberType: 'STUDENT' | 'ALUMNUS'
   avatarUrl: string | null
-  skills: string[]
-  currentRole: string | null
-  company: string | null
-  projects: Array<{ title: string }>
+  skills?: string[]
+  currentRole?: string | null
+  company?: string | null
+  projects?: Array<{ title: string }>
+  experiences?: Array<{ role?: string; organization?: string }>
+  achievements?: Array<{ title?: string }>
 }
 
 type PreviewData = {
@@ -54,7 +56,13 @@ function getMemberDetail(profile: CommunityProfile) {
   if (profile.memberType === 'ALUMNUS') {
     return [profile.currentRole, profile.company].filter(Boolean).join(' · ') || 'ISE graduate'
   }
-  return profile.skills.slice(0, 2).join(' · ') || profile.projects[0]?.title || 'ISE student'
+  return (
+    profile.skills?.slice(0, 2).join(' · ') ||
+    profile.projects?.[0]?.title ||
+    profile.experiences?.[0]?.role ||
+    profile.achievements?.[0]?.title ||
+    'ISE student'
+  )
 }
 
 function MemberAvatar({
