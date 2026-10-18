@@ -32,7 +32,8 @@ const NAV_ITEMS: { href: string; label: string; icon: typeof House }[] = [
   { href: "/learn", label: "Learning Hub", icon: BookOpen },
   { href: "/practice", label: "Practice", icon: Code },
   { href: "/achievements", label: "Achievements", icon: Trophy },
-  { href: "/about", label: "About", icon: Info },
+  { href: "/members", label: "Members", icon: Users },
+  { href: "/connect", label: "Connect", icon: LinkSimple },
 ];
 
 const HYPE_MESSAGES = [
