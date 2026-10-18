@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'motion/react';
 import { setCursorMode, subscribeCursorMode, type CursorMode } from '@/hooks/useCursorMode';
@@ -15,6 +15,7 @@ const RING_SPRING = { stiffness: 260, damping: 32, mass: 0.5 };
 const HOVER_SELECTOR = 'a, button, [role="button"], input, select, textarea, [data-cursor]';
 
 export default function CustomCursor() {
+  const cursorLayerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const isAdminPage = pathname === '/admin' || pathname.startsWith('/admin/');
   const hidden = useIsTouchDevice();
@@ -72,6 +73,32 @@ export default function CustomCursor() {
   useEffect(() => subscribeCursorMode(setMode), []);
 
   useEffect(() => {
+    const cursorLayer = cursorLayerRef.current;
+    if (!cursorLayer) return;
+
+    cursorLayer.showPopover();
+
+    const bringCursorAboveModal = () => {
+      if (!document.querySelector('dialog:modal')) return;
+      cursorLayer.hidePopover();
+      cursorLayer.showPopover();
+    };
+
+    const observer = new MutationObserver(bringCursorAboveModal);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['open'],
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      observer.disconnect();
+      if (cursorLayer.matches(':popover-open')) cursorLayer.hidePopover();
+    };
+  }, []);
+
+  useEffect(() => {
     document.body.classList.toggle('native-cursor', isAdminPage);
     return () => document.body.classList.remove('native-cursor');
   }, [isAdminPage]);
@@ -86,7 +113,7 @@ export default function CustomCursor() {
   if (hidden || isAdminPage) return null;
 
   return (
-    <>
+    <div ref={cursorLayerRef} popover="manual" className="custom-cursor-top-layer">
       <motion.div
         aria-hidden="true"
         className="fixed left-0 top-0 z-[999999] pointer-events-none"
@@ -139,6 +166,6 @@ export default function CustomCursor() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

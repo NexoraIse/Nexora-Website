@@ -105,6 +105,22 @@ body::-webkit-scrollbar {
   }
 }
 
+.custom-cursor-top-layer[popover="manual"] {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  overflow: visible;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  pointer-events: none;
+}
+
 /* ─── Terminal-style mobile menu scanlines ─── */
 @keyframes terminal-blink {
   0%, 49% { opacity: 1; }
