@@ -46,7 +46,7 @@ export async function GET(req: Request) {
         include: {
           claim: {
             select: {
-              profile: { select: { fullName: true, slug: true, approvalStatus: true } },
+              profile: { select: { fullName: true, slug: true } },
             },
           },
         },

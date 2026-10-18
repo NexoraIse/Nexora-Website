@@ -9,8 +9,30 @@ import EventModal from './EventModal';
 import RegistrationModal from './RegistrationModal';
 import PastEventsSection from './PastEventsSection';
 import CtaSection from './CtaSection';
-import { EventItem, EventCategory } from '@/lib/types';
+import type { EventCategory, EventItem } from '@/lib/types';
 import { filterEvents } from '@/lib/events-data';
+
+type EventApiItem = {
+  id: string;
+  title: string;
+  slug: string;
+  category: EventCategory;
+  description: string;
+  fullDescription: string | null;
+  imageUrl: string | null;
+  iconName: EventItem['iconName'] | null;
+  startDate: string | null;
+  endDate: string | null;
+  registrationDeadline: string | null;
+  dateDisplay: string | null;
+  venue: string | null;
+  venueDisplay: string | null;
+  registrationOpen: boolean;
+  registrationUrl: string | null;
+  eligibility: string | null;
+  organizer: string | null;
+  tags: string[];
+};
 
 interface EventsPageContentProps {
   initialEvents: EventItem[];
@@ -33,9 +55,9 @@ export default function EventsPageContent({ initialEvents }: EventsPageContentPr
   React.useEffect(() => {
     fetch('/api/events')
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: { events?: EventApiItem[] }) => {
         if (data.events && data.events.length > 0) {
-          const mapped: EventItem[] = data.events.map((e: any) => ({
+          const mapped: EventItem[] = data.events.map((e) => ({
             id: e.id,
             title: e.title,
             slug: e.slug,
@@ -45,6 +67,8 @@ export default function EventsPageContent({ initialEvents }: EventsPageContentPr
             imageUrl: e.imageUrl || '/events/code-wars.svg',
             iconName: e.iconName || 'Code',
             eventDate: e.startDate || null,
+            endDate: e.endDate || null,
+            registrationDeadline: e.registrationDeadline || null,
             dateDisplay: e.dateDisplay || 'To be announced (TBA)',
             startTime: e.startDate ? new Date(e.startDate).toLocaleTimeString() : null,
             endTime: e.endDate ? new Date(e.endDate).toLocaleTimeString() : null,

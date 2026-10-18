@@ -18,7 +18,6 @@ import {
 } from 'lucide-react'
 
 type Tab = 'profiles' | 'reports' | 'disputes' | 'accounts'
-type ProfileStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED'
 type ReviewStatus = 'OPEN' | 'IN_REVIEW' | 'RESOLVED' | 'DISMISSED'
 type Profile = {
   authUserId: string
@@ -27,11 +26,10 @@ type Profile = {
   fullName: string
   rosterName: string | null
   rosterNameMatches: boolean
+  visibility: 'PUBLIC' | 'PRIVATE'
   graduationYear: number
   memberType: 'STUDENT' | 'ALUMNUS'
   bio: string | null
-  approvalStatus: ProfileStatus
-  reviewNote: string | null
   createdAt: string
 }
 
@@ -52,7 +50,7 @@ type Dispute = {
   details: string
   resolutionNote: string | null
   createdAt: string
-  claim: { profile: { fullName: string; slug: string; approvalStatus: ProfileStatus } }
+  claim: { profile: { fullName: string; slug: string } }
 }
 type ConnectAccount = {
   id: string
@@ -61,18 +59,18 @@ type ConnectAccount = {
   createdAt: string
   emailConfirmedAt: string | null
   disabled: boolean
-  profile: { fullName: string; slug: string; approvalStatus: ProfileStatus } | null
+  profile: { fullName: string; slug: string } | null
 }
 type Pagination = { page: number; limit: number; total: number; totalPages: number }
 
 const tabs: Array<{ id: Tab; label: string; icon: typeof UsersRound }> = [
-  { id: 'profiles', label: 'Profiles', icon: UsersRound },
+  { id: 'profiles', label: 'New profiles', icon: UsersRound },
   { id: 'reports', label: 'Reports', icon: Flag },
   { id: 'disputes', label: 'Student number help', icon: MessageSquareWarning },
   { id: 'accounts', label: 'Registered members', icon: UserRound },
 ]
 const statusOptions: Record<Tab, string[]> = {
-  profiles: ['PENDING', 'APPROVED', 'REJECTED', 'SUSPENDED', 'ALL'],
+  profiles: ['PENDING'],
   reports: ['OPEN', 'IN_REVIEW', 'RESOLVED', 'DISMISSED', 'ALL'],
   disputes: ['OPEN', 'IN_REVIEW', 'RESOLVED', 'DISMISSED', 'ALL'],
   accounts: ['ALL', 'ACTIVE', 'UNCONFIRMED', 'DISABLED'],
@@ -84,10 +82,7 @@ function dateLabel(value: string) {
 
 function statusLabel(status: string) {
   const labels: Record<string, string> = {
-    PENDING: 'Waiting for review',
-    APPROVED: 'Ready to share',
-    REJECTED: 'Update requested',
-    SUSPENDED: 'Hidden',
+    PENDING: 'New · confirmation only',
     OPEN: 'New',
     IN_REVIEW: 'Being reviewed',
     RESOLVED: 'Resolved',
@@ -101,28 +96,24 @@ function statusLabel(status: string) {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const tone = status === 'APPROVED' || status === 'RESOLVED' || status === 'ACTIVE'
+  const tone = status === 'RESOLVED' || status === 'ACTIVE'
     ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-    : status === 'REJECTED' || status === 'SUSPENDED' || status === 'DISMISSED' || status === 'DISABLED'
+    : status === 'DISMISSED' || status === 'DISABLED'
       ? 'border-rose-200 bg-rose-50 text-rose-700'
       : 'border-amber-200 bg-amber-50 text-amber-800'
   return <span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold tracking-wide ${tone}`}>{statusLabel(status)}</span>
 }
 
 function ReviewForm({
-  profile = false,
-  approvalBlocked = false,
   busy,
   onSubmit,
 }: {
-  profile?: boolean
-  approvalBlocked?: boolean
   busy: boolean
   onSubmit: (status: string, note: string) => Promise<void>
 }) {
-  const [status, setStatus] = useState(profile ? 'APPROVED' : 'IN_REVIEW')
+  const [status, setStatus] = useState('IN_REVIEW')
   const [note, setNote] = useState('')
-  const noteRequired = profile ? status !== 'APPROVED' : status !== 'IN_REVIEW'
+  const noteRequired = status !== 'IN_REVIEW'
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -133,27 +124,27 @@ function ReviewForm({
   return (
     <form onSubmit={submit} className="mt-4 grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)_auto]">
       <select
-        aria-label={profile ? 'Profile decision' : 'Review decision'}
+        aria-label="Review decision"
         value={status}
         onChange={(event) => setStatus(event.target.value)}
         className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs outline-none focus:border-cyan-500"
       >
-        {(profile ? ['APPROVED', 'REJECTED', 'SUSPENDED'] : ['IN_REVIEW', 'RESOLVED', 'DISMISSED']).map((option) => (
+        {['IN_REVIEW', 'RESOLVED', 'DISMISSED'].map((option) => (
           <option key={option} value={option}>{statusLabel(option)}</option>
         ))}
       </select>
       <input
-        aria-label={profile ? 'Review note' : 'Note for the member'}
+        aria-label="Note for the member"
         value={note}
         onChange={(event) => setNote(event.target.value)}
         maxLength={2000}
         required={noteRequired}
-        placeholder={noteRequired ? 'Tell the member why' : 'Optional note for the member'}
+        placeholder={noteRequired ? 'Add a note for the member' : 'Optional note for the member'}
         className="h-10 min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-xs outline-none placeholder:text-slate-400 focus:border-cyan-500"
       />
       <button
         type="submit"
-        disabled={busy || (profile && approvalBlocked && status === 'APPROVED')}
+        disabled={busy}
         className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#111827] px-4 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Check size={14} /> {busy ? 'Saving…' : 'Save review'}
@@ -228,7 +219,7 @@ export default function ConnectModerationView({
     }
   }, [load, tab])
 
-  async function review(endpoint: Tab, id: string, status: string, note: string) {
+  async function review(endpoint: 'reports' | 'disputes', id: string, status: string, note: string) {
     setBusyId(id)
     setError('')
     setSuccess('')
@@ -237,9 +228,7 @@ export default function ConnectModerationView({
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify(endpoint === 'profiles'
-          ? { authUserId: id, status, reviewNote: note || null }
-          : { id, status, resolutionNote: note || null }),
+        body: JSON.stringify({ id, status, resolutionNote: note || null }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'The review could not be saved.')
@@ -310,14 +299,14 @@ export default function ConnectModerationView({
       <div>
         <header className="flex flex-col gap-5 border-b border-slate-200 pb-7 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.18em] text-[#0784a5]"><span className="h-1.5 w-1.5 rounded-full bg-[#08a6c8]" /> Nexora Connect · Community review</p>
-            <h1 className="mt-2 font-clash text-4xl font-semibold tracking-tight sm:text-5xl">Community review</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-500">Review member profiles and accounts, respond to reports, and help with student number issues.</p>
+            <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.18em] text-[#0784a5]"><span className="h-1.5 w-1.5 rounded-full bg-[#08a6c8]" /> Nexora Connect · Management</p>
+            <h1 className="mt-2 font-clash text-4xl font-semibold tracking-tight sm:text-5xl">Connect management</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-500">New profiles are listed for admin confirmation only; no approval is required. Members control whether their profile is public. Manage reports, account access, and student number requests here.</p>
           </div>
           <button type="button" onClick={onNavigateToRoster} className="inline-flex h-10 items-center gap-2 self-start rounded-xl border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 md:self-auto"><UsersRound size={14} /> Manage student list</button>
         </header>
 
-        <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Connect review sections">
+        <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Connect management sections">
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -343,7 +332,10 @@ export default function ConnectModerationView({
           <div className="flex flex-col gap-3 border-b border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div>
               <h2 className="font-semibold">{tabs.find((item) => item.id === tab)?.label}</h2>
-              <p className="mt-1 text-[11px] text-slate-500">{count} {count === 1 ? 'item' : 'items'} · Your decisions are saved in the admin history.</p>
+              <p className="mt-1 text-xs text-slate-500">
+                {count} {count === 1 ? 'item' : 'items'}
+                {tab === 'profiles' ? ' · Confirmation only; does not affect profile visibility.' : ' · Your decisions are saved in the admin history.'}
+              </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               {tab === 'accounts' && (
@@ -358,7 +350,7 @@ export default function ConnectModerationView({
                   className="h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 outline-none placeholder:text-slate-400 focus:border-cyan-500 sm:w-56"
                 />
               )}
-              <label className="flex items-center gap-2 text-[11px] font-medium text-slate-500">
+              {tab !== 'profiles' && <label className="flex items-center gap-2 text-xs font-medium text-slate-500">
                 Show
                 <select
                   value={filters[tab]}
@@ -370,13 +362,13 @@ export default function ConnectModerationView({
                 >
                   {statusOptions[tab].map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}
                 </select>
-              </label>
+              </label>}
             </div>
           </div>
 
           <div className="divide-y divide-slate-100">
             {loading && <div className="px-5 py-14 text-center text-xs text-slate-400">Loading…</div>}
-            {!loading && tab === 'profiles' && profiles.length === 0 && <EmptyQueue text="No profiles match this status." />}
+            {!loading && tab === 'profiles' && profiles.length === 0 && <EmptyQueue text="No new profiles to confirm." />}
             {!loading && tab === 'reports' && reports.length === 0 && <EmptyQueue text="No reports match this status." />}
             {!loading && tab === 'disputes' && disputes.length === 0 && <EmptyQueue text="No student number requests to show here." />}
             {!loading && tab === 'accounts' && accounts.length === 0 && <EmptyQueue text="No registered members match this filter." />}
@@ -387,7 +379,6 @@ export default function ConnectModerationView({
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-semibold">{account.profile?.fullName ?? account.email}</h3>
                     <StatusBadge status={account.disabled ? 'DISABLED' : account.emailConfirmedAt ? 'ACTIVE' : 'UNCONFIRMED'} />
-                    {account.profile && <StatusBadge status={account.profile.approvalStatus} />}
                   </div>
                   <p className="mt-1 break-all text-xs text-slate-500">{account.email}</p>
                   <p className="mt-1 text-[11px] text-slate-500">
@@ -430,21 +421,16 @@ export default function ConnectModerationView({
               <article key={profile.authUserId} className="p-4 sm:p-5">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold">{profile.fullName}</h3><StatusBadge status={profile.approvalStatus} /></div>
+                    <div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold">{profile.fullName}</h3><StatusBadge status="PENDING" /></div>
                     <p className="mt-1 text-xs text-slate-500">{profile.usn} · {profile.memberType === 'ALUMNUS' ? 'Alumnus' : 'Student'} · Class of {profile.graduationYear}</p>
                     <p className="mt-2 text-xs text-slate-600">{profile.bio || 'No biography provided.'}</p>
                     <p className="mt-2 text-[10px] text-slate-400">Submitted {dateLabel(profile.createdAt)} · Name on department records: {profile.rosterName ?? 'No active student record found'}</p>
-                    {!profile.rosterNameMatches && <p className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-2.5 py-1.5 text-[10px] text-amber-800"><CircleAlert size={12} /> The name doesn’t match department records, so this profile can’t be approved yet.</p>}
-                    {profile.reviewNote && <p className="mt-2 text-[11px] text-slate-500">Previous note: {profile.reviewNote}</p>}
+                    {!profile.rosterNameMatches && <p className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-2.5 py-1.5 text-xs text-amber-800"><CircleAlert size={12} /> Please check the official roster details for this profile.</p>}
                   </div>
-                  <Link href={`/connect/members/${encodeURIComponent(profile.slug)}`} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-cyan-800 hover:text-cyan-950">View public profile <ChevronRight size={14} /></Link>
+                  {profile.visibility === 'PUBLIC' && (
+                    <Link href={`/connect/members/${encodeURIComponent(profile.slug)}`} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-cyan-800 hover:text-cyan-950">View profile <ChevronRight size={14} /></Link>
+                  )}
                 </div>
-                <ReviewForm
-                  profile
-                  approvalBlocked={!profile.rosterNameMatches}
-                  busy={busyId === profile.authUserId}
-                  onSubmit={(status, note) => review('profiles', profile.authUserId, status, note)}
-                />
               </article>
             ))}
 
@@ -462,7 +448,7 @@ export default function ConnectModerationView({
             {!loading && tab === 'disputes' && disputes.map((dispute) => (
               <article key={dispute.id} className="p-4 sm:p-5">
                 <div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold">USN {dispute.usn}</h3><StatusBadge status={dispute.status} /></div>
-                <p className="mt-1 text-xs text-slate-500">Requested by {dispute.claim.profile.fullName} · profile: {statusLabel(dispute.claim.profile.approvalStatus)} · submitted {dateLabel(dispute.createdAt)}</p>
+                <p className="mt-1 text-xs text-slate-500">Requested by {dispute.claim.profile.fullName} · submitted {dateLabel(dispute.createdAt)}</p>
                 <p className="mt-3 whitespace-pre-wrap rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-700">{dispute.details}</p>
                 {dispute.resolutionNote && <p className="mt-2 text-[11px] text-slate-500">Previous resolution: {dispute.resolutionNote}</p>}
                 <div className="mt-3"><Link href={`/connect/members/${encodeURIComponent(dispute.claim.profile.slug)}`} target="_blank" rel="noreferrer" className="text-xs font-medium text-cyan-800 hover:text-cyan-950">Open linked profile <ChevronRight size={13} className="inline" /></Link></div>

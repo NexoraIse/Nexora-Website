@@ -13,6 +13,8 @@ export const publicMemberProfileSelect = {
   location: true,
   contactEmail: true,
   contactEmailPublic: true,
+  phone: true,
+  phonePublic: true,
   currentRole: true,
   company: true,
   openToCollaborate: true,
@@ -58,6 +60,8 @@ export function toPublicMemberProfile(profile: PublicMemberProfile) {
   return {
     ...profile,
     contactEmail: profile.contactEmailPublic ? profile.contactEmail : null,
+    phone: profile.phonePublic ? profile.phone : null,
     contactEmailPublic: undefined,
+    phonePublic: undefined,
   }
 }

@@ -11,7 +11,7 @@ export async function GET(
     const profile = await prisma.memberProfile.findFirst({
       where: {
         slug,
-        approvalStatus: 'APPROVED',
+        approvalStatus: { not: 'SUSPENDED' },
         visibility: 'PUBLIC',
       },
       select: publicMemberProfileSelect,

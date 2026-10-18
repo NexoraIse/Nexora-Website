@@ -98,7 +98,7 @@ export async function GET(req: Request) {
     }
 
     const where: Prisma.MemberProfileWhereInput = {
-      approvalStatus: 'APPROVED' as const,
+      approvalStatus: { not: 'SUSPENDED' },
       visibility: 'PUBLIC' as const,
       ...(memberTypeFilter ? { memberType: memberTypeFilter } : {}),
       ...(graduationYear !== undefined ? { graduationYear } : {}),
@@ -136,7 +136,7 @@ export async function GET(req: Request) {
         return Prisma.sql`(${Prisma.join(fieldConditions, ' OR ')})`
       })
       const filters: Prisma.Sql[] = [
-        Prisma.sql`p.approval_status = 'APPROVED'`,
+        Prisma.sql`p.approval_status <> 'SUSPENDED'`,
         Prisma.sql`p.visibility = 'PUBLIC'`,
         ...termConditions,
       ]

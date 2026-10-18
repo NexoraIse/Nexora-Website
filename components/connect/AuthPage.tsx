@@ -31,6 +31,7 @@ function AuthAside() {
 
 export default function AuthPage({ mode }: { mode: AuthMode }) {
   const router = useRouter()
+  const [sessionResolved, setSessionResolved] = useState(false)
   const [feedback, setFeedback] = useState<{ message: string } | null>(null)
 
   useEffect(() => {
@@ -46,20 +47,28 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
   }, [mode])
 
   useEffect(() => {
-    if (mode !== 'start') return
     let active = true
     void fetch('/api/connect/auth/session', { cache: 'no-store' })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(async (response) => {
+        const data = await response.json()
+        if (!response.ok) throw new Error(data.error || 'Unable to check your Connect session.')
         if (!active) return
-        if (!data.authenticated || !data.emailVerified) {
+        if (data.authenticated) {
+          router.replace('/connect/dashboard')
+          return
+        }
+        if (mode === 'start') {
           router.replace('/connect/sign-in')
           return
         }
-        router.replace('/connect/dashboard')
+        setSessionResolved(true)
       })
-      .catch(() => {
-        if (active) setFeedback({ message: 'We could not check your session. Please try signing in.' })
+      .catch((error: unknown) => {
+        if (!active) return
+        setFeedback({
+          message: error instanceof Error ? error.message : 'We could not check your session. Please try signing in.',
+        })
+        setSessionResolved(true)
       })
     return () => { active = false }
   }, [mode, router])
@@ -92,7 +101,10 @@ export default function AuthPage({ mode }: { mode: AuthMode }) {
             description="Continue with Google. New members can set up a profile; returning members will go straight to their Connect space."
           />
           <Panel className="p-5 sm:p-8">
-            {mode === 'auth' && (
+            {mode === 'auth' && !sessionResolved && (
+              <p role="status" className="text-center text-sm text-[#aab6c2]">Checking your session…</p>
+            )}
+            {mode === 'auth' && sessionResolved && (
               <div className="space-y-4">
                 <form action="/api/connect/auth/google" method="get">
                   <button

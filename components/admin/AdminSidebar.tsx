@@ -87,7 +87,7 @@ export default function AdminSidebar({
       ? [{
           title: 'Connect',
           items: [
-            { id: 'connect-moderation' as AdminTab, label: 'Community review', icon: ClipboardCheck },
+            { id: 'connect-moderation' as AdminTab, label: 'Connect management', icon: ClipboardCheck },
             ...(userRole === 'SUPER_ADMIN'
               ? [{ id: 'connect-roster' as AdminTab, label: 'Student list', icon: UserRound }]
               : []),

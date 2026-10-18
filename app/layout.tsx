@@ -5,6 +5,7 @@ import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { AudioProvider } from "@/components/AudioProvider";
+import CustomCursor from "@/components/CustomCursor";
 import ContextMenu from "@/components/ContextMenu";
 import BottomNavCluster from "@/components/BottomNavCluster";
 import Terminal from "@/components/Terminal";
@@ -65,6 +66,7 @@ export default function RootLayout({
         <Suspense fallback={<div className="min-h-screen bg-[#060913]" />}>
           <SmoothScroll>
             <AudioProvider>
+              <CustomCursor />
               <ContextMenu />
               <BottomNavCluster />
               <Terminal />

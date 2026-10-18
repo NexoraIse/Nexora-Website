@@ -49,7 +49,7 @@ export const MEMBERS: TeamMember[] = [
     badge: 'Design Lead · Frontend',
     bio: 'Designed the cyber neon aesthetic, responsive typography systems, preloader intro sequences, and audio-reactive interactive elements.',
     image: '/members/pahima.png',
-    github: 'https://github.com/uchilpahi',
+    github: 'https://github.com/pahimauchil',
     linkedin: 'https://linkedin.com/in/pahima-uchil',
     skills: ['UI/UX Design', 'GSAP', 'Framer Motion', 'Tailwind CSS', 'Audio Web API'],
   },
