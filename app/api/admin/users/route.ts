@@ -71,6 +71,7 @@ export async function POST(req: Request) {
 
     const newAdmin = await prisma.admin.create({
       data: {
+        id: crypto.randomUUID(),
         email: trimmedEmail,
         password: hashedPassword,
         name: name?.trim() || null,
