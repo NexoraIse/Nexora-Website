@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import AuthPage from '@/components/connect/AuthPage'
+import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = { title: 'Opening Nexora Connect' }
 
 export default function ConnectStartPage() {
-  return <AuthPage mode="start" />
+  redirect('/connect/dashboard')
 }

@@ -8,13 +8,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Forbidden request origin.' }, { status: 403 })
     }
 
-    const supabase = await createConnectSupabaseServerClient()
+    const response = NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } })
+    const supabase = await createConnectSupabaseServerClient(response)
     const { error } = await supabase.auth.signOut()
     if (error) {
       console.error('Connect signout failed:', error.message)
       return NextResponse.json({ error: 'Unable to sign out right now.' }, { status: 502 })
     }
-    return NextResponse.json({ success: true }, { headers: { 'Cache-Control': 'no-store' } })
+    supabase.applyCookies(response)
+    return response
   } catch (error) {
     rethrowNextControlFlow(error)
     console.error('Connect signout failed:', error)

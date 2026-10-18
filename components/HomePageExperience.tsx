@@ -13,6 +13,14 @@ export default function HomePageExperience({ children }: { children: ReactNode }
   const { initializeAudio } = useAudio();
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("code")) {
+        window.location.replace(`/api/connect/auth/callback${window.location.search}`);
+        return;
+      }
+    }
+
     const hasSeenPreloader = sessionStorage.getItem("preloaderShown") === "true";
 
     queueMicrotask(() => {
