@@ -69,6 +69,8 @@ export interface EventItem {
   imageUrl: string;
   iconName: 'Code' | 'Cpu' | 'BrainCircuit' | 'Globe' | 'ShieldCheck' | 'Lightbulb';
   eventDate: string | null;
+  endDate?: string | null;
+  registrationDeadline?: string | null;
   dateDisplay: string;
   startTime: string | null;
   endTime: string | null;
