@@ -67,11 +67,8 @@ export async function PUT(req: Request) {
       select: { approvalStatus: true },
     })
     if (!profile) return NextResponse.json({ error: 'Create a profile before editing a knowledge page.' }, { status: 404 })
-    if (profile.approvalStatus === 'REJECTED' || profile.approvalStatus === 'SUSPENDED') {
+    if (profile.approvalStatus === 'SUSPENDED') {
       return NextResponse.json({ error: 'This profile cannot publish a knowledge page while it is restricted.' }, { status: 403 })
-    }
-    if (publish && profile.approvalStatus !== 'APPROVED') {
-      return NextResponse.json({ error: 'A profile must be approved before publishing a knowledge page.' }, { status: 403 })
     }
     if (publish && !draftMarkdown) {
       throw new ConnectRequestError('Cannot publish an empty knowledge page.')

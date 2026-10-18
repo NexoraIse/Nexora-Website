@@ -57,8 +57,8 @@ const TAB_TITLES: Record<AdminTab, { title: string; description: string }> = {
     description: 'Configure portal parameters, security preferences, and administrative profile.',
   },
   'connect-moderation': {
-    title: 'Connect Community Review',
-    description: 'Review member profiles, reports, account access, and student number requests.',
+    title: 'Connect Management',
+    description: 'View new profiles, reports, account access, and student number requests.',
   },
   'connect-roster': {
     title: 'Connect Student List',

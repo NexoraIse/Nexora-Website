@@ -27,7 +27,6 @@
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.11.0",
     "dotenv": "^18.0.7",
-    "face-api.js": "^0.22.2",
     "gsap": "^3.15.0",
     "lenis": "^1.3.26",
     "lucide-react": "^1.55.0",
@@ -35,12 +34,11 @@
     "next": "16.4.0",
     "ogl": "^1.0.11",
     "pg": "^8.23.1",
-    "postprocessing": "^6.39.5",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "three": "^0.186.1"
+    "shiki": "^4.5.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
@@ -48,7 +46,6 @@
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.186.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
     "prisma": "^7.10.0",

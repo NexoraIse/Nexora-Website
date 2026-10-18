@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar, BookOpen, Bell } from 'lucide-react';
@@ -8,7 +9,6 @@ import gsap from 'gsap';
 import { AnimatePresence, motion } from 'motion/react';
 import Marquee from './Marquee';
 import ContourBackdrop from './ContourBackdrop';
-import HomeSectionPreviews from './HomeSectionPreviews';
 
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!%&';
 const FINAL_TEXT = 'NEXORA';
@@ -73,7 +73,18 @@ function HeroClouds() {
 const REPLAY_TRIGGER_COUNT = 5;
 const FLASH_VISIBLE_MS = 2400;
 
-export default function Hero({ introStarted }: { introStarted: boolean }) {
+export default function Hero({
+  introStarted,
+  children,
+}: {
+  introStarted: boolean;
+  children?: ReactNode;
+}) {
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const landscapeContainerRef = useRef<HTMLDivElement>(null);
+  const skyRevealRef = useRef<HTMLDivElement>(null);
+  const landscapeRevealRef = useRef<HTMLDivElement>(null);
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
   const themeRef = useRef<HTMLDivElement>(null);
@@ -81,6 +92,41 @@ export default function Hero({ introStarted }: { introStarted: boolean }) {
   const clicksRef = useRef(0);
   const replayIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [flash, setFlash] = useState<string | null>(null);
+
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const section = heroSectionRef.current;
+    const landscapeContainer = landscapeContainerRef.current;
+    const skyReveal = skyRevealRef.current;
+    const landscapeReveal = landscapeRevealRef.current;
+    if (!scene || !section || !landscapeContainer || !skyReveal || !landscapeReveal) return;
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') return;
+
+      const skyBounds = section.getBoundingClientRect();
+      const landscapeBounds = landscapeContainer.getBoundingClientRect();
+      skyReveal.style.setProperty('--cursor-x', `${event.clientX - skyBounds.left}px`);
+      skyReveal.style.setProperty('--cursor-y', `${event.clientY - skyBounds.top}px`);
+      landscapeReveal.style.setProperty('--cursor-x', `${event.clientX - landscapeBounds.left}px`);
+      landscapeReveal.style.setProperty('--cursor-y', `${event.clientY - landscapeBounds.top}px`);
+    };
+
+    const hideReveal = () => {
+      skyReveal.style.setProperty('--cursor-x', '-300px');
+      skyReveal.style.setProperty('--cursor-y', '-300px');
+      landscapeReveal.style.setProperty('--cursor-x', '-300px');
+      landscapeReveal.style.setProperty('--cursor-y', '-300px');
+    };
+
+    scene.addEventListener('pointermove', onPointerMove);
+    scene.addEventListener('pointerleave', hideReveal);
+
+    return () => {
+      scene.removeEventListener('pointermove', onPointerMove);
+      scene.removeEventListener('pointerleave', hideReveal);
+    };
+  }, []);
 
   /* ─── Title Click Scramble Replay ─── */
   const handleTitleClick = useCallback(() => {
@@ -161,15 +207,76 @@ export default function Hero({ introStarted }: { introStarted: boolean }) {
 
   return (
     <>
-      <div className="hero-scene relative">
+      <div ref={sceneRef} className="hero-scene relative">
+        <svg aria-hidden className="pointer-events-none absolute h-0 w-0">
+          <filter
+            id="hero-landscape-palette"
+            x="-2%"
+            y="-2%"
+            width="104%"
+            height="104%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feColorMatrix
+              in="SourceGraphic"
+              type="matrix"
+              values="0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 1 0"
+              result="landscapeLuminance"
+            />
+            <feComponentTransfer in="landscapeLuminance" result="landscapeColors">
+              <feFuncR type="table" tableValues="0.07 0.14 0.22 0.30 0.34 0.37 0.39 0.40 0.41" />
+              <feFuncG type="table" tableValues="0.18 0.30 0.43 0.55 0.59 0.65 0.69 0.72 0.74" />
+              <feFuncB type="table" tableValues="0.09 0.16 0.23 0.39 0.48 0.55 0.68 0.84 1" />
+            </feComponentTransfer>
+            <feMorphology in="SourceAlpha" operator="dilate" radius="1.2" result="expandedEdges" />
+            <feFlood floodColor="#173a2b" result="edgeColor" />
+            <feComposite in="edgeColor" in2="expandedEdges" operator="in" result="expandedOutline" />
+            <feComposite in="expandedOutline" in2="SourceAlpha" operator="out" result="landscapeOutline" />
+            <feMerge>
+              <feMergeNode in="landscapeOutline" />
+              <feMergeNode in="landscapeColors" />
+            </feMerge>
+          </filter>
+        </svg>
       {/* ─────────────────────────────────────────────────────────────────────────────
           1. TOP HERO SECTION – PINNED STICKY AT TOP (Curtain effect matches reference)
          ───────────────────────────────────────────────────────────────────────────── */}
       <div className="sticky top-0 z-0 w-full">
         <section
+          ref={heroSectionRef}
           className="home-hero-text relative isolate flex flex-col overflow-hidden bg-[var(--theme-bg-hero,#dce6ef)]"
         >
           <HeroClouds />
+
+          <div
+            ref={skyRevealRef}
+            aria-hidden
+            className="hero-color-reveal pointer-events-none absolute inset-0 z-0 select-none opacity-70"
+          >
+            {HERO_CLOUDS.map((cloud, index) => (
+              <div
+                key={index}
+                className="hero-cloud absolute left-0"
+                style={{
+                  top: `${cloud.top}%`,
+                  width: `${cloud.w}%`,
+                  aspectRatio: '220 / 90',
+                  animation: `hero-cloud-drift ${cloud.dur}s linear ${cloud.delay}s infinite, hero-cloud-bob ${
+                    9 + (index % 5) * 2
+                  }s ease-in-out ${-index * 1.6}s infinite`,
+                }}
+              >
+                <svg viewBox="0 0 220 90" className="h-full w-full" aria-hidden>
+                  <g fill="white">
+                    <ellipse cx="70" cy="60" rx="70" ry="28" />
+                    <ellipse cx="120" cy="52" rx="55" ry="34" />
+                    <ellipse cx="160" cy="62" rx="52" ry="26" />
+                    <ellipse cx="100" cy="44" rx="34" ry="26" />
+                  </g>
+                </svg>
+              </div>
+            ))}
+          </div>
 
           <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-6 sm:pt-10 md:pt-16 lg:pt-20">
             {/* Main Scramble Title */}
@@ -247,6 +354,7 @@ export default function Hero({ introStarted }: { introStarted: boolean }) {
           2. VECTOR LANDSCAPE DIVIDER (Slides UP and OVER the sticky hero on scroll)
          ───────────────────────────────────────────────────────────────────────────── */}
       <div
+        ref={landscapeContainerRef}
         className="relative z-10 w-full pointer-events-none select-none shrink-0 -mt-10 sm:-mt-16 md:-mt-22 lg:-mt-28"
       >
         <Image
@@ -258,6 +366,20 @@ export default function Hero({ introStarted }: { introStarted: boolean }) {
           loading="eager"
           className="w-full h-auto block"
         />
+        <div
+          ref={landscapeRevealRef}
+          aria-hidden
+          className="hero-landscape-reveal pointer-events-none absolute inset-0 z-10 select-none opacity-70"
+        >
+          <Image
+            src="/bg.svg"
+            alt=""
+            width={11579}
+            height={5496}
+            loading="eager"
+            className="h-auto w-full block"
+          />
+        </div>
       </div>
       </div>
 
@@ -321,8 +443,7 @@ export default function Hero({ introStarted }: { introStarted: boolean }) {
               </Link>
             </div>
           </section>
-
-          <HomeSectionPreviews />
+          {children}
         </div>
       </div>
     </>

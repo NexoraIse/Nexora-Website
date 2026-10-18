@@ -19,7 +19,7 @@ export async function GET() {
 
     const profile = await prisma.memberProfile.findUnique({
       where: { authUserId: user.id },
-      select: { slug: true, approvalStatus: true, visibility: true },
+      select: { slug: true, visibility: true },
     })
     const registration = await prisma.connectRegistration.findUnique({
       where: { authUserId: user.id },

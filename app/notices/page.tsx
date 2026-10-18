@@ -4,17 +4,45 @@ import React, { useState, useMemo, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import NoticeCard, {
-  Notice,
-  NoticeCategory,
-  getCategoryBadgeStyles,
+  type Notice,
+  type NoticeCategory,
   AttachmentIcon,
 } from "@/components/NoticeCard";
 import NoticeModal from "@/components/NoticeModal";
 import ContourBackdrop from "@/components/ContourBackdrop";
+import type { NoticeAttachment } from "@/components/NoticeCard";
 
 type CategoryFilter = "All" | NoticeCategory;
+type NoticeApiItem = {
+  id: string;
+  title: string;
+  summary: string | null;
+  content: string | null;
+  category: string;
+  priority: "NORMAL" | "IMPORTANT" | "URGENT";
+  isPinned: boolean;
+  date: string;
+  authorName: string | null;
+  authorRole: string | null;
+  attachmentUrl: string | null;
+  attachmentName: string | null;
+  attachmentType: string | null;
+};
 
 const CATEGORIES: CategoryFilter[] = ["All", "Urgent", "Projects", "Events", "General"];
+
+function normalizeCategory(category: string, priority: NoticeApiItem["priority"]): NoticeCategory {
+  if (priority === "URGENT") return "Urgent";
+  const normalized = category.trim().toLowerCase();
+  if (normalized === "projects" || normalized === "project") return "Projects";
+  if (normalized === "events" || normalized === "event") return "Events";
+  return "General";
+}
+
+function normalizeAttachmentType(type: string | null): NoticeAttachment["type"] {
+  if (type === "pdf" || type === "figma" || type === "doc" || type === "link") return type;
+  return "link";
+}
 
 export default function NoticesPage() {
   const [noticesList, setNoticesList] = useState<Notice[]>([]);
@@ -27,14 +55,14 @@ export default function NoticesPage() {
   useEffect(() => {
     fetch('/api/notices')
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: { notices?: NoticeApiItem[] }) => {
         if (data.notices && data.notices.length > 0) {
-          const formatted: Notice[] = data.notices.map((n: any) => ({
+          const formatted: Notice[] = data.notices.map((n) => ({
             id: n.id,
             title: n.title,
             summary: n.summary || n.content?.slice(0, 160) || '',
             content: n.content || '',
-            category: (n.priority === 'URGENT' ? 'Urgent' : n.category || 'General') as NoticeCategory,
+            category: normalizeCategory(n.category, n.priority),
             isPinned: n.isPinned || false,
             isUrgentHero: n.priority === 'URGENT' || n.isPinned,
             postedAt: 'Recently',
@@ -46,16 +74,29 @@ export default function NoticesPage() {
             attachment: n.attachmentUrl ? {
               name: n.attachmentName || 'Attachment',
               url: n.attachmentUrl,
-              type: (n.attachmentType || 'pdf') as any,
+              type: normalizeAttachmentType(n.attachmentType),
               size: 'File',
             } : undefined,
             tags: [n.category?.toLowerCase() || 'general'],
           }));
           setNoticesList(formatted);
+          const requestedNoticeId = new URLSearchParams(window.location.search).get('notice');
+          if (requestedNoticeId) {
+            setSelectedNotice(formatted.find((notice) => notice.id === requestedNoticeId) || null);
+          }
         }
       })
       .catch(() => {});
   }, []);
+
+  const closeNotice = () => {
+    setSelectedNotice(null);
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('notice')) {
+      url.searchParams.delete('notice');
+      window.history.replaceState({}, '', url);
+    }
+  };
 
   // Distinct Pinned / Urgent Hero Card Notice (Top priority)
   const heroNotice = useMemo(() => {
@@ -492,7 +533,7 @@ export default function NoticesPage() {
       {/* ========================================================================= */}
       <NoticeModal
         notice={selectedNotice}
-        onClose={() => setSelectedNotice(null)}
+        onClose={closeNotice}
       />
 
       {/* Global Footer */}

@@ -300,7 +300,7 @@ model MemberProfile {
   phonePublic         Boolean              @default(false) @map("phone_public")
   contactEmail        String?              @map("contact_email")
   contactEmailPublic  Boolean              @default(false) @map("contact_email_public")
-  visibility          ProfileVisibility    @default(PRIVATE)
+  visibility          ProfileVisibility    @default(PUBLIC)
   approvalStatus      MemberApprovalStatus @default(PENDING) @map("approval_status")
   reviewedById        String?              @map("reviewed_by_id") @db.Uuid
   reviewNote          String?              @map("review_note")
