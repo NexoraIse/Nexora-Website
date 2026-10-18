@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   }
   const code = requestUrl.searchParams.get('code')
   const requestedNext = requestUrl.searchParams.get('next')
-  let next = '/'
+  let next = '/connect/dashboard'
   if (requestedNext?.startsWith('/') && !requestedNext.startsWith('//')) {
     try {
       const destination = new URL(requestedNext, appUrl.origin)
@@ -24,8 +24,11 @@ export async function GET(req: Request) {
         next = `${destination.pathname}${destination.search}${destination.hash}`
       }
     } catch {
-      next = '/'
+      next = '/connect/dashboard'
     }
+  }
+  if (next === '/connect/start') {
+    next = '/connect/dashboard'
   }
 
   if (!code) {
@@ -35,19 +38,32 @@ export async function GET(req: Request) {
   }
 
   try {
-    const supabase = await createConnectSupabaseServerClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
     const destination = new URL(next, appUrl.origin)
+    const response = NextResponse.redirect(destination)
+    response.headers.set('Cache-Control', 'no-store')
+
+    const flowId = requestUrl.searchParams.get('sb_flow_id')
+    const supabase = await createConnectSupabaseServerClient(response)
+    const { error } = await supabase.auth.exchangeCodeForSession(
+      code,
+      flowId ? { flowId } : undefined
+    )
     if (error) {
+      console.error('Connect auth callback code exchange failed:', error.message)
       const failure = new URL('/connect/sign-in', appUrl.origin)
       failure.searchParams.set('authError', 'google_auth_failed')
       return NextResponse.redirect(failure)
     }
+
+    supabase.applyCookies(response)
+
     const { data: userData, error: userError } = await supabase.auth.getUser()
     if (userError) throw userError
-    if (userData.user?.email && userData.user.email_confirmed_at) {
+    if (userData.user?.email) {
       try {
-        const confirmedAt = new Date(userData.user.email_confirmed_at)
+        const confirmedAt = userData.user.email_confirmed_at
+          ? new Date(userData.user.email_confirmed_at)
+          : new Date()
         const linkedRegistration = await prisma.connectRegistration.findUnique({
           where: { authUserId: userData.user.id },
           select: { id: true },
@@ -67,7 +83,7 @@ export async function GET(req: Request) {
         console.error('Connect registration confirmation sync failed:', registrationError)
       }
     }
-    return NextResponse.redirect(destination)
+    return response
   } catch (error) {
     console.error('Connect auth callback failed:', error)
     const destination = new URL('/connect/sign-in', appUrl.origin)

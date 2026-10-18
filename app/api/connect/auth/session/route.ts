@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getAuthenticatedMember } from '@/lib/connect/auth'
+import { getAuthenticatedMember, isUserEmailVerified } from '@/lib/connect/auth'
 import { prisma } from '@/lib/prisma'
 import {
   ConnectRequestError,
@@ -41,7 +41,7 @@ export async function GET() {
     return NextResponse.json(
       {
         authenticated: true,
-        emailVerified: Boolean(user.email_confirmed_at),
+        emailVerified: isUserEmailVerified(user),
         user: {
           id: user.id,
           email: user.email ?? null,

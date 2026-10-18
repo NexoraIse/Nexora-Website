@@ -17,7 +17,6 @@ export async function GET(req: Request) {
 
   try {
     const callback = new URL('/api/connect/auth/callback', appUrl)
-    callback.searchParams.set('next', '/connect/start')
     const supabase = await createConnectSupabaseServerClient()
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -33,6 +32,7 @@ export async function GET(req: Request) {
 
     const response = NextResponse.redirect(data.url)
     response.headers.set('Cache-Control', 'no-store')
+    supabase.applyCookies(response)
     return response
   } catch (error) {
     console.error('Google sign-in request failed:', error)

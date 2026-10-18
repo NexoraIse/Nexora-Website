@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import type { NextResponse } from 'next/server'
 import crypto from 'node:crypto'
 import { prisma } from '@/lib/prisma'
 import { verifyAdminToken, type AdminUser } from '@/lib/admin-auth'
@@ -19,22 +20,48 @@ function getSupabaseConfig() {
   return { url, key }
 }
 
-export async function createConnectSupabaseServerClient() {
+export async function createConnectSupabaseServerClient(response?: NextResponse) {
   const { url, key } = getSupabaseConfig()
   const cookieStore = await cookies()
+  const cookiesWritten: Array<{ name: string; value: string; options?: any }> = []
 
-  return createServerClient(url, key, {
+  const client = createServerClient(url, key, {
     cookies: {
       getAll() {
         return cookieStore.getAll()
       },
       setAll(cookiesToSet) {
         for (const { name, value, options } of cookiesToSet) {
-          cookieStore.set(name, value, options)
+          try {
+            cookieStore.set(name, value, options)
+          } catch {
+            // Can be ignored in Server Component contexts
+          }
+          cookiesWritten.push({ name, value, options })
+          if (response) {
+            response.cookies.set(name, value, options)
+          }
         }
       },
     },
   })
+
+  return Object.assign(client, {
+    applyCookies(targetResponse: NextResponse) {
+      for (const { name, value, options } of cookiesWritten) {
+        targetResponse.cookies.set(name, value, options)
+      }
+      return targetResponse
+    },
+  })
+}
+
+export function isUserEmailVerified(user: User): boolean {
+  if (!user.email) return false
+  if (user.email_confirmed_at || (user as any).confirmed_at) return true
+  if (user.app_metadata?.provider === 'google') return true
+  if (user.identities?.some((id) => id.provider === 'google')) return true
+  return false
 }
 
 export async function getAuthenticatedMember(): Promise<User | null> {
@@ -55,7 +82,7 @@ export async function getAuthenticatedMember(): Promise<User | null> {
 
 export async function getVerifiedMember(): Promise<User | null> {
   const user = await getAuthenticatedMember()
-  if (!user?.email || !user.email_confirmed_at) return null
+  if (!user?.email || !isUserEmailVerified(user)) return null
   return user
 }
 

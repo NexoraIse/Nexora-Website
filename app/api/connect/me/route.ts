@@ -75,14 +75,16 @@ export async function POST(req: Request) {
         { status: 401 }
       )
     }
-    if (!user.email || !user.email_confirmed_at) {
+    if (!user.email) {
       return NextResponse.json(
         { error: 'Continue with a Google account that has a verified email address to create a profile.' },
         { status: 401 }
       )
     }
     const verifiedEmail = user.email.toLowerCase()
-    const emailConfirmedAt = new Date(user.email_confirmed_at)
+    const emailConfirmedAt = user.email_confirmed_at
+      ? new Date(user.email_confirmed_at)
+      : new Date()
 
     const body = await readJsonObject(req)
     const usn = normalizeSignupUsn(body.usn)
@@ -158,6 +160,12 @@ export async function POST(req: Request) {
       location: optionalString(body.location, 'location', 120),
       phone: optionalString(body.phone, 'phone', 40),
       contactEmail: optionalEmail(body.contactEmail ?? user.email, 'contactEmail'),
+      phonePublic:
+        body.phonePublic === undefined ? false : booleanValue(body.phonePublic, 'phonePublic'),
+      contactEmailPublic:
+        body.contactEmailPublic === undefined
+          ? false
+          : booleanValue(body.contactEmailPublic, 'contactEmailPublic'),
       visibility,
       currentRole: optionalString(body.currentRole, 'currentRole', 160),
       company: optionalString(body.company, 'company', 160),
