@@ -120,6 +120,7 @@ export async function verifyAdminCredentials(
 
 /**
  * Creates an immutable forensic audit log entry in the audit_logs table.
+ * All audit logs are permanently retained indefinitely; they are never auto-deleted.
  */
 export async function recordAuditLog(params: {
   action: string
