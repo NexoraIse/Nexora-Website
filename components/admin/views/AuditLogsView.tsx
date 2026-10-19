@@ -54,7 +54,7 @@ export default function AuditLogsView() {
         <div>
           <h2 className="text-sm font-bold text-[#111827]">Security & Activity Audit Logs</h2>
           <p className="text-xs text-[#64748B]">
-            Automated event trail recording every mutation and administrative login.
+            Permanent immutable forensic audit trail. Logs are stored indefinitely with no auto-deletion.
           </p>
         </div>
 

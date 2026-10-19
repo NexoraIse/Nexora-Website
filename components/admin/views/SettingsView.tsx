@@ -35,7 +35,7 @@ export default function SettingsView({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 text-xs">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 text-xs">
           <div>
             <span className="text-[#64748B]">Authentication Mechanism:</span>
             <p className="font-semibold text-[#111827] mt-0.5">
@@ -46,6 +46,12 @@ export default function SettingsView({
             <span className="text-[#64748B]">Session Lifespan:</span>
             <p className="font-semibold text-[#111827] mt-0.5">
               7 Days (HttpOnly, Secure, SameSite)
+            </p>
+          </div>
+          <div>
+            <span className="text-[#64748B]">Audit Log Retention:</span>
+            <p className="font-semibold text-[#111827] mt-0.5">
+              Permanent (Indefinite · No Auto-Delete)
             </p>
           </div>
         </div>
