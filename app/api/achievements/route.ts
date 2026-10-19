@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { INITIAL_ACHIEVEMENTS } from '@/lib/data/initial-achievements'
 
 export async function GET(req: Request) {
   try {
@@ -19,12 +20,22 @@ export async function GET(req: Request) {
       orderBy: [{ achievementDate: 'desc' }, { createdAt: 'desc' }],
     })
 
-    return NextResponse.json({ achievements })
+    if (achievements.length > 0) {
+      return NextResponse.json({ achievements })
+    }
+
+    const filtered = category
+      ? INITIAL_ACHIEVEMENTS.filter(
+          (a) => a.category.toLowerCase() === category.toLowerCase()
+        )
+      : INITIAL_ACHIEVEMENTS
+
+    return NextResponse.json({ achievements: filtered })
   } catch (err: unknown) {
     if (err && typeof err === 'object' && 'digest' in err) {
       throw err
     }
     console.error('Public achievements fetch error:', err)
-    return NextResponse.json({ achievements: [] }, { status: 500 })
+    return NextResponse.json({ achievements: INITIAL_ACHIEVEMENTS }, { status: 200 })
   }
 }
