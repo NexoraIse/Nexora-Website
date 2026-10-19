@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import HomeEventsSection from '@/components/HomeEventsSection'
 import HomeAchievementsSection from '@/components/HomeAchievementsSection'
+import HomeGallerySection from '@/components/HomeGallerySection'
 import HomeLearnPracticeSection from '@/components/HomeLearnPracticeSection'
 import HomeNoticesSection from '@/components/HomeNoticesSection'
 import type { HomepageAchievement } from '@/lib/home-achievements'
@@ -218,6 +219,7 @@ export default function HomeSectionPreviews({
       </div>
     </section>
     <HomeAchievementsSection achievements={achievements} unavailable={achievementsUnavailable} />
+    <HomeGallerySection />
     </>
   )
 }
