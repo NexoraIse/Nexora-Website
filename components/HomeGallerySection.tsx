@@ -40,6 +40,13 @@ function GalleryRow({
   reducedMotion,
   rowIndex,
 }: GalleryRowProps) {
+  if (!items || items.length === 0) return null;
+
+  const displayItems =
+    items.length < 5
+      ? Array.from({ length: Math.ceil(5 / items.length) }, () => items).flat()
+      : items;
+
   const rowAriaLabel = `Gallery row ${rowIndex + 1}, moving ${direction === "left" ? "right to left" : "left to right"}`;
 
   return (
@@ -60,9 +67,9 @@ function GalleryRow({
       >
         {/* Sequence 1 */}
         <div className="flex h-full items-center gap-3 sm:gap-4 shrink-0 pr-3 sm:pr-4">
-          {items.map((item) => (
+          {displayItems.map((item, idx) => (
             <GalleryCard
-              key={`${item.id}-a`}
+              key={`${item.id}-a-${idx}`}
               item={item}
               rowHeightClass={rowHeightClass}
               onSelect={() => onSelectPhoto(item.id)}
@@ -75,9 +82,9 @@ function GalleryRow({
           className="flex h-full items-center gap-3 sm:gap-4 shrink-0 pr-3 sm:pr-4"
           aria-hidden="true"
         >
-          {items.map((item) => (
+          {displayItems.map((item, idx) => (
             <GalleryCard
-              key={`${item.id}-b`}
+              key={`${item.id}-b-${idx}`}
               item={item}
               rowHeightClass={rowHeightClass}
               onSelect={() => onSelectPhoto(item.id)}
@@ -149,6 +156,8 @@ function GalleryCard({
 }
 
 export default function HomeGallerySection() {
+  const [rows, setRows] = useState<GalleryItem[][]>(GALLERY_ROWS);
+  const [allItems, setAllItems] = useState<GalleryItem[]>(ALL_GALLERY_ITEMS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [userPaused, setUserPaused] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -160,11 +169,34 @@ export default function HomeGallerySection() {
   const reducedMotion = Boolean(systemPrefersReducedMotion);
   const isAnimationPaused = userPaused || isHovered;
 
+  // Sync with dynamic gallery additions (e.g. added via Admin Dashboard)
+  useEffect(() => {
+    let isMounted = true;
+    async function loadDynamicGallery() {
+      try {
+        const res = await fetch('/api/gallery', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted && Array.isArray(data.rows) && Array.isArray(data.all) && data.all.length > 0) {
+            setRows(data.rows);
+            setAllItems(data.all);
+          }
+        }
+      } catch {
+        // Fall back gracefully to seeded rows
+      }
+    }
+    loadDynamicGallery();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Selected item index in flattened gallery
   const selectedIndex = selectedId
-    ? ALL_GALLERY_ITEMS.findIndex((it) => it.id === selectedId)
+    ? allItems.findIndex((it) => it.id === selectedId)
     : -1;
-  const activeItem = selectedIndex >= 0 ? ALL_GALLERY_ITEMS[selectedIndex] : null;
+  const activeItem = selectedIndex >= 0 ? allItems[selectedIndex] : null;
 
   const handleOpenPhoto = useCallback((id: string) => {
     setSelectedId(id);
@@ -175,17 +207,17 @@ export default function HomeGallerySection() {
   }, []);
 
   const handlePrev = useCallback(() => {
-    if (selectedIndex === -1) return;
+    if (selectedIndex === -1 || allItems.length === 0) return;
     const prevIdx =
-      (selectedIndex - 1 + ALL_GALLERY_ITEMS.length) % ALL_GALLERY_ITEMS.length;
-    setSelectedId(ALL_GALLERY_ITEMS[prevIdx].id);
-  }, [selectedIndex]);
+      (selectedIndex - 1 + allItems.length) % allItems.length;
+    setSelectedId(allItems[prevIdx].id);
+  }, [selectedIndex, allItems]);
 
   const handleNext = useCallback(() => {
-    if (selectedIndex === -1) return;
-    const nextIdx = (selectedIndex + 1) % ALL_GALLERY_ITEMS.length;
-    setSelectedId(ALL_GALLERY_ITEMS[nextIdx].id);
-  }, [selectedIndex]);
+    if (selectedIndex === -1 || allItems.length === 0) return;
+    const nextIdx = (selectedIndex + 1) % allItems.length;
+    setSelectedId(allItems[nextIdx].id);
+  }, [selectedIndex, allItems]);
 
   // Lock background scroll when lightbox is active
   useEffect(() => {
@@ -294,7 +326,7 @@ export default function HomeGallerySection() {
           {/* Interactive Play/Pause & Counter Widget */}
           <div className="flex items-center gap-3 self-start md:self-end shrink-0">
             <span className="text-xs font-mono text-slate-400 hidden sm:inline-block">
-              {ALL_GALLERY_ITEMS.length} MOMENTS ARCHIVED
+              {allItems.length} MOMENTS ARCHIVED
             </span>
             <button
               type="button"
@@ -321,66 +353,74 @@ export default function HomeGallerySection() {
         </div>
       </div>
 
-      {/* Infinite Moving Rows Container with Edge Gradient Masks */}
-      <div
-        className="relative w-full overflow-hidden space-y-3 sm:space-y-4 py-2"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        style={{
-          maskImage:
-            "linear-gradient(to right, transparent, black 3%, black 97%, transparent)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 3%, black 97%, transparent)",
-        }}
-      >
-        {/* ROW 1: Right to Left */}
-        <GalleryRow
-          rowIndex={0}
-          items={GALLERY_ROWS[0]}
-          direction="left"
-          durationSeconds={42}
-          rowHeightClass="h-36 sm:h-44 md:h-48 lg:h-52"
-          isPaused={isAnimationPaused}
-          onSelectPhoto={handleOpenPhoto}
-          reducedMotion={reducedMotion}
-        />
+      {/* Empty State or Infinite Moving Rows */}
+      {allItems.length === 0 ? (
+        <div className="relative mx-auto w-[min(calc(100%-2rem),80rem)] py-14 px-6 text-center rounded-2xl border border-cyan-500/15 bg-[#030814]/40 backdrop-blur-sm">
+          <p className="text-sm font-mono text-slate-400">
+            Moments will appear here as photos are added to the gallery.
+          </p>
+        </div>
+      ) : (
+        <div
+          className="relative w-full overflow-hidden space-y-3 sm:space-y-4 py-2"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent, black 3%, black 97%, transparent)",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent, black 3%, black 97%, transparent)",
+          }}
+        >
+          {/* ROW 1: Right to Left */}
+          <GalleryRow
+            rowIndex={0}
+            items={rows[0] || []}
+            direction="left"
+            durationSeconds={42}
+            rowHeightClass="h-36 sm:h-44 md:h-48 lg:h-52"
+            isPaused={isAnimationPaused}
+            onSelectPhoto={handleOpenPhoto}
+            reducedMotion={reducedMotion}
+          />
 
-        {/* ROW 2: Left to Right */}
-        <GalleryRow
-          rowIndex={1}
-          items={GALLERY_ROWS[1]}
-          direction="right"
-          durationSeconds={54}
-          rowHeightClass="h-40 sm:h-48 md:h-52 lg:h-56"
-          isPaused={isAnimationPaused}
-          onSelectPhoto={handleOpenPhoto}
-          reducedMotion={reducedMotion}
-        />
+          {/* ROW 2: Left to Right */}
+          <GalleryRow
+            rowIndex={1}
+            items={rows[1] || []}
+            direction="right"
+            durationSeconds={54}
+            rowHeightClass="h-40 sm:h-48 md:h-52 lg:h-56"
+            isPaused={isAnimationPaused}
+            onSelectPhoto={handleOpenPhoto}
+            reducedMotion={reducedMotion}
+          />
 
-        {/* ROW 3: Right to Left */}
-        <GalleryRow
-          rowIndex={2}
-          items={GALLERY_ROWS[2]}
-          direction="left"
-          durationSeconds={38}
-          rowHeightClass="h-32 sm:h-40 md:h-44 lg:h-48"
-          isPaused={isAnimationPaused}
-          onSelectPhoto={handleOpenPhoto}
-          reducedMotion={reducedMotion}
-        />
+          {/* ROW 3: Right to Left */}
+          <GalleryRow
+            rowIndex={2}
+            items={rows[2] || []}
+            direction="left"
+            durationSeconds={38}
+            rowHeightClass="h-32 sm:h-40 md:h-44 lg:h-48"
+            isPaused={isAnimationPaused}
+            onSelectPhoto={handleOpenPhoto}
+            reducedMotion={reducedMotion}
+          />
 
-        {/* ROW 4: Left to Right */}
-        <GalleryRow
-          rowIndex={3}
-          items={GALLERY_ROWS[3]}
-          direction="right"
-          durationSeconds={48}
-          rowHeightClass="h-36 sm:h-44 md:h-48 lg:h-52"
-          isPaused={isAnimationPaused}
-          onSelectPhoto={handleOpenPhoto}
-          reducedMotion={reducedMotion}
-        />
-      </div>
+          {/* ROW 4: Left to Right */}
+          <GalleryRow
+            rowIndex={3}
+            items={rows[3] || []}
+            direction="right"
+            durationSeconds={48}
+            rowHeightClass="h-36 sm:h-44 md:h-48 lg:h-52"
+            isPaused={isAnimationPaused}
+            onSelectPhoto={handleOpenPhoto}
+            reducedMotion={reducedMotion}
+          />
+        </div>
+      )}
 
       {/* Interactive Lightbox Modal */}
       <AnimatePresence>
@@ -415,7 +455,7 @@ export default function HomeGallerySection() {
                   </span>
                   <span className="text-xs font-mono text-slate-400">
                     {String(selectedIndex + 1).padStart(2, "0")} /{" "}
-                    {String(ALL_GALLERY_ITEMS.length).padStart(2, "0")}
+                    {String(allItems.length).padStart(2, "0")}
                   </span>
                 </div>
 

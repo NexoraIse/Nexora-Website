@@ -34,7 +34,7 @@ interface DashboardData {
 
 interface DashboardViewProps {
   onNavigate: (tab: AdminTab) => void
-  onQuickAction: (type: 'event' | 'notice' | 'achievement' | 'resource') => void
+  onQuickAction: (type: 'event' | 'notice' | 'achievement' | 'resource' | 'gallery') => void
 }
 
 export default function DashboardView({
@@ -180,6 +180,14 @@ export default function DashboardView({
           >
             <PlusCircle className="h-3.5 w-3.5" />
             <span>Add Achievement</span>
+          </button>
+
+          <button
+            onClick={() => onQuickAction('gallery')}
+            className="flex items-center gap-1.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2 text-xs font-semibold text-[#111827] hover:bg-[#F1F5F9] transition-colors"
+          >
+            <PlusCircle className="h-3.5 w-3.5" />
+            <span>Add Photo</span>
           </button>
 
           <button

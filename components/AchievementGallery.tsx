@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Award, Sparkles } from "lucide-react";
 
 export type Achievement = {
   id?: string;
@@ -14,32 +15,7 @@ export type Achievement = {
   isSample?: boolean;
 };
 
-const DEFAULT_ACHIEVEMENTS: Achievement[] = [
-  {
-    category: "Technical competition",
-    title: "VTU State Level Hackathon Champions",
-    description: "Nexora student team secured 1st place building an AI-assisted smart healthcare triage system.",
-    event: "Smart India Hackathon Regional",
-    date: "March 2026",
-    isSample: false,
-  },
-  {
-    category: "Hackathon",
-    title: "National Cyber Security CTF Finalists",
-    description: "Secured Top 5 nationally in offensive security, reverse engineering, and web vulnerability analysis.",
-    event: "InCTF Nationals",
-    date: "February 2026",
-    isSample: false,
-  },
-  {
-    category: "Project exhibition",
-    title: "Best Department Innovation Award",
-    description: "Demonstrated real-time autonomous drone detection and telemetric tracking system.",
-    event: "AJIET Annual Project Expo",
-    date: "January 2026",
-    isSample: false,
-  },
-];
+const DEFAULT_ACHIEVEMENTS: Achievement[] = [];
 
 interface AchievementGalleryProps {
   initialAchievements?: Achievement[];
@@ -51,13 +27,14 @@ export default function AchievementGallery({ initialAchievements }: AchievementG
       ? initialAchievements
       : DEFAULT_ACHIEVEMENTS
   );
+  const [loading, setLoading] = useState<boolean>(!initialAchievements);
   const galleryRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     fetch('/api/achievements')
       .then((res) => res.json())
       .then((data) => {
-        if (data.achievements && data.achievements.length > 0) {
+        if (Array.isArray(data.achievements)) {
           const mapped: Achievement[] = data.achievements.map((a: any) => ({
             id: a.id,
             category: a.category,
@@ -71,7 +48,12 @@ export default function AchievementGallery({ initialAchievements }: AchievementG
           setItems(mapped);
         }
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error('Failed to fetch achievements:', err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -132,47 +114,75 @@ export default function AchievementGallery({ initialAchievements }: AchievementG
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-        {items.map((achievement, index) => (
-          <article
-            key={achievement.id || `${achievement.title}-${index}`}
-            className="achievement-reveal group relative flex min-h-72 flex-col overflow-hidden rounded-xl border border-[var(--theme-primary,#00f0ff)]/20 bg-[#03080a] p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-[var(--theme-primary,#00f0ff)]/60 sm:p-7"
-            style={{ transitionDelay: `${(index % 3) * 100}ms` }}
-          >
-            <div aria-hidden className="terminal-scanlines opacity-20 pointer-events-none" />
-
-            {achievement.image ? (
-              <div className="relative mb-6 h-40 overflow-hidden rounded-xl border border-[var(--theme-primary,#00f0ff)]/20">
-                <Image
-                  src={achievement.image}
-                  alt={achievement.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                />
-              </div>
-            ) : null}
-            <div className="relative flex items-center justify-between gap-3">
-              <span className="rounded-full border border-[var(--theme-primary,#00f0ff)]/30 bg-[var(--theme-primary,#00f0ff)]/10 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[var(--theme-primary,#00f0ff)] font-mono">
-                {achievement.category}
-              </span>
-              <span className="shrink-0 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--theme-primary,#00f0ff)] font-mono">
-                Verified
-              </span>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--theme-primary,#00f0ff)] border-t-transparent" />
+          <p className="mt-4 text-xs font-mono uppercase tracking-widest text-[var(--theme-primary,#00f0ff)]/70">
+            Loading achievements...
+          </p>
+        </div>
+      ) : items.length === 0 ? (
+        <div className="relative mx-auto max-w-2xl overflow-hidden rounded-2xl border border-[var(--theme-primary,#00f0ff)]/20 bg-[#03080a] p-10 sm:p-14 text-center shadow-xl">
+          <div aria-hidden className="terminal-scanlines opacity-20 pointer-events-none" />
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--theme-primary,#00f0ff)]/30 bg-[var(--theme-primary,#00f0ff)]/10 text-[var(--theme-primary,#00f0ff)] shadow-[0_0_25px_rgba(0,240,255,0.25)]">
+              <Award className="h-7 w-7 text-[var(--theme-primary,#00f0ff)]" />
             </div>
-            <h2 className="relative mt-5 text-xl font-clash font-bold leading-snug text-[var(--theme-bg-hero,#dce6ef)] group-hover:text-white transition-colors">
-              {achievement.title}
-            </h2>
-            <p className="relative mt-2.5 text-xs sm:text-sm leading-relaxed text-white/70 font-cabinet">
-              {achievement.description}
+            <h3 className="mt-5 text-xl sm:text-2xl font-clash font-bold text-[var(--theme-bg-hero,#dce6ef)]">
+              No Achievements Published Yet
+            </h3>
+            <p className="mt-3 max-w-md text-xs sm:text-sm text-white/70 font-cabinet leading-relaxed">
+              Student hackathon victories, competition awards, and project showcases will appear here as they are published by the department.
             </p>
-            <div className="relative mt-auto flex flex-col gap-2 border-t border-[var(--theme-primary,#00f0ff)]/15 pt-4 text-xs text-[var(--theme-primary,#00f0ff)]/70 font-mono sm:flex-row sm:items-center sm:justify-between">
-              <span>{achievement.event}</span>
-              <span className="text-[var(--theme-bg-hero,#dce6ef)]">{achievement.date}</span>
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[var(--theme-primary,#00f0ff)]/30 bg-[var(--theme-primary,#00f0ff)]/5 px-4 py-1.5 text-xs font-mono text-[var(--theme-primary,#00f0ff)]">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Records are verified & published via the Admin Portal</span>
             </div>
-          </article>
-        ))}
-      </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          {items.map((achievement, index) => (
+            <article
+              key={achievement.id || `${achievement.title}-${index}`}
+              className="achievement-reveal group relative flex min-h-72 flex-col overflow-hidden rounded-xl border border-[var(--theme-primary,#00f0ff)]/20 bg-[#03080a] p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-[var(--theme-primary,#00f0ff)]/60 sm:p-7"
+              style={{ transitionDelay: `${(index % 3) * 100}ms` }}
+            >
+              <div aria-hidden className="terminal-scanlines opacity-20 pointer-events-none" />
+
+              {achievement.image ? (
+                <div className="relative mb-6 h-40 overflow-hidden rounded-xl border border-[var(--theme-primary,#00f0ff)]/20">
+                  <Image
+                    src={achievement.image}
+                    alt={achievement.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition duration-500 group-hover:scale-105"
+                  />
+                </div>
+              ) : null}
+              <div className="relative flex items-center justify-between gap-3">
+                <span className="rounded-full border border-[var(--theme-primary,#00f0ff)]/30 bg-[var(--theme-primary,#00f0ff)]/10 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[var(--theme-primary,#00f0ff)] font-mono">
+                  {achievement.category}
+                </span>
+                <span className="shrink-0 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--theme-primary,#00f0ff)] font-mono">
+                  Verified
+                </span>
+              </div>
+              <h2 className="relative mt-5 text-xl font-clash font-bold leading-snug text-[var(--theme-bg-hero,#dce6ef)] group-hover:text-white transition-colors">
+                {achievement.title}
+              </h2>
+              <p className="relative mt-2.5 text-xs sm:text-sm leading-relaxed text-white/70 font-cabinet">
+                {achievement.description}
+              </p>
+              <div className="relative mt-auto flex flex-col gap-2 border-t border-[var(--theme-primary,#00f0ff)]/15 pt-4 text-xs text-[var(--theme-primary,#00f0ff)]/70 font-mono sm:flex-row sm:items-center sm:justify-between">
+                <span>{achievement.event}</span>
+                <span className="text-[var(--theme-bg-hero,#dce6ef)]">{achievement.date}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
