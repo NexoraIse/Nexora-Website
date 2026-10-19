@@ -32,6 +32,10 @@ const TAB_TITLES: Record<AdminTab, { title: string; description: string }> = {
     title: 'Learning Hub & Resources',
     description: 'Manage semester study materials, syllabus guides, notes, and question banks.',
   },
+  gallery: {
+    title: 'Photo Gallery Management',
+    description: 'Add and curate moments and event photographs stored on Cloudinary.',
+  },
   categories: {
     title: 'Content Categories',
     description: 'Organize tags and category taxonomy across all club content streams.',

@@ -18,6 +18,7 @@ import {
   ExternalLink,
   ClipboardCheck,
   UserRound,
+  Image as ImageIcon,
 } from 'lucide-react'
 
 export type AdminTab =
@@ -26,6 +27,7 @@ export type AdminTab =
   | 'notices'
   | 'achievements'
   | 'learning-hub'
+  | 'gallery'
   | 'categories'
   | 'users'
   | 'roles'
@@ -70,6 +72,7 @@ export default function AdminSidebar({
         { id: 'notices' as AdminTab, label: 'Notice Board', icon: Bell },
         { id: 'achievements' as AdminTab, label: 'Achievements', icon: Award },
         { id: 'learning-hub' as AdminTab, label: 'Learning Hub', icon: BookOpen },
+        { id: 'gallery' as AdminTab, label: 'Photo Gallery', icon: ImageIcon },
         { id: 'categories' as AdminTab, label: 'Categories', icon: Layers },
       ],
     },

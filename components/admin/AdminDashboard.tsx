@@ -9,6 +9,7 @@ import EventsView from './views/EventsView'
 import NoticesView from './views/NoticesView'
 import AchievementsView from './views/AchievementsView'
 import LearningHubView from './views/LearningHubView'
+import GalleryView from './views/GalleryView'
 import CategoriesView from './views/CategoriesView'
 import AdminUsersView from './views/AdminUsersView'
 import RolesView from './views/RolesView'
@@ -53,6 +54,9 @@ export default function AdminDashboard({ user, onLogout }: AdminDashboardProps) 
       setOpenModalSignal((prev) => prev + 1)
     } else if (type === 'resource' || type === 'learning-hub') {
       setCurrentTab('learning-hub')
+      setOpenModalSignal((prev) => prev + 1)
+    } else if (type === 'gallery') {
+      setCurrentTab('gallery')
       setOpenModalSignal((prev) => prev + 1)
     }
   }
@@ -104,6 +108,10 @@ export default function AdminDashboard({ user, onLogout }: AdminDashboardProps) 
 
             {currentTab === 'learning-hub' && (
               <LearningHubView key={`hub-${openModalSignal}`} initialOpenModal={openModalSignal > 0} />
+            )}
+
+            {currentTab === 'gallery' && (
+              <GalleryView key={`gallery-${openModalSignal}`} initialOpenModal={openModalSignal > 0} />
             )}
 
             {currentTab === 'categories' && <CategoriesView />}
