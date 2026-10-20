@@ -4,7 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Calendar, BookOpen, Bell } from 'lucide-react';
+import { ArrowRight, Calendar, BookOpen } from 'lucide-react';
 import gsap from 'gsap';
 import { AnimatePresence, motion } from 'motion/react';
 import Marquee from './Marquee';
@@ -424,14 +424,6 @@ export default function Hero({
                 <Calendar className="w-4 h-4" />
                 <span>Explore Events</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href="/notices"
-                data-cursor="Notices"
-                className="inline-flex items-center gap-2.5 rounded-full border border-[var(--theme-primary,#00f0ff)]/40 px-6 py-3 text-xs sm:text-sm font-clash font-bold uppercase tracking-[0.15em] text-[var(--theme-bg-hero,#dce6ef)] transition-all duration-200 hover:bg-[var(--theme-primary,#00f0ff)]/10 hover:border-[var(--theme-primary,#00f0ff)] active:scale-95"
-              >
-                <Bell className="w-4 h-4" />
-                <span>Notice Board</span>
               </Link>
               <Link
                 href="/learn"

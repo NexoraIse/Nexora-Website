@@ -53,7 +53,6 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Admin: 'Admin',
   Event: 'Event',
-  Notice: 'Notice',
   Achievement: 'Achievement',
   LearningResource: 'LearningResource',
   ContentCategory: 'ContentCategory',
@@ -129,33 +128,6 @@ export const EventScalarFieldEnum = {
 } as const
 
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
-
-
-export const NoticeScalarFieldEnum = {
-  id: 'id',
-  date: 'date',
-  title: 'title',
-  slug: 'slug',
-  summary: 'summary',
-  content: 'content',
-  category: 'category',
-  priority: 'priority',
-  status: 'status',
-  publishDate: 'publishDate',
-  expiryDate: 'expiryDate',
-  image: 'image',
-  attachmentUrl: 'attachmentUrl',
-  attachmentType: 'attachmentType',
-  attachmentName: 'attachmentName',
-  isPinned: 'isPinned',
-  authorName: 'authorName',
-  authorRole: 'authorRole',
-  createdById: 'createdById',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type NoticeScalarFieldEnum = (typeof NoticeScalarFieldEnum)[keyof typeof NoticeScalarFieldEnum]
 
 
 export const AchievementScalarFieldEnum = {

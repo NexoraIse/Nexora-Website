@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import {
   Calendar,
-  Bell,
   Award,
   BookOpen,
   FileEdit,
@@ -20,13 +19,11 @@ interface DashboardData {
   metrics: {
     totalEvents: number
     upcomingEvents: number
-    publishedNotices: number
     publishedAchievements: number
     learningResources: number
     draftContent: number
   }
   recentEvents: any[]
-  recentNotices: any[]
   recentAchievements: any[]
   recentResources: any[]
   recentAuditLogs: any[]
@@ -34,7 +31,7 @@ interface DashboardData {
 
 interface DashboardViewProps {
   onNavigate: (tab: AdminTab) => void
-  onQuickAction: (type: 'event' | 'notice' | 'achievement' | 'resource' | 'gallery') => void
+  onQuickAction: (type: 'event' | 'achievement' | 'resource' | 'gallery') => void
 }
 
 export default function DashboardView({
@@ -68,8 +65,8 @@ export default function DashboardView({
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {[...Array(6)].map((_, i) => (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {[...Array(5)].map((_, i) => (
             <div
               key={i}
               className="h-28 animate-pulse rounded-2xl bg-white p-5 border border-[#E2E8F0] shadow-2xs"
@@ -87,7 +84,6 @@ export default function DashboardView({
   const metrics = data?.metrics || {
     totalEvents: 0,
     upcomingEvents: 0,
-    publishedNotices: 0,
     publishedAchievements: 0,
     learningResources: 0,
     draftContent: 0,
@@ -109,14 +105,6 @@ export default function DashboardView({
       icon: Clock,
       tab: 'events' as AdminTab,
       color: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-    },
-    {
-      title: 'Published Notices',
-      value: metrics.publishedNotices,
-      sub: 'Department board',
-      icon: Bell,
-      tab: 'notices' as AdminTab,
-      color: 'bg-amber-50 text-amber-700 border-amber-100',
     },
     {
       title: 'Achievements',
@@ -167,14 +155,6 @@ export default function DashboardView({
           </button>
 
           <button
-            onClick={() => onQuickAction('notice')}
-            className="flex items-center gap-1.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2 text-xs font-semibold text-[#111827] hover:bg-[#F1F5F9] transition-colors"
-          >
-            <PlusCircle className="h-3.5 w-3.5" />
-            <span>Post Notice</span>
-          </button>
-
-          <button
             onClick={() => onQuickAction('achievement')}
             className="flex items-center gap-1.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2 text-xs font-semibold text-[#111827] hover:bg-[#F1F5F9] transition-colors"
           >
@@ -202,7 +182,7 @@ export default function DashboardView({
       </div>
 
       {/* Summary Cards Grid */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {statCards.map((card) => {
           const Icon = card.icon
           return (
@@ -287,68 +267,6 @@ export default function DashboardView({
                   className="mt-2 text-xs font-semibold text-indigo-600 hover:underline"
                 >
                   Create an event now
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Recently Published Notices */}
-        <div className="rounded-2xl bg-white p-5 border border-[#E2E8F0] shadow-2xs">
-          <div className="flex items-center justify-between border-b border-[#F1F5F9] pb-4 mb-4">
-            <div className="flex items-center gap-2">
-              <Bell className="h-4 w-4 text-[#111827]" />
-              <h3 className="text-sm font-bold text-[#111827]">Recent Notices</h3>
-            </div>
-            <button
-              onClick={() => onNavigate('notices')}
-              className="text-xs font-semibold text-indigo-600 hover:text-indigo-800"
-            >
-              View all ({metrics.publishedNotices})
-            </button>
-          </div>
-
-          <div className="space-y-3">
-            {data?.recentNotices && data.recentNotices.length > 0 ? (
-              data.recentNotices.map((notice) => (
-                <div
-                  key={notice.id}
-                  className="flex items-center justify-between rounded-xl p-3 border border-[#F1F5F9] hover:bg-[#F8FAFC] transition-colors"
-                >
-                  <div className="min-w-0 flex-1 pr-3">
-                    <p className="truncate text-xs font-semibold text-[#111827]">
-                      {notice.title}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-700">
-                        {notice.category}
-                      </span>
-                      <span className="text-[11px] text-[#64748B]">
-                        {notice.date ? new Date(notice.date).toISOString().slice(0, 10) : ''}
-                      </span>
-                    </div>
-                  </div>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                      notice.priority === 'URGENT'
-                        ? 'bg-red-50 text-red-700 border border-red-200'
-                        : notice.priority === 'IMPORTANT'
-                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                        : 'bg-slate-50 text-slate-700 border border-slate-200'
-                    }`}
-                  >
-                    {notice.priority}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <div className="rounded-xl border border-dashed border-[#E2E8F0] p-6 text-center">
-                <p className="text-xs text-[#64748B]">No notices published yet.</p>
-                <button
-                  onClick={() => onQuickAction('notice')}
-                  className="mt-2 text-xs font-semibold text-indigo-600 hover:underline"
-                >
-                  Post a notice now
                 </button>
               </div>
             )}

@@ -1,14 +1,13 @@
 "use client";
 
 import React from "react";
-import { BookOpen, CalendarDays, Code2, Bell, ArrowRight } from "./Icons";
+import { BookOpen, CalendarDays, Code2, ArrowRight } from "./Icons";
 
 interface ExploreLearningProps {
   onCardClick?: (sectionId: string) => void;
   materialsCount?: number;
   examsCount?: number;
   skillsCount?: number;
-  announcementsCount?: number;
 }
 
 export default function ExploreLearning({
@@ -16,7 +15,6 @@ export default function ExploreLearning({
   materialsCount = 6,
   examsCount = 5,
   skillsCount = 6,
-  announcementsCount = 3,
 }: ExploreLearningProps) {
   const pathways = [
     {
@@ -33,7 +31,7 @@ export default function ExploreLearning({
       id: "upcoming-exams",
       index: "02",
       title: "Exam Corner",
-      description: "Timetables and exam notices.",
+      description: "Exam timetables and schedules.",
       details: "Official Internal Assessments & Semester-End timetables, hall allocations, and exam regulations.",
       icon: CalendarDays,
       countLabel: `${examsCount} Scheduled`,
@@ -48,16 +46,6 @@ export default function ExploreLearning({
       icon: Code2,
       countLabel: `${skillsCount} Learning Tracks`,
       actionLabel: "Start Learning",
-    },
-    {
-      id: "latest-updates",
-      index: "04",
-      title: "Latest Updates",
-      description: "Academic announcements.",
-      details: "Real-time notices, exam alerts, workshop registrations, and official department circulars.",
-      icon: Bell,
-      countLabel: `${announcementsCount} Recent`,
-      actionLabel: "Read Notices",
     },
   ];
 
@@ -80,7 +68,7 @@ export default function ExploreLearning({
 
       {/* Directory Ledger Grid - Human Designed, Architectural */}
       <div className="border-y border-[var(--theme-primary,#00f0ff)]/20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[var(--theme-primary,#00f0ff)]/20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--theme-primary,#00f0ff)]/20">
           {pathways.map((item) => {
             const Icon = item.icon;
             return (

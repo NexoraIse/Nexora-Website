@@ -66,7 +66,6 @@ export default function AuditLogsView() {
           >
             <option value="">All Entities</option>
             <option value="Event">Event</option>
-            <option value="Notice">Notice</option>
             <option value="Achievement">Achievement</option>
             <option value="LearningResource">Learning Resource</option>
             <option value="Category">Category</option>

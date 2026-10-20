@@ -12,37 +12,27 @@ export async function GET(req: Request) {
     const [
       totalEvents,
       upcomingEvents,
-      publishedNotices,
       publishedAchievements,
       learningResources,
       draftEvents,
-      draftNotices,
       draftAchievements,
       draftResources,
       recentEvents,
-      recentNotices,
       recentAchievements,
       recentResources,
       recentAuditLogs,
     ] = await Promise.all([
       prisma.event.count(),
       prisma.event.count({ where: { status: 'PUBLISHED' } }),
-      prisma.notice.count({ where: { status: 'PUBLISHED' } }),
       prisma.achievement.count({ where: { status: 'PUBLISHED' } }),
       prisma.learningResource.count({ where: { status: 'PUBLISHED' } }),
       prisma.event.count({ where: { status: 'DRAFT' } }),
-      prisma.notice.count({ where: { status: 'DRAFT' } }),
       prisma.achievement.count({ where: { status: 'DRAFT' } }),
       prisma.learningResource.count({ where: { status: 'DRAFT' } }),
       prisma.event.findMany({
         orderBy: { createdAt: 'desc' },
         take: 5,
         select: { id: true, title: true, slug: true, category: true, status: true, dateDisplay: true, createdAt: true },
-      }),
-      prisma.notice.findMany({
-        orderBy: { date: 'desc' },
-        take: 5,
-        select: { id: true, title: true, category: true, priority: true, status: true, date: true },
       }),
       prisma.achievement.findMany({
         orderBy: { createdAt: 'desc' },
@@ -61,22 +51,17 @@ export async function GET(req: Request) {
       }),
     ])
 
-    const draftContent = draftEvents + draftNotices + draftAchievements + draftResources
+    const draftContent = draftEvents + draftAchievements + draftResources
 
     return NextResponse.json({
       metrics: {
         totalEvents,
         upcomingEvents,
-        publishedNotices,
         publishedAchievements,
         learningResources,
         draftContent,
       },
       recentEvents,
-      recentNotices: recentNotices.map((n) => ({
-        ...n,
-        id: n.id.toString(),
-      })),
       recentAchievements,
       recentResources,
       recentAuditLogs,

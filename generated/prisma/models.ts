@@ -10,7 +10,6 @@
  */
 export type * from './models/Admin'
 export type * from './models/Event'
-export type * from './models/Notice'
 export type * from './models/Achievement'
 export type * from './models/LearningResource'
 export type * from './models/ContentCategory'

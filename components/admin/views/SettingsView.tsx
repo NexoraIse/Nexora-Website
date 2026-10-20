@@ -91,7 +91,7 @@ export default function SettingsView({
               <div>
                 <p className="font-semibold text-[#111827]">Storage Bucket Service</p>
                 <p className="text-[11px] text-[#64748B]">
-                  Supabase S3-compatible asset store (`notice-images`, `event-posters`)
+                  Supabase S3-compatible asset store for event media
                 </p>
               </div>
             </div>

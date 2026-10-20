@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { INITIAL_ACHIEVEMENTS } from "@/lib/data/initial-achievements";
 
 export type HomepageAchievement = {
   id: string;
@@ -36,6 +37,22 @@ export async function getHomepageAchievements(): Promise<HomepageAchievementData
         image: true,
       },
     });
+
+    if (achievements.length === 0) {
+      return {
+        achievements: INITIAL_ACHIEVEMENTS.slice(0, 5).map((achievement) => ({
+          id: achievement.id,
+          title: achievement.title,
+          category: achievement.category,
+          competitionOrEvent: achievement.competitionOrEvent ?? null,
+          awardOrPosition: achievement.awardOrPosition ?? null,
+          achievementDate: achievement.achievementDate ?? null,
+          dateDisplay: achievement.dateDisplay ?? null,
+          image: achievement.image ?? null,
+        })),
+        unavailable: false,
+      };
+    }
 
     return {
       achievements: achievements.map((achievement) => ({

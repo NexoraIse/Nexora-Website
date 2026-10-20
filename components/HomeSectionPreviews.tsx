@@ -8,11 +8,9 @@ import HomeEventsSection from '@/components/HomeEventsSection'
 import HomeAchievementsSection from '@/components/HomeAchievementsSection'
 import HomeGallerySection from '@/components/HomeGallerySection'
 import HomeLearnPracticeSection from '@/components/HomeLearnPracticeSection'
-import HomeNoticesSection from '@/components/HomeNoticesSection'
 import type { HomepageAchievement } from '@/lib/home-achievements'
 import type { EventItem } from '@/lib/types'
 import type { HomepageLearningData } from '@/lib/home-learning'
-import type { HomepageNotice } from '@/lib/home-notices'
 
 type CommunityProfile = {
   slug: string
@@ -118,10 +116,6 @@ function MemberAvatar({
 export default function HomeSectionPreviews({
   events,
   initialNow,
-  notices,
-  noticesNewThisWeek,
-  noticesUrgentCount,
-  noticesUnavailable,
   learning,
   achievements,
   achievementsUnavailable,
@@ -129,10 +123,6 @@ export default function HomeSectionPreviews({
 }: {
   events: EventItem[]
   initialNow: number
-  notices: HomepageNotice[]
-  noticesNewThisWeek: number
-  noticesUrgentCount: number
-  noticesUnavailable: boolean
   learning: HomepageLearningData
   achievements: HomepageAchievement[]
   achievementsUnavailable: boolean
@@ -209,12 +199,6 @@ export default function HomeSectionPreviews({
 
         <HomeEventsSection events={events} initialNow={initialNow} />
 
-        <HomeNoticesSection
-          notices={notices}
-          newThisWeek={noticesNewThisWeek}
-          urgentCount={noticesUrgentCount}
-          unavailable={noticesUnavailable}
-        />
         <HomeLearnPracticeSection data={learning} codeTokens={codeTokens} />
       </div>
     </section>

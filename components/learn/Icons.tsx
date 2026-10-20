@@ -10,8 +10,6 @@ export {
   Calendar,
   CalendarDays,
   Clock,
-  Bell,
-  BellRing,
   Search,
   Download,
   ExternalLink,
