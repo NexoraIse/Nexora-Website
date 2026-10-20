@@ -80,6 +80,7 @@ export default function AdminDashboard({ user, onLogout }: AdminDashboardProps) 
         {/* Top Header */}
         <AdminHeader
           currentTab={currentTab}
+          userRole={user.role}
           onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
           onQuickAction={handleQuickAction}
         />

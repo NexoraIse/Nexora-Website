@@ -206,6 +206,7 @@ export type AdminWhereInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileListRelationFilter
   reviewedConnectReports?: Prisma.ConnectReportListRelationFilter
   reviewedUsnDisputes?: Prisma.UsnDisputeListRelationFilter
+  launchStateUpdates?: Prisma.WebsiteLaunchStateListRelationFilter
 }
 
 export type AdminOrderByWithRelationInput = {
@@ -224,6 +225,7 @@ export type AdminOrderByWithRelationInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileOrderByRelationAggregateInput
   reviewedConnectReports?: Prisma.ConnectReportOrderByRelationAggregateInput
   reviewedUsnDisputes?: Prisma.UsnDisputeOrderByRelationAggregateInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateOrderByRelationAggregateInput
 }
 
 export type AdminWhereUniqueInput = Prisma.AtLeast<{
@@ -245,6 +247,7 @@ export type AdminWhereUniqueInput = Prisma.AtLeast<{
   reviewedMemberProfiles?: Prisma.MemberProfileListRelationFilter
   reviewedConnectReports?: Prisma.ConnectReportListRelationFilter
   reviewedUsnDisputes?: Prisma.UsnDisputeListRelationFilter
+  launchStateUpdates?: Prisma.WebsiteLaunchStateListRelationFilter
 }, "id" | "email">
 
 export type AdminOrderByWithAggregationInput = {
@@ -289,6 +292,7 @@ export type AdminCreateInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateInput = {
@@ -307,6 +311,7 @@ export type AdminUncheckedCreateInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUpdateInput = {
@@ -325,6 +330,7 @@ export type AdminUpdateInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateInput = {
@@ -343,6 +349,7 @@ export type AdminUncheckedUpdateInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminCreateManyInput = {
@@ -506,6 +513,22 @@ export type AdminUpdateOneWithoutAuditLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.AdminUpdateWithoutAuditLogsInput>, Prisma.AdminUncheckedUpdateWithoutAuditLogsInput>
 }
 
+export type AdminCreateNestedOneWithoutLaunchStateUpdatesInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutLaunchStateUpdatesInput, Prisma.AdminUncheckedCreateWithoutLaunchStateUpdatesInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutLaunchStateUpdatesInput
+  connect?: Prisma.AdminWhereUniqueInput
+}
+
+export type AdminUpdateOneWithoutLaunchStateUpdatesNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutLaunchStateUpdatesInput, Prisma.AdminUncheckedCreateWithoutLaunchStateUpdatesInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutLaunchStateUpdatesInput
+  upsert?: Prisma.AdminUpsertWithoutLaunchStateUpdatesInput
+  disconnect?: Prisma.AdminWhereInput | boolean
+  delete?: Prisma.AdminWhereInput | boolean
+  connect?: Prisma.AdminWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutLaunchStateUpdatesInput, Prisma.AdminUpdateWithoutLaunchStateUpdatesInput>, Prisma.AdminUncheckedUpdateWithoutLaunchStateUpdatesInput>
+}
+
 export type AdminCreateNestedOneWithoutReviewedMemberProfilesInput = {
   create?: Prisma.XOR<Prisma.AdminCreateWithoutReviewedMemberProfilesInput, Prisma.AdminUncheckedCreateWithoutReviewedMemberProfilesInput>
   connectOrCreate?: Prisma.AdminCreateOrConnectWithoutReviewedMemberProfilesInput
@@ -569,6 +592,7 @@ export type AdminCreateWithoutEventsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateWithoutEventsInput = {
@@ -586,6 +610,7 @@ export type AdminUncheckedCreateWithoutEventsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminCreateOrConnectWithoutEventsInput = {
@@ -619,6 +644,7 @@ export type AdminUpdateWithoutEventsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutEventsInput = {
@@ -636,6 +662,7 @@ export type AdminUncheckedUpdateWithoutEventsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminCreateWithoutNoticesInput = {
@@ -653,6 +680,7 @@ export type AdminCreateWithoutNoticesInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateWithoutNoticesInput = {
@@ -670,6 +698,7 @@ export type AdminUncheckedCreateWithoutNoticesInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminCreateOrConnectWithoutNoticesInput = {
@@ -703,6 +732,7 @@ export type AdminUpdateWithoutNoticesInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutNoticesInput = {
@@ -720,6 +750,7 @@ export type AdminUncheckedUpdateWithoutNoticesInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminCreateWithoutAchievementsInput = {
@@ -737,6 +768,7 @@ export type AdminCreateWithoutAchievementsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateWithoutAchievementsInput = {
@@ -754,6 +786,7 @@ export type AdminUncheckedCreateWithoutAchievementsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminCreateOrConnectWithoutAchievementsInput = {
@@ -787,6 +820,7 @@ export type AdminUpdateWithoutAchievementsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutAchievementsInput = {
@@ -804,6 +838,7 @@ export type AdminUncheckedUpdateWithoutAchievementsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminCreateWithoutResourcesInput = {
@@ -821,6 +856,7 @@ export type AdminCreateWithoutResourcesInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateWithoutResourcesInput = {
@@ -838,6 +874,7 @@ export type AdminUncheckedCreateWithoutResourcesInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminCreateOrConnectWithoutResourcesInput = {
@@ -871,6 +908,7 @@ export type AdminUpdateWithoutResourcesInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutResourcesInput = {
@@ -888,6 +926,7 @@ export type AdminUncheckedUpdateWithoutResourcesInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminCreateWithoutAuditLogsInput = {
@@ -905,6 +944,7 @@ export type AdminCreateWithoutAuditLogsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateWithoutAuditLogsInput = {
@@ -922,6 +962,7 @@ export type AdminUncheckedCreateWithoutAuditLogsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminCreateOrConnectWithoutAuditLogsInput = {
@@ -955,6 +996,7 @@ export type AdminUpdateWithoutAuditLogsInput = {
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutAuditLogsInput = {
@@ -969,6 +1011,95 @@ export type AdminUncheckedUpdateWithoutAuditLogsInput = {
   notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
+  reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
+  reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
+}
+
+export type AdminCreateWithoutLaunchStateUpdatesInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
+  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
+  achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
+  resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
+  reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
+  reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+}
+
+export type AdminUncheckedCreateWithoutLaunchStateUpdatesInput = {
+  id?: string
+  email: string
+  name?: string | null
+  password?: string | null
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
+  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
+  achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
+  resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
+  reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
+  reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type AdminCreateOrConnectWithoutLaunchStateUpdatesInput = {
+  where: Prisma.AdminWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminCreateWithoutLaunchStateUpdatesInput, Prisma.AdminUncheckedCreateWithoutLaunchStateUpdatesInput>
+}
+
+export type AdminUpsertWithoutLaunchStateUpdatesInput = {
+  update: Prisma.XOR<Prisma.AdminUpdateWithoutLaunchStateUpdatesInput, Prisma.AdminUncheckedUpdateWithoutLaunchStateUpdatesInput>
+  create: Prisma.XOR<Prisma.AdminCreateWithoutLaunchStateUpdatesInput, Prisma.AdminUncheckedCreateWithoutLaunchStateUpdatesInput>
+  where?: Prisma.AdminWhereInput
+}
+
+export type AdminUpdateToOneWithWhereWithoutLaunchStateUpdatesInput = {
+  where?: Prisma.AdminWhereInput
+  data: Prisma.XOR<Prisma.AdminUpdateWithoutLaunchStateUpdatesInput, Prisma.AdminUncheckedUpdateWithoutLaunchStateUpdatesInput>
+}
+
+export type AdminUpdateWithoutLaunchStateUpdatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
+  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
+  achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
+  resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
+  reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
+  reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+}
+
+export type AdminUncheckedUpdateWithoutLaunchStateUpdatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
+  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
+  achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
+  resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -989,6 +1120,7 @@ export type AdminCreateWithoutReviewedMemberProfilesInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
   reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateWithoutReviewedMemberProfilesInput = {
@@ -1006,6 +1138,7 @@ export type AdminUncheckedCreateWithoutReviewedMemberProfilesInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminCreateOrConnectWithoutReviewedMemberProfilesInput = {
@@ -1039,6 +1172,7 @@ export type AdminUpdateWithoutReviewedMemberProfilesInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutReviewedMemberProfilesInput = {
@@ -1056,6 +1190,7 @@ export type AdminUncheckedUpdateWithoutReviewedMemberProfilesInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminCreateWithoutReviewedConnectReportsInput = {
@@ -1073,6 +1208,7 @@ export type AdminCreateWithoutReviewedConnectReportsInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateWithoutReviewedConnectReportsInput = {
@@ -1090,6 +1226,7 @@ export type AdminUncheckedCreateWithoutReviewedConnectReportsInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminCreateOrConnectWithoutReviewedConnectReportsInput = {
@@ -1123,6 +1260,7 @@ export type AdminUpdateWithoutReviewedConnectReportsInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutReviewedConnectReportsInput = {
@@ -1140,6 +1278,7 @@ export type AdminUncheckedUpdateWithoutReviewedConnectReportsInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminCreateWithoutReviewedUsnDisputesInput = {
@@ -1157,6 +1296,7 @@ export type AdminCreateWithoutReviewedUsnDisputesInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminUncheckedCreateWithoutReviewedUsnDisputesInput = {
@@ -1174,6 +1314,7 @@ export type AdminUncheckedCreateWithoutReviewedUsnDisputesInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
 }
 
 export type AdminCreateOrConnectWithoutReviewedUsnDisputesInput = {
@@ -1207,6 +1348,7 @@ export type AdminUpdateWithoutReviewedUsnDisputesInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutReviewedUsnDisputesInput = {
@@ -1224,6 +1366,7 @@ export type AdminUncheckedUpdateWithoutReviewedUsnDisputesInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
+  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
 }
 
 
@@ -1240,6 +1383,7 @@ export type AdminCountOutputType = {
   reviewedMemberProfiles: number
   reviewedConnectReports: number
   reviewedUsnDisputes: number
+  launchStateUpdates: number
 }
 
 export type AdminCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1251,6 +1395,7 @@ export type AdminCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   reviewedMemberProfiles?: boolean | AdminCountOutputTypeCountReviewedMemberProfilesArgs
   reviewedConnectReports?: boolean | AdminCountOutputTypeCountReviewedConnectReportsArgs
   reviewedUsnDisputes?: boolean | AdminCountOutputTypeCountReviewedUsnDisputesArgs
+  launchStateUpdates?: boolean | AdminCountOutputTypeCountLaunchStateUpdatesArgs
 }
 
 /**
@@ -1319,6 +1464,13 @@ export type AdminCountOutputTypeCountReviewedUsnDisputesArgs<ExtArgs extends run
   where?: Prisma.UsnDisputeWhereInput
 }
 
+/**
+ * AdminCountOutputType without action
+ */
+export type AdminCountOutputTypeCountLaunchStateUpdatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WebsiteLaunchStateWhereInput
+}
+
 
 export type AdminSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1336,6 +1488,7 @@ export type AdminSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reviewedMemberProfiles?: boolean | Prisma.Admin$reviewedMemberProfilesArgs<ExtArgs>
   reviewedConnectReports?: boolean | Prisma.Admin$reviewedConnectReportsArgs<ExtArgs>
   reviewedUsnDisputes?: boolean | Prisma.Admin$reviewedUsnDisputesArgs<ExtArgs>
+  launchStateUpdates?: boolean | Prisma.Admin$launchStateUpdatesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["admin"]>
 
@@ -1379,6 +1532,7 @@ export type AdminInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   reviewedMemberProfiles?: boolean | Prisma.Admin$reviewedMemberProfilesArgs<ExtArgs>
   reviewedConnectReports?: boolean | Prisma.Admin$reviewedConnectReportsArgs<ExtArgs>
   reviewedUsnDisputes?: boolean | Prisma.Admin$reviewedUsnDisputesArgs<ExtArgs>
+  launchStateUpdates?: boolean | Prisma.Admin$launchStateUpdatesArgs<ExtArgs>
   _count?: boolean | Prisma.AdminCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AdminIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1395,6 +1549,7 @@ export type $AdminPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     reviewedMemberProfiles: Prisma.$MemberProfilePayload<ExtArgs>[]
     reviewedConnectReports: Prisma.$ConnectReportPayload<ExtArgs>[]
     reviewedUsnDisputes: Prisma.$UsnDisputePayload<ExtArgs>[]
+    launchStateUpdates: Prisma.$WebsiteLaunchStatePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1806,6 +1961,7 @@ export interface Prisma__AdminClient<T, Null = never, ExtArgs extends runtime.Ty
   reviewedMemberProfiles<T extends Prisma.Admin$reviewedMemberProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$reviewedMemberProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewedConnectReports<T extends Prisma.Admin$reviewedConnectReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$reviewedConnectReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConnectReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewedUsnDisputes<T extends Prisma.Admin$reviewedUsnDisputesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$reviewedUsnDisputesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsnDisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  launchStateUpdates<T extends Prisma.Admin$launchStateUpdatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$launchStateUpdatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebsiteLaunchStatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2424,6 +2580,30 @@ export type Admin$reviewedUsnDisputesArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.UsnDisputeScalarFieldEnum | Prisma.UsnDisputeScalarFieldEnum[]
+}
+
+/**
+ * Admin.launchStateUpdates
+ */
+export type Admin$launchStateUpdatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WebsiteLaunchState
+   */
+  select?: Prisma.WebsiteLaunchStateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WebsiteLaunchState
+   */
+  omit?: Prisma.WebsiteLaunchStateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WebsiteLaunchStateInclude<ExtArgs> | null
+  where?: Prisma.WebsiteLaunchStateWhereInput
+  orderBy?: Prisma.WebsiteLaunchStateOrderByWithRelationInput | Prisma.WebsiteLaunchStateOrderByWithRelationInput[]
+  cursor?: Prisma.WebsiteLaunchStateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WebsiteLaunchStateScalarFieldEnum | Prisma.WebsiteLaunchStateScalarFieldEnum[]
 }
 
 /**
