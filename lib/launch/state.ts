@@ -125,79 +125,36 @@ export async function enableCountdown(adminId?: string | null): Promise<PublicLa
   return toPublicState(updated as InternalLaunchState)
 }
 
-export async function startLaunchCountdown(adminId: string): Promise<{ state: PublicLaunchState; alreadyRunning: boolean }> {
+export async function startLaunchCountdown(adminId?: string | null): Promise<{ state: PublicLaunchState; alreadyRunning: boolean }> {
   const now = new Date()
+  const current = await getOrCreateLaunchState()
 
-  const result = await prisma.$transaction(async (tx) => {
-    const current = (await tx.websiteLaunchState.upsert({
-      where: { id: SINGLETON_ID },
-      update: {},
-      create: {
-        id: SINGLETON_ID,
-        status: 'NORMAL',
-        version: BigInt(0),
-      },
-    })) as InternalLaunchState
-
-    if (current.status === 'COUNTDOWN_RUNNING') {
-      if (!current.countdownEndsAt || current.countdownEndsAt <= now) {
-        const animationStartedAt = current.countdownEndsAt ?? now
-        const animationEndsAt = new Date(animationStartedAt.getTime() + ANIMATION_SECONDS * 1000)
-        const transitioned = (await tx.websiteLaunchState.update({
-          where: { id: SINGLETON_ID },
-          data: {
-            status: 'ANIMATION',
-            animationStartedAt,
-            animationEndsAt,
-            version: { increment: 1 },
-          },
-        })) as InternalLaunchState
-        return { row: transitioned, alreadyRunning: false }
-      }
-
-      return { row: current, alreadyRunning: true }
+  if (current.status === 'COUNTDOWN_RUNNING') {
+    if (current.countdownEndsAt && current.countdownEndsAt > now) {
+      return { state: toPublicState(current), alreadyRunning: true }
     }
+  }
 
-    if (current.status === 'ANIMATION') {
-      if (current.animationEndsAt && current.animationEndsAt > now) {
-        return { row: current, alreadyRunning: true }
-      }
+  const countdownStartedAt = now
+  const countdownEndsAt = new Date(now.getTime() + COUNTDOWN_SECONDS * 1000)
 
-      const launched = (await tx.websiteLaunchState.update({
-        where: { id: SINGLETON_ID },
-        data: {
-          status: 'LAUNCHED',
-          launchedAt: current.animationEndsAt ?? now,
-          version: { increment: 1 },
-        },
-      })) as InternalLaunchState
-
-      return { row: launched, alreadyRunning: false }
-    }
-
-    const countdownStartedAt = now
-    const countdownEndsAt = new Date(now.getTime() + COUNTDOWN_SECONDS * 1000)
-
-    const started = (await tx.websiteLaunchState.update({
-      where: { id: SINGLETON_ID },
-      data: {
-        status: 'COUNTDOWN_RUNNING',
-        countdownStartedAt,
-        countdownEndsAt,
-        animationStartedAt: null,
-        animationEndsAt: null,
-        launchedAt: null,
-        updatedByAdminId: toSafeAdminUuid(adminId),
-        version: { increment: 1 },
-      },
-    })) as InternalLaunchState
-
-    return { row: started, alreadyRunning: false }
+  const started = await prisma.websiteLaunchState.update({
+    where: { id: SINGLETON_ID },
+    data: {
+      status: 'COUNTDOWN_RUNNING',
+      countdownStartedAt,
+      countdownEndsAt,
+      animationStartedAt: null,
+      animationEndsAt: null,
+      launchedAt: null,
+      updatedByAdminId: toSafeAdminUuid(adminId),
+      version: { increment: 1 },
+    },
   })
 
   return {
-    state: toPublicState(result.row),
-    alreadyRunning: result.alreadyRunning,
+    state: toPublicState(started as InternalLaunchState),
+    alreadyRunning: false,
   }
 }
 

@@ -79,22 +79,17 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
             sse = null
           }
           if (!pollInterval) {
-            pollInterval = setInterval(fetchLatestState, 1500)
+            pollInterval = setInterval(fetchLatestState, 2500)
           }
         })
       } catch {
         if (!pollInterval) {
-          pollInterval = setInterval(fetchLatestState, 1500)
+          pollInterval = setInterval(fetchLatestState, 2500)
         }
       }
     }
 
     connectSSE()
-
-    // Backup polling to guarantee all devices receive launch trigger even through strict networks
-    const backupTimer = setInterval(() => {
-      void fetchLatestState()
-    }, 2000)
 
     // Window focus & tab visibility listener for instant sync
     const handleVisibility = () => {
@@ -108,7 +103,6 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
     return () => {
       if (sse) sse.close()
       if (pollInterval) clearInterval(pollInterval)
-      clearInterval(backupTimer)
       window.removeEventListener('visibilitychange', handleVisibility)
       window.removeEventListener('focus', handleVisibility)
     }
