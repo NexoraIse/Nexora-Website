@@ -58,6 +58,7 @@ export const ModelName = {
   LearningResource: 'LearningResource',
   ContentCategory: 'ContentCategory',
   AuditLog: 'AuditLog',
+  WebsiteLaunchState: 'WebsiteLaunchState',
   ActiveSession: 'ActiveSession',
   UsnClaim: 'UsnClaim',
   ConnectRegistration: 'ConnectRegistration',
@@ -224,6 +225,22 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const WebsiteLaunchStateScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  countdownStartedAt: 'countdownStartedAt',
+  countdownEndsAt: 'countdownEndsAt',
+  animationStartedAt: 'animationStartedAt',
+  animationEndsAt: 'animationEndsAt',
+  launchedAt: 'launchedAt',
+  version: 'version',
+  updatedAt: 'updatedAt',
+  updatedByAdminId: 'updatedByAdminId'
+} as const
+
+export type WebsiteLaunchStateScalarFieldEnum = (typeof WebsiteLaunchStateScalarFieldEnum)[keyof typeof WebsiteLaunchStateScalarFieldEnum]
 
 
 export const ActiveSessionScalarFieldEnum = {

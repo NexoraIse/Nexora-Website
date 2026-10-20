@@ -77,6 +77,11 @@ export type ContentCategory = Prisma.ContentCategoryModel
  */
 export type AuditLog = Prisma.AuditLogModel
 /**
+ * Model WebsiteLaunchState
+ * 
+ */
+export type WebsiteLaunchState = Prisma.WebsiteLaunchStateModel
+/**
  * Model ActiveSession
  * 
  */

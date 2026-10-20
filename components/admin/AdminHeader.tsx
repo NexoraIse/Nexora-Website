@@ -3,12 +3,14 @@
 import React from 'react'
 import { Menu, Plus, Bell } from 'lucide-react'
 import { AdminTab } from './AdminSidebar'
+import AdminLaunchControl from './AdminLaunchControl'
 
 interface AdminHeaderProps {
   currentTab: AdminTab
   onOpenMobileMenu: () => void
   onQuickAction?: (action: string) => void
   unreadCount?: number
+  userRole?: string
 }
 
 const TAB_TITLES: Record<AdminTab, { title: string; description: string }> = {
@@ -74,6 +76,7 @@ export default function AdminHeader({
   currentTab,
   onOpenMobileMenu,
   onQuickAction,
+  userRole = 'ADMIN',
 }: AdminHeaderProps) {
   const currentMeta = TAB_TITLES[currentTab] || {
     title: 'Administration',
@@ -103,6 +106,9 @@ export default function AdminHeader({
       </div>
 
       <div className="flex items-center gap-2.5">
+        {/* Launch Countdown Control in Admin Navbar */}
+        <AdminLaunchControl userRole={userRole} />
+
         {/* Quick action button */}
         {onQuickAction && currentTab !== 'connect-moderation' && currentTab !== 'connect-roster' && (
           <button

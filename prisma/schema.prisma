@@ -69,6 +69,14 @@ enum UsnDisputeStatus {
   DISMISSED
 }
 
+enum LaunchStatus {
+  NORMAL
+  STAY_TUNED
+  COUNTDOWN_RUNNING
+  ANIMATION
+  LAUNCHED
+}
+
 model Admin {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email     String   @unique
@@ -86,6 +94,7 @@ model Admin {
   reviewedMemberProfiles MemberProfile[]    @relation("MemberProfileReviewer")
   reviewedConnectReports ConnectReport[]    @relation("ConnectReportReviewer")
   reviewedUsnDisputes    UsnDispute[]       @relation("UsnDisputeReviewer")
+  launchStateUpdates     WebsiteLaunchState[]
 
   @@map("admins")
 }
@@ -224,6 +233,23 @@ model AuditLog {
   @@index([entity])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+model WebsiteLaunchState {
+  id               Int          @id @default(1)
+  status           LaunchStatus @default(NORMAL)
+  countdownStartedAt DateTime?  @map("countdown_started_at") @db.Timestamptz
+  countdownEndsAt  DateTime?    @map("countdown_ends_at") @db.Timestamptz
+  animationStartedAt DateTime?  @map("animation_started_at") @db.Timestamptz
+  animationEndsAt  DateTime?    @map("animation_ends_at") @db.Timestamptz
+  launchedAt       DateTime?    @map("launched_at") @db.Timestamptz
+  version          BigInt       @default(0)
+  updatedAt        DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  updatedByAdminId String?      @map("updated_by_admin_id") @db.Uuid
+  updatedByAdmin   Admin?       @relation(fields: [updatedByAdminId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@map("website_launch_state")
 }
 
 model ActiveSession {

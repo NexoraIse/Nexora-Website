@@ -13,6 +13,9 @@ import {
   Check,
   X,
   Upload,
+  Rocket,
+  RotateCcw,
+  BellRing,
 } from 'lucide-react'
 
 interface EventItem {
@@ -42,6 +45,19 @@ interface EventsViewProps {
   initialOpenModal?: boolean
 }
 
+type LaunchStatus = 'NORMAL' | 'STAY_TUNED' | 'COUNTDOWN_RUNNING' | 'ANIMATION' | 'LAUNCHED'
+
+type LaunchState = {
+  status: LaunchStatus
+  countdownStartedAt: string | null
+  countdownEndsAt: string | null
+  animationStartedAt: string | null
+  animationEndsAt: string | null
+  launchedAt: string | null
+  version: string
+  updatedAt: string
+}
+
 export default function EventsView({ initialOpenModal = false }: EventsViewProps) {
   const [events, setEvents] = useState<EventItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -53,6 +69,9 @@ export default function EventsView({ initialOpenModal = false }: EventsViewProps
   const [submitting, setSubmitting] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
   const [msg, setMsg] = useState('')
+  const [launchState, setLaunchState] = useState<LaunchState | null>(null)
+  const [launchBusyAction, setLaunchBusyAction] = useState<'' | 'enable_countdown' | 'launch' | 'reset'>('')
+  const [launchMessage, setLaunchMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   // Form states
   const [formData, setFormData] = useState({
@@ -91,9 +110,71 @@ export default function EventsView({ initialOpenModal = false }: EventsViewProps
     }
   }
 
+  async function loadLaunchState() {
+    try {
+      const res = await fetch('/api/admin/launch', { cache: 'no-store' })
+      const data = await res.json()
+      if (res.ok && data.state) {
+        setLaunchState(data.state)
+      }
+    } catch (err) {
+      console.error('Failed to load launch state:', err)
+    }
+  }
+
   useEffect(() => {
     loadEvents()
+    loadLaunchState()
   }, [categoryFilter, statusFilter])
+
+  async function runLaunchAction(action: 'enable_countdown' | 'launch' | 'reset') {
+    setLaunchBusyAction(action)
+    setLaunchMessage(null)
+
+    try {
+      const res = await fetch('/api/admin/launch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        setLaunchMessage({ type: 'error', text: data.error || 'Launch action failed.' })
+        return
+      }
+
+      setLaunchState(data.state || null)
+      setLaunchMessage({
+        type: 'success',
+        text: data.message || 'Launch action completed successfully.',
+      })
+    } catch (err) {
+      console.error('Launch action failed:', err)
+      setLaunchMessage({ type: 'error', text: 'Network error while updating launch state.' })
+    } finally {
+      setLaunchBusyAction('')
+    }
+  }
+
+  function formatLaunchTime(value: string | null) {
+    if (!value) return '—'
+    return new Date(value).toLocaleString()
+  }
+
+  const canLaunch = launchState?.status === 'STAY_TUNED'
+  const launchRunning = launchState?.status === 'COUNTDOWN_RUNNING' || launchState?.status === 'ANIMATION'
+
+  const statePillClass =
+    launchState?.status === 'NORMAL'
+      ? 'bg-slate-100 text-slate-700 border-slate-200'
+      : launchState?.status === 'STAY_TUNED'
+      ? 'bg-amber-50 text-amber-700 border-amber-200'
+      : launchState?.status === 'COUNTDOWN_RUNNING'
+      ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+      : launchState?.status === 'ANIMATION'
+      ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200'
+      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -240,6 +321,79 @@ export default function EventsView({ initialOpenModal = false }: EventsViewProps
 
   return (
     <div className="space-y-6">
+      <section className="rounded-2xl border border-[#E2E8F0] bg-white p-4 sm:p-5 shadow-2xs">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-sm font-bold text-[#111827]">Event Launch Control</h2>
+            <p className="mt-1 text-xs text-[#64748B]">
+              Controls the global homepage inauguration sequence on /.
+            </p>
+          </div>
+          <span
+            className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold ${statePillClass}`}
+          >
+            State: {launchState?.status || 'LOADING'}
+          </span>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+          <button
+            type="button"
+            disabled={launchBusyAction !== '' || launchRunning}
+            onClick={() => void runLaunchAction('enable_countdown')}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#DCE2EA] bg-[#F8FAFC] px-4 py-2.5 text-xs font-semibold text-[#111827] hover:bg-[#EEF2F7] disabled:cursor-not-allowed disabled:opacity-55"
+          >
+            {launchBusyAction === 'enable_countdown' ? <Loader2 className="h-4 w-4 animate-spin" /> : <BellRing className="h-4 w-4" />}
+            Enable Countdown
+          </button>
+
+          <button
+            type="button"
+            disabled={launchBusyAction !== '' || !canLaunch}
+            onClick={() => {
+              if (!confirm('Start the global 10-second launch countdown now?')) return
+              void runLaunchAction('launch')
+            }}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#111827] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#273449] disabled:cursor-not-allowed disabled:opacity-55"
+          >
+            {launchBusyAction === 'launch' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
+            Launch
+          </button>
+
+          <button
+            type="button"
+            disabled={launchBusyAction !== ''}
+            onClick={() => {
+              if (!confirm('Reset launch state to NORMAL for all visitors?')) return
+              void runLaunchAction('reset')
+            }}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-55"
+          >
+            {launchBusyAction === 'reset' ? <Loader2 className="h-4 w-4 animate-spin" /> : <RotateCcw className="h-4 w-4" />}
+            Reset Launch
+          </button>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-2 text-[11px] text-[#64748B] sm:grid-cols-2">
+          <p>Countdown start: <span className="font-semibold text-[#111827]">{formatLaunchTime(launchState?.countdownStartedAt || null)}</span></p>
+          <p>Countdown end: <span className="font-semibold text-[#111827]">{formatLaunchTime(launchState?.countdownEndsAt || null)}</span></p>
+          <p>Animation end: <span className="font-semibold text-[#111827]">{formatLaunchTime(launchState?.animationEndsAt || null)}</span></p>
+          <p>Launched at: <span className="font-semibold text-[#111827]">{formatLaunchTime(launchState?.launchedAt || null)}</span></p>
+        </div>
+
+        {launchMessage && (
+          <div
+            className={`mt-4 rounded-xl border px-3 py-2.5 text-xs font-semibold ${
+              launchMessage.type === 'success'
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                : 'border-red-200 bg-red-50 text-red-700'
+            }`}
+          >
+            {launchMessage.text}
+          </div>
+        )}
+      </section>
+
       {/* Controls Bar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl bg-white p-4 sm:p-5 border border-[#E2E8F0] shadow-2xs">
         <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">

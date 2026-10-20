@@ -318,6 +318,13 @@ export type IntFilter<$PrismaModel = never> = {
   not?: Prisma.NestedIntFilter<$PrismaModel> | number
 }
 
+export type EnumLaunchStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.LaunchStatus | Prisma.EnumLaunchStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.LaunchStatus[] | Prisma.ListEnumLaunchStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LaunchStatus[] | Prisma.ListEnumLaunchStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLaunchStatusFilter<$PrismaModel> | $Enums.LaunchStatus
+}
+
 export type IntWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -332,6 +339,16 @@ export type IntWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedIntFilter<$PrismaModel>
   _max?: Prisma.NestedIntFilter<$PrismaModel>
+}
+
+export type EnumLaunchStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LaunchStatus | Prisma.EnumLaunchStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.LaunchStatus[] | Prisma.ListEnumLaunchStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LaunchStatus[] | Prisma.ListEnumLaunchStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLaunchStatusWithAggregatesFilter<$PrismaModel> | $Enums.LaunchStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLaunchStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLaunchStatusFilter<$PrismaModel>
 }
 
 export type EnumMemberTypeFilter<$PrismaModel = never> = {
@@ -766,6 +783,13 @@ export type NestedFloatNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
 }
 
+export type NestedEnumLaunchStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.LaunchStatus | Prisma.EnumLaunchStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.LaunchStatus[] | Prisma.ListEnumLaunchStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LaunchStatus[] | Prisma.ListEnumLaunchStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLaunchStatusFilter<$PrismaModel> | $Enums.LaunchStatus
+}
+
 export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -780,6 +804,16 @@ export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedIntFilter<$PrismaModel>
   _max?: Prisma.NestedIntFilter<$PrismaModel>
+}
+
+export type NestedEnumLaunchStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LaunchStatus | Prisma.EnumLaunchStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.LaunchStatus[] | Prisma.ListEnumLaunchStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LaunchStatus[] | Prisma.ListEnumLaunchStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLaunchStatusWithAggregatesFilter<$PrismaModel> | $Enums.LaunchStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLaunchStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLaunchStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumMemberTypeFilter<$PrismaModel = never> = {

@@ -99,3 +99,14 @@ export const UsnDisputeStatus = {
 } as const
 
 export type UsnDisputeStatus = (typeof UsnDisputeStatus)[keyof typeof UsnDisputeStatus]
+
+
+export const LaunchStatus = {
+  NORMAL: 'NORMAL',
+  STAY_TUNED: 'STAY_TUNED',
+  COUNTDOWN_RUNNING: 'COUNTDOWN_RUNNING',
+  ANIMATION: 'ANIMATION',
+  LAUNCHED: 'LAUNCHED'
+} as const
+
+export type LaunchStatus = (typeof LaunchStatus)[keyof typeof LaunchStatus]
