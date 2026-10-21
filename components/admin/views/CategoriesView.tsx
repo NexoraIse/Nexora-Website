@@ -94,7 +94,7 @@ export default function CategoriesView() {
         <div>
           <h2 className="text-sm font-bold text-[#111827]">Content Categories</h2>
           <p className="text-xs text-[#64748B]">
-            Taxonomy classification for events, notices, and academic materials.
+            Taxonomy classification for events, achievements, and academic materials.
           </p>
         </div>
 
@@ -106,7 +106,6 @@ export default function CategoriesView() {
           >
             <option value="">All Types</option>
             <option value="event">Events</option>
-            <option value="notice">Notices</option>
             <option value="achievement">Achievements</option>
             <option value="resource">Learning Resources</option>
           </select>
@@ -226,7 +225,6 @@ export default function CategoriesView() {
                   className="w-full rounded-xl border border-[#DCE2EA] px-3.5 py-2.5 text-xs text-[#111827] focus:border-[#647FEA] focus:outline-none"
                 >
                   <option value="event">Event</option>
-                  <option value="notice">Notice</option>
                   <option value="achievement">Achievement</option>
                   <option value="resource">Learning Resource</option>
                 </select>

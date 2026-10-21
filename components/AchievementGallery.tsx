@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Award, Sparkles } from "lucide-react";
+import type { AchievementItem } from "@/lib/types";
 
 export type Achievement = {
   id?: string;
@@ -32,16 +33,16 @@ export default function AchievementGallery({ initialAchievements }: AchievementG
 
   useEffect(() => {
     fetch('/api/achievements')
-      .then((res) => res.json())
+      .then((res) => res.json() as Promise<{ achievements?: AchievementItem[] }>)
       .then((data) => {
         if (Array.isArray(data.achievements)) {
-          const mapped: Achievement[] = data.achievements.map((a: any) => ({
+          const mapped: Achievement[] = data.achievements.map((a) => ({
             id: a.id,
             category: a.category,
             title: a.title,
             description: a.description,
             event: a.competitionOrEvent || a.studentOrTeamName || 'Nexora Department',
-            date: a.dateDisplay || (a.achievementDate ? new Date(a.achievementDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '2026'),
+            date: a.dateDisplay || (a.achievementDate ? new Date(a.achievementDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Date not listed'),
             image: a.image || undefined,
             isSample: false,
           }));

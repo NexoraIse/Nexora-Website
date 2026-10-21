@@ -77,7 +77,7 @@ export default function UpcomingExams({ exams }: UpcomingExamsProps) {
           </p>
         </div>
 
-        {/* Timetable Notice Badge */}
+        {/* Timetable summary */}
         <div className="flex items-center gap-3">
           <div className="border border-[var(--theme-primary,#00f0ff)]/30 px-4 py-2 font-mono text-xs">
             <span className="text-white/60">Verified Timetable · </span>

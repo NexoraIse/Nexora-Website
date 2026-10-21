@@ -60,7 +60,7 @@ export const MEMBERS: TeamMember[] = [
     category: 'web-team',
     tag: 'STU_004.DAT',
     badge: 'Backend Developer',
-    bio: 'Developed real-time noticeboard data pipelines, database models, Supabase integration, and audit tracking mechanisms.',
+    bio: 'Developed real-time data pipelines, database models, Supabase integration, and audit tracking mechanisms.',
     image: '/members/dhanu.png',
     github: 'https://github.com/Dhanu2006-stack',
     linkedin: 'https://linkedin.com/in/dhanush-prabhu',

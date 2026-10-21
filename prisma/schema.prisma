@@ -19,12 +19,6 @@ enum PublishStatus {
   ARCHIVED
 }
 
-enum NoticePriority {
-  NORMAL
-  IMPORTANT
-  URGENT
-}
-
 enum MemberType {
   STUDENT
   ALUMNUS
@@ -87,7 +81,6 @@ model Admin {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   events                 Event[]
-  notices                Notice[]
   achievements           Achievement[]
   resources              LearningResource[]
   auditLogs              AuditLog[]
@@ -128,35 +121,6 @@ model Event {
   @@index([status])
   @@index([category])
   @@map("events")
-}
-
-model Notice {
-  id             BigInt         @id @default(autoincrement())
-  date           DateTime       @default(now()) @db.Date
-  title          String
-  slug           String?        @unique
-  summary        String?
-  content        String?
-  category       String         @default("General")
-  priority       NoticePriority @default(NORMAL)
-  status         PublishStatus  @default(PUBLISHED)
-  publishDate    DateTime?      @default(now()) @map("publish_date") @db.Timestamptz
-  expiryDate     DateTime?      @map("expiry_date") @db.Timestamptz
-  image          String?
-  attachmentUrl  String?        @map("attachment_url")
-  attachmentType String?        @map("attachment_type")
-  attachmentName String?        @map("attachment_name")
-  isPinned       Boolean        @default(false) @map("is_pinned")
-  authorName     String?        @default("Nexora Executive Board") @map("author_name")
-  authorRole     String?        @default("ISE Department") @map("author_role")
-  createdById    String?        @map("created_by_id") @db.Uuid
-  createdBy      Admin?         @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
-
-  @@index([status])
-  @@index([category])
-  @@map("notices")
 }
 
 model Achievement {

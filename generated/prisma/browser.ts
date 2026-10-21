@@ -28,11 +28,6 @@ export type Admin = Prisma.AdminModel
  */
 export type Event = Prisma.EventModel
 /**
- * Model Notice
- * 
- */
-export type Notice = Prisma.NoticeModel
-/**
  * Model Achievement
  * 
  */

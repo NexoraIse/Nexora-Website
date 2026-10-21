@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
       },
+      {
+        protocol: "https",
+        hostname: "www.ajiet.edu.in",
+        port: "",
+        pathname: "/aj-admin/photo/**",
+        search: "",
+      },
     ],
   },
   /* config options here */

@@ -8,13 +8,12 @@ import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, use
 import type { HomepageLearningData, HomepageLearningResource } from "@/lib/home-learning";
 import { HOME_APTITUDE_QUESTION, HOME_PRACTICE_CODE, HOME_PRACTICE_TESTS } from "@/lib/mock-home-practice";
 
-type LearningTab = "papers" | "resources" | "updates";
+type LearningTab = "papers" | "resources";
 type CodeToken = { content: string; color?: string; offset: number };
 
 const TABS: Array<{ id: LearningTab; label: string }> = [
   { id: "papers", label: "Question papers" },
   { id: "resources", label: "Resources" },
-  { id: "updates", label: "Exam updates" },
 ];
 const SEMESTERS = ["all", "1", "2", "3", "4", "5", "6", "7", "8"];
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -210,7 +209,7 @@ function LearningPanel({
                 </div>
                 <PaperList papers={data.papers} selectedSemester={selectedSemester} unavailable={data.unavailable} />
               </>
-            ) : tab === "resources" ? (
+            ) : (
               <ul className="home-learn-list" aria-label="Recent learning resources">
                 {data.unavailable ? (
                   <li className="home-learn-empty" role="status">Learning materials are temporarily unavailable.</li>
@@ -225,19 +224,6 @@ function LearningPanel({
                 )) : (
                   <li className="home-learn-empty" role="status">No published resources yet.</li>
                 )}
-              </ul>
-            ) : (
-              <ul className="home-learn-list" aria-label="Academic updates">
-                {data.updates.map((update) => (
-                  <li className="home-learn-update" key={update.id}>
-                    <time dateTime={update.publishedAt}>{new Intl.DateTimeFormat("en", { day: "2-digit", month: "short", timeZone: "UTC" }).format(new Date(`${update.publishedAt}T00:00:00Z`)).toUpperCase()}</time>
-                    <div>
-                      <span className="home-learn-resource-category">{update.category}</span>
-                      <strong>{update.title}</strong>
-                      <small>{update.description}</small>
-                    </div>
-                  </li>
-                ))}
               </ul>
             )}
           </motion.div>

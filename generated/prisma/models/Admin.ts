@@ -199,7 +199,6 @@ export type AdminWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Admin"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Admin"> | Date | string
   events?: Prisma.EventListRelationFilter
-  notices?: Prisma.NoticeListRelationFilter
   achievements?: Prisma.AchievementListRelationFilter
   resources?: Prisma.LearningResourceListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
@@ -218,7 +217,6 @@ export type AdminOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   events?: Prisma.EventOrderByRelationAggregateInput
-  notices?: Prisma.NoticeOrderByRelationAggregateInput
   achievements?: Prisma.AchievementOrderByRelationAggregateInput
   resources?: Prisma.LearningResourceOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
@@ -240,7 +238,6 @@ export type AdminWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Admin"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Admin"> | Date | string
   events?: Prisma.EventListRelationFilter
-  notices?: Prisma.NoticeListRelationFilter
   achievements?: Prisma.AchievementListRelationFilter
   resources?: Prisma.LearningResourceListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
@@ -285,7 +282,6 @@ export type AdminCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
@@ -304,7 +300,6 @@ export type AdminUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
@@ -323,7 +318,6 @@ export type AdminUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
@@ -342,7 +336,6 @@ export type AdminUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
@@ -447,22 +440,6 @@ export type AdminUpdateOneWithoutEventsNestedInput = {
   delete?: Prisma.AdminWhereInput | boolean
   connect?: Prisma.AdminWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutEventsInput, Prisma.AdminUpdateWithoutEventsInput>, Prisma.AdminUncheckedUpdateWithoutEventsInput>
-}
-
-export type AdminCreateNestedOneWithoutNoticesInput = {
-  create?: Prisma.XOR<Prisma.AdminCreateWithoutNoticesInput, Prisma.AdminUncheckedCreateWithoutNoticesInput>
-  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutNoticesInput
-  connect?: Prisma.AdminWhereUniqueInput
-}
-
-export type AdminUpdateOneWithoutNoticesNestedInput = {
-  create?: Prisma.XOR<Prisma.AdminCreateWithoutNoticesInput, Prisma.AdminUncheckedCreateWithoutNoticesInput>
-  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutNoticesInput
-  upsert?: Prisma.AdminUpsertWithoutNoticesInput
-  disconnect?: Prisma.AdminWhereInput | boolean
-  delete?: Prisma.AdminWhereInput | boolean
-  connect?: Prisma.AdminWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutNoticesInput, Prisma.AdminUpdateWithoutNoticesInput>, Prisma.AdminUncheckedUpdateWithoutNoticesInput>
 }
 
 export type AdminCreateNestedOneWithoutAchievementsInput = {
@@ -585,7 +562,6 @@ export type AdminCreateWithoutEventsInput = {
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
@@ -603,7 +579,6 @@ export type AdminUncheckedCreateWithoutEventsInput = {
   role?: $Enums.Role
   createdAt?: Date | string
   updatedAt?: Date | string
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
@@ -637,7 +612,6 @@ export type AdminUpdateWithoutEventsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
@@ -655,95 +629,6 @@ export type AdminUncheckedUpdateWithoutEventsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
-  achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
-  resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
-  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
-  reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
-  reviewedConnectReports?: Prisma.ConnectReportUncheckedUpdateManyWithoutReviewedByNestedInput
-  reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedUpdateManyWithoutReviewedByNestedInput
-  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedUpdateManyWithoutUpdatedByAdminNestedInput
-}
-
-export type AdminCreateWithoutNoticesInput = {
-  id?: string
-  email: string
-  name?: string | null
-  password?: string | null
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
-  resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
-  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
-  reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
-  reviewedConnectReports?: Prisma.ConnectReportCreateNestedManyWithoutReviewedByInput
-  reviewedUsnDisputes?: Prisma.UsnDisputeCreateNestedManyWithoutReviewedByInput
-  launchStateUpdates?: Prisma.WebsiteLaunchStateCreateNestedManyWithoutUpdatedByAdminInput
-}
-
-export type AdminUncheckedCreateWithoutNoticesInput = {
-  id?: string
-  email: string
-  name?: string | null
-  password?: string | null
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
-  resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
-  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
-  reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
-  reviewedConnectReports?: Prisma.ConnectReportUncheckedCreateNestedManyWithoutReviewedByInput
-  reviewedUsnDisputes?: Prisma.UsnDisputeUncheckedCreateNestedManyWithoutReviewedByInput
-  launchStateUpdates?: Prisma.WebsiteLaunchStateUncheckedCreateNestedManyWithoutUpdatedByAdminInput
-}
-
-export type AdminCreateOrConnectWithoutNoticesInput = {
-  where: Prisma.AdminWhereUniqueInput
-  create: Prisma.XOR<Prisma.AdminCreateWithoutNoticesInput, Prisma.AdminUncheckedCreateWithoutNoticesInput>
-}
-
-export type AdminUpsertWithoutNoticesInput = {
-  update: Prisma.XOR<Prisma.AdminUpdateWithoutNoticesInput, Prisma.AdminUncheckedUpdateWithoutNoticesInput>
-  create: Prisma.XOR<Prisma.AdminCreateWithoutNoticesInput, Prisma.AdminUncheckedCreateWithoutNoticesInput>
-  where?: Prisma.AdminWhereInput
-}
-
-export type AdminUpdateToOneWithWhereWithoutNoticesInput = {
-  where?: Prisma.AdminWhereInput
-  data: Prisma.XOR<Prisma.AdminUpdateWithoutNoticesInput, Prisma.AdminUncheckedUpdateWithoutNoticesInput>
-}
-
-export type AdminUpdateWithoutNoticesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
-  resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
-  auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
-  reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
-  reviewedConnectReports?: Prisma.ConnectReportUpdateManyWithoutReviewedByNestedInput
-  reviewedUsnDisputes?: Prisma.UsnDisputeUpdateManyWithoutReviewedByNestedInput
-  launchStateUpdates?: Prisma.WebsiteLaunchStateUpdateManyWithoutUpdatedByAdminNestedInput
-}
-
-export type AdminUncheckedUpdateWithoutNoticesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
@@ -762,7 +647,6 @@ export type AdminCreateWithoutAchievementsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
@@ -780,7 +664,6 @@ export type AdminUncheckedCreateWithoutAchievementsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
@@ -814,7 +697,6 @@ export type AdminUpdateWithoutAchievementsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
@@ -832,7 +714,6 @@ export type AdminUncheckedUpdateWithoutAchievementsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -850,7 +731,6 @@ export type AdminCreateWithoutResourcesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
@@ -868,7 +748,6 @@ export type AdminUncheckedCreateWithoutResourcesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
@@ -902,7 +781,6 @@ export type AdminUpdateWithoutResourcesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
@@ -920,7 +798,6 @@ export type AdminUncheckedUpdateWithoutResourcesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -938,7 +815,6 @@ export type AdminCreateWithoutAuditLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
   reviewedMemberProfiles?: Prisma.MemberProfileCreateNestedManyWithoutReviewedByInput
@@ -956,7 +832,6 @@ export type AdminUncheckedCreateWithoutAuditLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedCreateNestedManyWithoutReviewedByInput
@@ -990,7 +865,6 @@ export type AdminUpdateWithoutAuditLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUpdateManyWithoutReviewedByNestedInput
@@ -1008,7 +882,6 @@ export type AdminUncheckedUpdateWithoutAuditLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
   reviewedMemberProfiles?: Prisma.MemberProfileUncheckedUpdateManyWithoutReviewedByNestedInput
@@ -1026,7 +899,6 @@ export type AdminCreateWithoutLaunchStateUpdatesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
@@ -1044,7 +916,6 @@ export type AdminUncheckedCreateWithoutLaunchStateUpdatesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
@@ -1078,7 +949,6 @@ export type AdminUpdateWithoutLaunchStateUpdatesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
@@ -1096,7 +966,6 @@ export type AdminUncheckedUpdateWithoutLaunchStateUpdatesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
@@ -1114,7 +983,6 @@ export type AdminCreateWithoutReviewedMemberProfilesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
@@ -1132,7 +1000,6 @@ export type AdminUncheckedCreateWithoutReviewedMemberProfilesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
@@ -1166,7 +1033,6 @@ export type AdminUpdateWithoutReviewedMemberProfilesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
@@ -1184,7 +1050,6 @@ export type AdminUncheckedUpdateWithoutReviewedMemberProfilesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
@@ -1202,7 +1067,6 @@ export type AdminCreateWithoutReviewedConnectReportsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
@@ -1220,7 +1084,6 @@ export type AdminUncheckedCreateWithoutReviewedConnectReportsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
@@ -1254,7 +1117,6 @@ export type AdminUpdateWithoutReviewedConnectReportsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
@@ -1272,7 +1134,6 @@ export type AdminUncheckedUpdateWithoutReviewedConnectReportsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
@@ -1290,7 +1151,6 @@ export type AdminCreateWithoutReviewedUsnDisputesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
@@ -1308,7 +1168,6 @@ export type AdminUncheckedCreateWithoutReviewedUsnDisputesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
-  notices?: Prisma.NoticeUncheckedCreateNestedManyWithoutCreatedByInput
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutCreatedByInput
   resources?: Prisma.LearningResourceUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
@@ -1342,7 +1201,6 @@ export type AdminUpdateWithoutReviewedUsnDisputesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
@@ -1360,7 +1218,6 @@ export type AdminUncheckedUpdateWithoutReviewedUsnDisputesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
-  notices?: Prisma.NoticeUncheckedUpdateManyWithoutCreatedByNestedInput
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutCreatedByNestedInput
   resources?: Prisma.LearningResourceUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
@@ -1376,7 +1233,6 @@ export type AdminUncheckedUpdateWithoutReviewedUsnDisputesInput = {
 
 export type AdminCountOutputType = {
   events: number
-  notices: number
   achievements: number
   resources: number
   auditLogs: number
@@ -1388,7 +1244,6 @@ export type AdminCountOutputType = {
 
 export type AdminCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   events?: boolean | AdminCountOutputTypeCountEventsArgs
-  notices?: boolean | AdminCountOutputTypeCountNoticesArgs
   achievements?: boolean | AdminCountOutputTypeCountAchievementsArgs
   resources?: boolean | AdminCountOutputTypeCountResourcesArgs
   auditLogs?: boolean | AdminCountOutputTypeCountAuditLogsArgs
@@ -1413,13 +1268,6 @@ export type AdminCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extens
  */
 export type AdminCountOutputTypeCountEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EventWhereInput
-}
-
-/**
- * AdminCountOutputType without action
- */
-export type AdminCountOutputTypeCountNoticesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.NoticeWhereInput
 }
 
 /**
@@ -1481,7 +1329,6 @@ export type AdminSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   updatedAt?: boolean
   events?: boolean | Prisma.Admin$eventsArgs<ExtArgs>
-  notices?: boolean | Prisma.Admin$noticesArgs<ExtArgs>
   achievements?: boolean | Prisma.Admin$achievementsArgs<ExtArgs>
   resources?: boolean | Prisma.Admin$resourcesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Admin$auditLogsArgs<ExtArgs>
@@ -1525,7 +1372,6 @@ export type AdminSelectScalar = {
 export type AdminOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["admin"]>
 export type AdminInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   events?: boolean | Prisma.Admin$eventsArgs<ExtArgs>
-  notices?: boolean | Prisma.Admin$noticesArgs<ExtArgs>
   achievements?: boolean | Prisma.Admin$achievementsArgs<ExtArgs>
   resources?: boolean | Prisma.Admin$resourcesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Admin$auditLogsArgs<ExtArgs>
@@ -1542,7 +1388,6 @@ export type $AdminPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Admin"
   objects: {
     events: Prisma.$EventPayload<ExtArgs>[]
-    notices: Prisma.$NoticePayload<ExtArgs>[]
     achievements: Prisma.$AchievementPayload<ExtArgs>[]
     resources: Prisma.$LearningResourcePayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
@@ -1954,7 +1799,6 @@ readonly fields: AdminFieldRefs;
 export interface Prisma__AdminClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   events<T extends Prisma.Admin$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  notices<T extends Prisma.Admin$noticesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$noticesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NoticePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   achievements<T extends Prisma.Admin$achievementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$achievementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AchievementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   resources<T extends Prisma.Admin$resourcesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$resourcesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LearningResourcePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Admin$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2412,30 +2256,6 @@ export type Admin$eventsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.EventScalarFieldEnum | Prisma.EventScalarFieldEnum[]
-}
-
-/**
- * Admin.notices
- */
-export type Admin$noticesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Notice
-   */
-  select?: Prisma.NoticeSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Notice
-   */
-  omit?: Prisma.NoticeOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.NoticeInclude<ExtArgs> | null
-  where?: Prisma.NoticeWhereInput
-  orderBy?: Prisma.NoticeOrderByWithRelationInput | Prisma.NoticeOrderByWithRelationInput[]
-  cursor?: Prisma.NoticeWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.NoticeScalarFieldEnum | Prisma.NoticeScalarFieldEnum[]
 }
 
 /**

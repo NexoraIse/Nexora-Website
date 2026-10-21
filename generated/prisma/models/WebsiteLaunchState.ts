@@ -531,6 +531,14 @@ export type EnumLaunchStatusFieldUpdateOperationsInput = {
   set?: $Enums.LaunchStatus
 }
 
+export type BigIntFieldUpdateOperationsInput = {
+  set?: bigint | number
+  increment?: bigint | number
+  decrement?: bigint | number
+  multiply?: bigint | number
+  divide?: bigint | number
+}
+
 export type WebsiteLaunchStateCreateWithoutUpdatedByAdminInput = {
   id?: number
   status?: $Enums.LaunchStatus

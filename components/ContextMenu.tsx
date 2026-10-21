@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   House,
   CalendarBlank,
-  Bell,
   BookOpen,
   Code,
   Handshake,
@@ -28,7 +27,6 @@ const NAV_ITEMS: { href: string; label: string; icon: typeof House }[] = [
   { href: "/", label: "Home", icon: House },
   { href: "/about", label: "About", icon: Info },
   { href: "/events", label: "Events", icon: CalendarBlank },
-  { href: "/notices", label: "Notices", icon: Bell },
   { href: "/learn", label: "Learning Hub", icon: BookOpen },
   { href: "/practice", label: "Practice", icon: Code },
   { href: "/achievements", label: "Achievements", icon: Trophy },

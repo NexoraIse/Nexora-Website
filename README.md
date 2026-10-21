@@ -29,14 +29,7 @@ The project features a **public community portal** for students and visitors, al
   - Modern typography powered by Jersey 10 and Geist fonts.
   - Showcases the department and club collaboration (*Nexora X Heka*).
   - Emphasizes the core pillars: **THINK • BUILD • INNOVATE**.
-  - Quick action links for events, notices, and academic materials.
-
-- **Bulletin & Noticeboard (`/notices`):**
-  - Urgent announcement beacon with live pulse indicators.
-  - Real-time search across titles, summaries, contents, and author credentials.
-  - Multi-category pill filters (*Urgent, Projects, Events, General*).
-  - List and Grid view toggles.
-  - Interactive notice modal with downloadable attachments and direct link sharing.
+  - Quick action links for events and academic materials.
 
 - **Events & Hackathons Hub (`/events`):**
   - Event track categorization (*Hackathons, Technical Competitions, Workshops, Seminars*).
@@ -83,9 +76,8 @@ The project features a **public community portal** for students and visitors, al
   - Super Admin and Role delegation architecture (`SUPER_ADMIN`, `ADMIN`, `EDITOR`).
 
 - **Unified Control Panel:**
-  - **Overview Analytics:** Real-time metrics for total events, active notices, published resources, and admin users.
+  - **Overview Analytics:** Real-time metrics for events, achievements, learning resources, and drafts.
   - **Events Manager:** Create, update, publish, or archive hackathons and technical symposiums.
-  - **Noticeboard CMS:** Publish critical department bulletins, pin urgent notices, and link resource attachments.
   - **Achievements CMS:** Add and update student competition milestones.
   - **Learning Hub Manager:** Upload notes, past exam papers, and syllabus updates.
   - **Category Taxonomies:** Dynamic category assignment across events and resources.
@@ -124,18 +116,16 @@ Nexora-Website/
 │   │   ├── admin/                    # Auth, audit logs, sessions, users, CMS
 │   │   ├── connect/                   # Member, roster lookup, directory, reports, disputes
 │   │   ├── events/                   # Events retrieval & submission endpoints
-│   │   ├── notices/                  # Department noticeboard endpoints
 │   │   └── resources/                # Academic resources & materials
 │   ├── events/                       # Technical events, hackathons & registration
 │   ├── learn/                        # Study materials, VTU exams, skill tracks
-│   ├── notices/                      # Public noticeboard & urgent alerts
 │   ├── globals.css                   # Tailwind CSS v4 styling & mobile reset
 │   ├── layout.tsx                    # Root layout with fonts & smooth scroll
 │   ├── not-found.tsx                 # Interactive 404 FuzzyText experience
 │   └── page.tsx                      # Public landing page (Hero section)
 ├── components/                       # Modular UI components
 │   ├── admin/                        # Admin layout, sidebar, header & CMS views
-│   │   └── views/                    # Dashboard, Events, Notices, Users, Logs
+│   │   └── views/                    # Dashboard, Events, Users, Logs
 │   ├── events/                       # Event cards, hero, filters, and modal
 │   ├── learn/                        # Academic cards, countdowns, exam lists
 │   ├── AchievementGallery.tsx        # Milestone cards with scroll observer
@@ -143,8 +133,6 @@ Nexora-Website/
 │   ├── FuzzyText.tsx                 # React Bits HTML5 canvas fuzz displacement
 │   ├── Hero.tsx                      # Landing hero & club collaboration
 │   ├── Navbar.tsx                    # Responsive floating pill navigation
-│   ├── NoticeCard.tsx                # Noticeboard item card & category badges
-│   └── NoticeModal.tsx               # Notice details dialog & attachment links
 ├── lib/                              # Core backend utilities & data layer
 │   ├── admin-auth.ts                 # JWT generation, verification & cookies
 │   ├── events-data.ts                # Event filtering logic & initial datasets
@@ -233,7 +221,6 @@ The relational PostgreSQL schema in `prisma/schema.prisma` models all core entit
 
 - **`Admin` (`admins`):** System administrators with bcrypt-hashed credentials and roles (`SUPER_ADMIN`, `ADMIN`, `EDITOR`).
 - **`Event` (`events`):** Department hackathons, workshops, and competitions with dates, venues, status, and registration links.
-- **`Notice` (`notices`):** Circulars and announcements categorized by priority (`NORMAL`, `IMPORTANT`, `URGENT`) and pinned state.
 - **`Achievement` (`achievements`):** Student hackathon achievements, awards, and event recognitions.
 - **`LearningResource` (`learning_resources`):** Semester-indexed study notes, VTU previous question papers, and lab manuals.
 - **`Category` (`categories`):** Taxonomies across events and academic resources.
@@ -250,7 +237,6 @@ The relational PostgreSQL schema in `prisma/schema.prisma` models all core entit
 | Endpoint | Method | Description |
 | :--- | :--- | :--- |
 | `/api/events` | `GET` | Fetches all published upcoming and past events |
-| `/api/notices` | `GET` | Fetches active department notices and urgent bulletins |
 | `/api/achievements` | `GET` | Retrieves verified student achievements and awards |
 | `/api/resources` | `GET` | Retrieves study notes, exam papers, and learning links |
 
@@ -305,7 +291,6 @@ Connect profile photo uploads use Cloudinary. Create a Cloudinary account, then 
 | `/api/admin/session` | `GET` | Validates session token and returns current admin profile |
 | `/api/admin/dashboard` | `GET` | Aggregates live metrics and counts for the dashboard overview |
 | `/api/admin/events` | `GET`, `POST`, `PUT`, `DELETE` | Full CRUD operations for department events |
-| `/api/admin/notices` | `GET`, `POST`, `PUT`, `DELETE` | Full CRUD operations for bulletin board announcements |
 | `/api/admin/achievements`| `GET`, `POST`, `PUT`, `DELETE` | Full CRUD operations for student achievement gallery |
 | `/api/admin/resources` | `GET`, `POST`, `PUT`, `DELETE` | Full CRUD operations for academic study materials |
 | `/api/admin/users` | `GET`, `POST`, `PUT`, `DELETE` | Super Admin management of administrative user accounts |

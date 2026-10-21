@@ -27,15 +27,6 @@ export const PublishStatus = {
 export type PublishStatus = (typeof PublishStatus)[keyof typeof PublishStatus]
 
 
-export const NoticePriority = {
-  NORMAL: 'NORMAL',
-  IMPORTANT: 'IMPORTANT',
-  URGENT: 'URGENT'
-} as const
-
-export type NoticePriority = (typeof NoticePriority)[keyof typeof NoticePriority]
-
-
 export const MemberType = {
   STUDENT: 'STUDENT',
   ALUMNUS: 'ALUMNUS'

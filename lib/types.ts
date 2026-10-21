@@ -106,36 +106,7 @@ export interface RegistrationRecord {
 }
 
 // -----------------------------------------------------------------------------
-// 4. Notices Domain
-// -----------------------------------------------------------------------------
-export type NoticePriority = 'NORMAL' | 'IMPORTANT' | 'URGENT';
-export type NoticeCategory = 'Urgent' | 'Events' | 'Projects' | 'General';
-
-export interface NoticeItem {
-  id: string;
-  date: string;
-  title: string;
-  slug?: string | null;
-  summary?: string | null;
-  content?: string | null;
-  category: NoticeCategory | string;
-  priority: NoticePriority;
-  status: PublishStatus;
-  publishDate?: string | null;
-  expiryDate?: string | null;
-  image?: string | null;
-  attachmentUrl?: string | null;
-  attachmentType?: string | null;
-  attachmentName?: string | null;
-  isPinned: boolean;
-  authorName?: string | null;
-  authorRole?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// -----------------------------------------------------------------------------
-// 5. Achievements Domain
+// 4. Achievements Domain
 // -----------------------------------------------------------------------------
 export interface AchievementItem {
   id: string;
@@ -182,7 +153,7 @@ export interface LearningResourceItem {
 export interface ContentCategoryItem {
   id: string;
   name: string;
-  type: 'event' | 'notice' | 'achievement' | 'resource' | string;
+  type: 'event' | 'achievement' | 'resource' | string;
   description?: string | null;
   createdAt?: string;
 }
