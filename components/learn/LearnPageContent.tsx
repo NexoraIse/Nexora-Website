@@ -6,15 +6,12 @@ import ExploreLearning from "./ExploreLearning";
 import UpcomingExams from "./UpcomingExams";
 import StudyMaterialsSection from "./StudyMaterialsSection";
 import SkillDevelopment from "./SkillDevelopment";
-import LatestUpdates from "./LatestUpdates";
 import {
   LearningResource,
   ExamSchedule,
-  AcademicAnnouncement,
   SkillResource,
   INITIAL_STUDY_MATERIALS,
   INITIAL_EXAMS,
-  INITIAL_ANNOUNCEMENTS,
   INITIAL_SKILLS,
 } from "./learnData";
 
@@ -35,7 +32,6 @@ export default function LearnPageContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [materials, setMaterials] = useState<LearningResource[]>(INITIAL_STUDY_MATERIALS);
   const [exams] = useState<ExamSchedule[]>(INITIAL_EXAMS);
-  const [announcements] = useState<AcademicAnnouncement[]>(INITIAL_ANNOUNCEMENTS);
   const [skills] = useState<SkillResource[]>(INITIAL_SKILLS);
 
   // Real-time integration with backend database
@@ -76,12 +72,11 @@ export default function LearnPageContent() {
         onSearchChange={setSearchQuery}
       />
 
-      {/* Explore Learning 4-Card Grid */}
+      {/* Explore Learning Grid */}
       <ExploreLearning
         materialsCount={materials.length}
         examsCount={exams.length}
         skillsCount={skills.length}
-        announcementsCount={announcements.length}
       />
 
       {/* Upcoming Exams Section */}
@@ -98,9 +93,6 @@ export default function LearnPageContent() {
         skills={skills}
         searchQuery={searchQuery}
       />
-
-      {/* Latest Academic Updates */}
-      <LatestUpdates announcements={announcements} />
 
       {/* Subtle bottom padding for aesthetic spacing before footer */}
       <div className="h-16" />

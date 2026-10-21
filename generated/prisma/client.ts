@@ -52,11 +52,6 @@ export type Admin = Prisma.AdminModel
  */
 export type Event = Prisma.EventModel
 /**
- * Model Notice
- * 
- */
-export type Notice = Prisma.NoticeModel
-/**
  * Model Achievement
  * 
  */
@@ -76,6 +71,11 @@ export type ContentCategory = Prisma.ContentCategoryModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model WebsiteLaunchState
+ * 
+ */
+export type WebsiteLaunchState = Prisma.WebsiteLaunchStateModel
 /**
  * Model ActiveSession
  * 

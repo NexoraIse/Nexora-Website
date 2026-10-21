@@ -399,11 +399,11 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Admin: 'Admin',
   Event: 'Event',
-  Notice: 'Notice',
   Achievement: 'Achievement',
   LearningResource: 'LearningResource',
   ContentCategory: 'ContentCategory',
   AuditLog: 'AuditLog',
+  WebsiteLaunchState: 'WebsiteLaunchState',
   ActiveSession: 'ActiveSession',
   UsnClaim: 'UsnClaim',
   ConnectRegistration: 'ConnectRegistration',
@@ -431,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin" | "event" | "notice" | "achievement" | "learningResource" | "contentCategory" | "auditLog" | "activeSession" | "usnClaim" | "connectRegistration" | "usnRosterEntry" | "connectAuthRateLimit" | "memberProfile" | "memberSocialLink" | "memberExperience" | "memberAchievement" | "memberKnowledgePage" | "connectReport" | "usnDispute"
+    modelProps: "admin" | "event" | "achievement" | "learningResource" | "contentCategory" | "auditLog" | "websiteLaunchState" | "activeSession" | "usnClaim" | "connectRegistration" | "usnRosterEntry" | "connectAuthRateLimit" | "memberProfile" | "memberSocialLink" | "memberExperience" | "memberAchievement" | "memberKnowledgePage" | "connectReport" | "usnDispute"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -580,80 +580,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EventCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EventCountAggregateOutputType> | number
-        }
-      }
-    }
-    Notice: {
-      payload: Prisma.$NoticePayload<ExtArgs>
-      fields: Prisma.NoticeFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.NoticeFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.NoticeFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>
-        }
-        findFirst: {
-          args: Prisma.NoticeFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.NoticeFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>
-        }
-        findMany: {
-          args: Prisma.NoticeFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>[]
-        }
-        create: {
-          args: Prisma.NoticeCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>
-        }
-        createMany: {
-          args: Prisma.NoticeCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.NoticeCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>[]
-        }
-        delete: {
-          args: Prisma.NoticeDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>
-        }
-        update: {
-          args: Prisma.NoticeUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>
-        }
-        deleteMany: {
-          args: Prisma.NoticeDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.NoticeUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.NoticeUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>[]
-        }
-        upsert: {
-          args: Prisma.NoticeUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoticePayload>
-        }
-        aggregate: {
-          args: Prisma.NoticeAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateNotice>
-        }
-        groupBy: {
-          args: Prisma.NoticeGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.NoticeGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.NoticeCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.NoticeCountAggregateOutputType> | number
         }
       }
     }
@@ -950,6 +876,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AuditLogCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AuditLogCountAggregateOutputType> | number
+        }
+      }
+    }
+    WebsiteLaunchState: {
+      payload: Prisma.$WebsiteLaunchStatePayload<ExtArgs>
+      fields: Prisma.WebsiteLaunchStateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebsiteLaunchStateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebsiteLaunchStateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>
+        }
+        findFirst: {
+          args: Prisma.WebsiteLaunchStateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebsiteLaunchStateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>
+        }
+        findMany: {
+          args: Prisma.WebsiteLaunchStateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>[]
+        }
+        create: {
+          args: Prisma.WebsiteLaunchStateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>
+        }
+        createMany: {
+          args: Prisma.WebsiteLaunchStateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebsiteLaunchStateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>[]
+        }
+        delete: {
+          args: Prisma.WebsiteLaunchStateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>
+        }
+        update: {
+          args: Prisma.WebsiteLaunchStateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>
+        }
+        deleteMany: {
+          args: Prisma.WebsiteLaunchStateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebsiteLaunchStateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebsiteLaunchStateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>[]
+        }
+        upsert: {
+          args: Prisma.WebsiteLaunchStateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteLaunchStatePayload>
+        }
+        aggregate: {
+          args: Prisma.WebsiteLaunchStateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebsiteLaunchState>
+        }
+        groupBy: {
+          args: Prisma.WebsiteLaunchStateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteLaunchStateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebsiteLaunchStateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteLaunchStateCountAggregateOutputType> | number
         }
       }
     }
@@ -1922,33 +1922,6 @@ export const EventScalarFieldEnum = {
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
 
 
-export const NoticeScalarFieldEnum = {
-  id: 'id',
-  date: 'date',
-  title: 'title',
-  slug: 'slug',
-  summary: 'summary',
-  content: 'content',
-  category: 'category',
-  priority: 'priority',
-  status: 'status',
-  publishDate: 'publishDate',
-  expiryDate: 'expiryDate',
-  image: 'image',
-  attachmentUrl: 'attachmentUrl',
-  attachmentType: 'attachmentType',
-  attachmentName: 'attachmentName',
-  isPinned: 'isPinned',
-  authorName: 'authorName',
-  authorRole: 'authorRole',
-  createdById: 'createdById',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type NoticeScalarFieldEnum = (typeof NoticeScalarFieldEnum)[keyof typeof NoticeScalarFieldEnum]
-
-
 export const AchievementScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -2016,6 +1989,22 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const WebsiteLaunchStateScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  countdownStartedAt: 'countdownStartedAt',
+  countdownEndsAt: 'countdownEndsAt',
+  animationStartedAt: 'animationStartedAt',
+  animationEndsAt: 'animationEndsAt',
+  launchedAt: 'launchedAt',
+  version: 'version',
+  updatedAt: 'updatedAt',
+  updatedByAdminId: 'updatedByAdminId'
+} as const
+
+export type WebsiteLaunchStateScalarFieldEnum = (typeof WebsiteLaunchStateScalarFieldEnum)[keyof typeof WebsiteLaunchStateScalarFieldEnum]
 
 
 export const ActiveSessionScalarFieldEnum = {
@@ -2296,34 +2285,6 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'BigInt'
- */
-export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
-    
-
-
-/**
- * Reference to a field of type 'BigInt[]'
- */
-export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
-    
-
-
-/**
- * Reference to a field of type 'NoticePriority'
- */
-export type EnumNoticePriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NoticePriority'>
-    
-
-
-/**
- * Reference to a field of type 'NoticePriority[]'
- */
-export type ListEnumNoticePriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NoticePriority[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -2334,6 +2295,34 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LaunchStatus'
+ */
+export type EnumLaunchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LaunchStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LaunchStatus[]'
+ */
+export type ListEnumLaunchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LaunchStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt'
+ */
+export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt[]'
+ */
+export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
     
 
 
@@ -2601,11 +2590,11 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   admin?: Prisma.AdminOmit
   event?: Prisma.EventOmit
-  notice?: Prisma.NoticeOmit
   achievement?: Prisma.AchievementOmit
   learningResource?: Prisma.LearningResourceOmit
   contentCategory?: Prisma.ContentCategoryOmit
   auditLog?: Prisma.AuditLogOmit
+  websiteLaunchState?: Prisma.WebsiteLaunchStateOmit
   activeSession?: Prisma.ActiveSessionOmit
   usnClaim?: Prisma.UsnClaimOmit
   connectRegistration?: Prisma.ConnectRegistrationOmit

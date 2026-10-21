@@ -35,7 +35,7 @@ async function getAchievements() {
                 month: "short",
                 year: "numeric",
               })
-            : "2026"),
+            : "Date not listed"),
         image: a.image || undefined,
         isSample: false,
       }));
@@ -46,7 +46,7 @@ async function getAchievements() {
       title: a.title,
       description: a.description,
       event: a.competitionOrEvent || a.studentOrTeamName || "Nexora Department",
-      date: a.dateDisplay || "2026",
+      date: a.dateDisplay || "Date not listed",
       image: a.image || undefined,
       isSample: false,
     }));
@@ -58,7 +58,7 @@ async function getAchievements() {
       title: a.title,
       description: a.description,
       event: a.competitionOrEvent || a.studentOrTeamName || "Nexora Department",
-      date: a.dateDisplay || "2026",
+      date: a.dateDisplay || "Date not listed",
       image: a.image || undefined,
       isSample: false,
     }));

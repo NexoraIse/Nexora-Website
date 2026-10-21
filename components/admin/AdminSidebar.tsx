@@ -4,7 +4,6 @@ import React from 'react'
 import {
   LayoutDashboard,
   Calendar,
-  Bell,
   Award,
   BookOpen,
   Layers,
@@ -24,7 +23,6 @@ import {
 export type AdminTab =
   | 'dashboard'
   | 'events'
-  | 'notices'
   | 'achievements'
   | 'learning-hub'
   | 'gallery'
@@ -69,7 +67,6 @@ export default function AdminSidebar({
       title: 'Content Management',
       items: [
         { id: 'events' as AdminTab, label: 'Events', icon: Calendar },
-        { id: 'notices' as AdminTab, label: 'Notice Board', icon: Bell },
         { id: 'achievements' as AdminTab, label: 'Achievements', icon: Award },
         { id: 'learning-hub' as AdminTab, label: 'Learning Hub', icon: BookOpen },
         { id: 'gallery' as AdminTab, label: 'Photo Gallery', icon: ImageIcon },

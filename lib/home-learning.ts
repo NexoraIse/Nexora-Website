@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { INITIAL_ANNOUNCEMENTS } from "@/components/learn/learnData";
 
 export type HomepageLearningResource = {
   id: string;
@@ -14,19 +13,10 @@ export type HomepageLearningResource = {
   tags: string[];
 };
 
-export type HomepageAcademicUpdate = {
-  id: string;
-  title: string;
-  description: string;
-  publishedAt: string;
-  category: string;
-};
-
 export type HomepageLearningData = {
   papers: HomepageLearningResource[];
   paperCount: number;
   resources: HomepageLearningResource[];
-  updates: HomepageAcademicUpdate[];
   unavailable: boolean;
 };
 
@@ -78,13 +68,6 @@ export async function getHomepageLearningData(): Promise<HomepageLearningData> {
       papers,
       paperCount: papers.length,
       resources,
-      updates: INITIAL_ANNOUNCEMENTS.slice(0, 4).map((update) => ({
-        id: update.id,
-        title: update.title,
-        description: update.description,
-        publishedAt: update.publishedAt,
-        category: update.category,
-      })),
       unavailable: false,
     };
   } catch (error) {
@@ -93,13 +76,6 @@ export async function getHomepageLearningData(): Promise<HomepageLearningData> {
       papers: [],
       paperCount: 0,
       resources: [],
-      updates: INITIAL_ANNOUNCEMENTS.slice(0, 4).map((update) => ({
-        id: update.id,
-        title: update.title,
-        description: update.description,
-        publishedAt: update.publishedAt,
-        category: update.category,
-      })),
       unavailable: true,
     };
   }

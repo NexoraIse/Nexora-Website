@@ -1,14 +1,16 @@
 'use client'
 
 import React from 'react'
-import { Menu, Plus, Bell } from 'lucide-react'
+import { Menu, Plus } from 'lucide-react'
 import { AdminTab } from './AdminSidebar'
+import AdminLaunchControl from './AdminLaunchControl'
 
 interface AdminHeaderProps {
   currentTab: AdminTab
   onOpenMobileMenu: () => void
   onQuickAction?: (action: string) => void
   unreadCount?: number
+  userRole?: string
 }
 
 const TAB_TITLES: Record<AdminTab, { title: string; description: string }> = {
@@ -19,10 +21,6 @@ const TAB_TITLES: Record<AdminTab, { title: string; description: string }> = {
   events: {
     title: 'Events Management',
     description: 'Publish, organize, and manage campus workshops, hackathons, and symposiums.',
-  },
-  notices: {
-    title: 'Notice Board',
-    description: 'Broadcast urgent announcements, deadlines, and project circulars.',
   },
   achievements: {
     title: 'Achievements Gallery',
@@ -74,6 +72,7 @@ export default function AdminHeader({
   currentTab,
   onOpenMobileMenu,
   onQuickAction,
+  userRole = 'ADMIN',
 }: AdminHeaderProps) {
   const currentMeta = TAB_TITLES[currentTab] || {
     title: 'Administration',
@@ -103,6 +102,9 @@ export default function AdminHeader({
       </div>
 
       <div className="flex items-center gap-2.5">
+        {/* Launch Countdown Control in Admin Navbar */}
+        <AdminLaunchControl userRole={userRole} />
+
         {/* Quick action button */}
         {onQuickAction && currentTab !== 'connect-moderation' && currentTab !== 'connect-roster' && (
           <button
@@ -114,9 +116,6 @@ export default function AdminHeader({
           </button>
         )}
 
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B]">
-          <Bell className="h-4 w-4" />
-        </div>
       </div>
     </header>
   )

@@ -14,7 +14,6 @@ export const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/events', label: 'Events' },
-  { href: '/notices', label: 'Notices' },
   { href: '/learn', label: 'Learning Hub' },
   { href: '/practice', label: 'Practice' },
   { href: '/achievements', label: 'Achievements' },

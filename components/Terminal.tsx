@@ -34,7 +34,6 @@ const NAV_COMMANDS: Record<string, string> = {
   home: '/',
   about: '/about',
   events: '/events',
-  notices: '/notices',
   learn: '/learn',
   practice: '/practice',
   achievements: '/achievements',
@@ -214,7 +213,7 @@ export default function Terminal() {
 
       switch (lower) {
         case 'help':
-          appendOutput('Navigation: home, events, learn, notices, achievements, about');
+          appendOutput('Navigation: home, events, learn, achievements, about');
           appendOutput('Utility: clear, whoami, date, echo <text>, exit');
           appendOutput('Fun: hype, ping, credits, theme');
           break;

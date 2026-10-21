@@ -8,8 +8,6 @@ export default function RolesView() {
     { name: 'View Overview & Metrics', superAdmin: true, admin: true, editor: true },
     { name: 'Create & Edit Events', superAdmin: true, admin: true, editor: true },
     { name: 'Delete Events', superAdmin: true, admin: true, editor: false },
-    { name: 'Post & Edit Notices', superAdmin: true, admin: true, editor: true },
-    { name: 'Delete Notices', superAdmin: true, admin: true, editor: false },
     { name: 'Manage Achievements', superAdmin: true, admin: true, editor: true },
     { name: 'Manage Learning Hub & Materials', superAdmin: true, admin: true, editor: true },
     { name: 'Manage Content Categories', superAdmin: true, admin: true, editor: false },
@@ -39,7 +37,7 @@ export default function RolesView() {
             <h3 className="text-sm font-bold">ADMIN</h3>
           </div>
           <p className="mt-2 text-xs text-[#64748B] leading-relaxed">
-            Full operational control over club events, notices, achievements, and academic study materials. Can inspect audit logs and active sessions.
+            Full operational control over club events, achievements, and academic study materials. Can inspect audit logs and active sessions.
           </p>
         </div>
 
@@ -49,7 +47,7 @@ export default function RolesView() {
             <h3 className="text-sm font-bold">EDITOR</h3>
           </div>
           <p className="mt-2 text-xs text-[#64748B] leading-relaxed">
-            Content contributor authorization. Can author drafts, update published notices, and upload learning resources without deletion or user management rights.
+            Content contributor authorization. Can author drafts, update published content, and upload learning resources without deletion or user management rights.
           </p>
         </div>
       </div>

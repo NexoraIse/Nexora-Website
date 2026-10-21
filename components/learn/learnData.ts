@@ -24,17 +24,6 @@ export interface ExamSchedule {
   isPublished: boolean;
 }
 
-export interface AcademicAnnouncement {
-  id: string;
-  title: string;
-  description: string;
-  details?: string;
-  publishedAt: string;
-  category: "Exams" | "Academic" | "Workshop" | "General";
-  priority?: "normal" | "urgent" | "high";
-  linkUrl?: string;
-}
-
 export interface SkillResource {
   id: string;
   title: string;
@@ -184,37 +173,6 @@ export const INITIAL_EXAMS: ExamSchedule[] = [
     time: "02:00 PM - 03:30 PM",
     venue: "ISE Seminar Hall",
     isPublished: true
-  }
-];
-
-// Published academic announcements
-export const INITIAL_ANNOUNCEMENTS: AcademicAnnouncement[] = [
-  {
-    id: "ann-1",
-    title: "Schedule Released: Internal Assessment - II (Even Semester)",
-    description: "Detailed timetable for IA-2 has been officially published by the ISE Department examination committee.",
-    details: "Students are advised to review the dates, hall allocations, and syllabus portions on the departmental notice board. Strict attendance compliance is mandatory.",
-    publishedAt: "2026-04-02",
-    category: "Exams",
-    priority: "urgent"
-  },
-  {
-    id: "ann-2",
-    title: "VTU Semester-End Exam Question Bank & Model Solutions Uploaded",
-    description: "Previous 5 years' question papers for 4th and 6th semester subjects are now archived in the study materials section.",
-    details: "Model solution sheets curated by ISE faculty members are now downloadable in PDF format under the Study Materials portal.",
-    publishedAt: "2026-03-29",
-    category: "Academic",
-    priority: "normal"
-  },
-  {
-    id: "ann-3",
-    title: "Hands-on Workshop: Modern Web Dev with Next.js & Supabase",
-    description: "Nexora Club is hosting a weekend bootcamp on building full-stack cloud applications.",
-    details: "Registration open for ISE students from 3rd to 7th semester. Certificate of participation will be issued upon mini-project submission.",
-    publishedAt: "2026-03-25",
-    category: "Workshop",
-    priority: "high"
   }
 ];
 

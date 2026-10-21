@@ -53,11 +53,11 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Admin: 'Admin',
   Event: 'Event',
-  Notice: 'Notice',
   Achievement: 'Achievement',
   LearningResource: 'LearningResource',
   ContentCategory: 'ContentCategory',
   AuditLog: 'AuditLog',
+  WebsiteLaunchState: 'WebsiteLaunchState',
   ActiveSession: 'ActiveSession',
   UsnClaim: 'UsnClaim',
   ConnectRegistration: 'ConnectRegistration',
@@ -130,33 +130,6 @@ export const EventScalarFieldEnum = {
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
 
 
-export const NoticeScalarFieldEnum = {
-  id: 'id',
-  date: 'date',
-  title: 'title',
-  slug: 'slug',
-  summary: 'summary',
-  content: 'content',
-  category: 'category',
-  priority: 'priority',
-  status: 'status',
-  publishDate: 'publishDate',
-  expiryDate: 'expiryDate',
-  image: 'image',
-  attachmentUrl: 'attachmentUrl',
-  attachmentType: 'attachmentType',
-  attachmentName: 'attachmentName',
-  isPinned: 'isPinned',
-  authorName: 'authorName',
-  authorRole: 'authorRole',
-  createdById: 'createdById',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type NoticeScalarFieldEnum = (typeof NoticeScalarFieldEnum)[keyof typeof NoticeScalarFieldEnum]
-
-
 export const AchievementScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -224,6 +197,22 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const WebsiteLaunchStateScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  countdownStartedAt: 'countdownStartedAt',
+  countdownEndsAt: 'countdownEndsAt',
+  animationStartedAt: 'animationStartedAt',
+  animationEndsAt: 'animationEndsAt',
+  launchedAt: 'launchedAt',
+  version: 'version',
+  updatedAt: 'updatedAt',
+  updatedByAdminId: 'updatedByAdminId'
+} as const
+
+export type WebsiteLaunchStateScalarFieldEnum = (typeof WebsiteLaunchStateScalarFieldEnum)[keyof typeof WebsiteLaunchStateScalarFieldEnum]
 
 
 export const ActiveSessionScalarFieldEnum = {

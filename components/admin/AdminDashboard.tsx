@@ -6,7 +6,6 @@ import AdminSidebar, { AdminTab } from './AdminSidebar'
 import AdminHeader from './AdminHeader'
 import DashboardView from './views/DashboardView'
 import EventsView from './views/EventsView'
-import NoticesView from './views/NoticesView'
 import AchievementsView from './views/AchievementsView'
 import LearningHubView from './views/LearningHubView'
 import GalleryView from './views/GalleryView'
@@ -46,9 +45,6 @@ export default function AdminDashboard({ user, onLogout }: AdminDashboardProps) 
     if (type === 'event' || type === 'events') {
       setCurrentTab('events')
       setOpenModalSignal((prev) => prev + 1)
-    } else if (type === 'notice' || type === 'notices') {
-      setCurrentTab('notices')
-      setOpenModalSignal((prev) => prev + 1)
     } else if (type === 'achievement' || type === 'achievements') {
       setCurrentTab('achievements')
       setOpenModalSignal((prev) => prev + 1)
@@ -80,6 +76,7 @@ export default function AdminDashboard({ user, onLogout }: AdminDashboardProps) 
         {/* Top Header */}
         <AdminHeader
           currentTab={currentTab}
+          userRole={user.role}
           onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
           onQuickAction={handleQuickAction}
         />
@@ -96,10 +93,6 @@ export default function AdminDashboard({ user, onLogout }: AdminDashboardProps) 
 
             {currentTab === 'events' && (
               <EventsView key={`events-${openModalSignal}`} initialOpenModal={openModalSignal > 0} />
-            )}
-
-            {currentTab === 'notices' && (
-              <NoticesView key={`notices-${openModalSignal}`} initialOpenModal={openModalSignal > 0} />
             )}
 
             {currentTab === 'achievements' && (

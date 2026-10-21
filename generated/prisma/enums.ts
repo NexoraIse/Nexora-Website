@@ -27,15 +27,6 @@ export const PublishStatus = {
 export type PublishStatus = (typeof PublishStatus)[keyof typeof PublishStatus]
 
 
-export const NoticePriority = {
-  NORMAL: 'NORMAL',
-  IMPORTANT: 'IMPORTANT',
-  URGENT: 'URGENT'
-} as const
-
-export type NoticePriority = (typeof NoticePriority)[keyof typeof NoticePriority]
-
-
 export const MemberType = {
   STUDENT: 'STUDENT',
   ALUMNUS: 'ALUMNUS'
@@ -99,3 +90,14 @@ export const UsnDisputeStatus = {
 } as const
 
 export type UsnDisputeStatus = (typeof UsnDisputeStatus)[keyof typeof UsnDisputeStatus]
+
+
+export const LaunchStatus = {
+  NORMAL: 'NORMAL',
+  STAY_TUNED: 'STAY_TUNED',
+  COUNTDOWN_RUNNING: 'COUNTDOWN_RUNNING',
+  ANIMATION: 'ANIMATION',
+  LAUNCHED: 'LAUNCHED'
+} as const
+
+export type LaunchStatus = (typeof LaunchStatus)[keyof typeof LaunchStatus]

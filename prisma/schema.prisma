@@ -19,12 +19,6 @@ enum PublishStatus {
   ARCHIVED
 }
 
-enum NoticePriority {
-  NORMAL
-  IMPORTANT
-  URGENT
-}
-
 enum MemberType {
   STUDENT
   ALUMNUS
@@ -69,6 +63,14 @@ enum UsnDisputeStatus {
   DISMISSED
 }
 
+enum LaunchStatus {
+  NORMAL
+  STAY_TUNED
+  COUNTDOWN_RUNNING
+  ANIMATION
+  LAUNCHED
+}
+
 model Admin {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email     String   @unique
@@ -79,13 +81,13 @@ model Admin {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   events                 Event[]
-  notices                Notice[]
   achievements           Achievement[]
   resources              LearningResource[]
   auditLogs              AuditLog[]
   reviewedMemberProfiles MemberProfile[]    @relation("MemberProfileReviewer")
   reviewedConnectReports ConnectReport[]    @relation("ConnectReportReviewer")
   reviewedUsnDisputes    UsnDispute[]       @relation("UsnDisputeReviewer")
+  launchStateUpdates     WebsiteLaunchState[]
 
   @@map("admins")
 }
@@ -119,35 +121,6 @@ model Event {
   @@index([status])
   @@index([category])
   @@map("events")
-}
-
-model Notice {
-  id             BigInt         @id @default(autoincrement())
-  date           DateTime       @default(now()) @db.Date
-  title          String
-  slug           String?        @unique
-  summary        String?
-  content        String?
-  category       String         @default("General")
-  priority       NoticePriority @default(NORMAL)
-  status         PublishStatus  @default(PUBLISHED)
-  publishDate    DateTime?      @default(now()) @map("publish_date") @db.Timestamptz
-  expiryDate     DateTime?      @map("expiry_date") @db.Timestamptz
-  image          String?
-  attachmentUrl  String?        @map("attachment_url")
-  attachmentType String?        @map("attachment_type")
-  attachmentName String?        @map("attachment_name")
-  isPinned       Boolean        @default(false) @map("is_pinned")
-  authorName     String?        @default("Nexora Executive Board") @map("author_name")
-  authorRole     String?        @default("ISE Department") @map("author_role")
-  createdById    String?        @map("created_by_id") @db.Uuid
-  createdBy      Admin?         @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
-
-  @@index([status])
-  @@index([category])
-  @@map("notices")
 }
 
 model Achievement {
@@ -224,6 +197,23 @@ model AuditLog {
   @@index([entity])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+model WebsiteLaunchState {
+  id               Int          @id @default(1)
+  status           LaunchStatus @default(NORMAL)
+  countdownStartedAt DateTime?  @map("countdown_started_at") @db.Timestamptz
+  countdownEndsAt  DateTime?    @map("countdown_ends_at") @db.Timestamptz
+  animationStartedAt DateTime?  @map("animation_started_at") @db.Timestamptz
+  animationEndsAt  DateTime?    @map("animation_ends_at") @db.Timestamptz
+  launchedAt       DateTime?    @map("launched_at") @db.Timestamptz
+  version          BigInt       @default(0)
+  updatedAt        DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  updatedByAdminId String?      @map("updated_by_admin_id") @db.Uuid
+  updatedByAdmin   Admin?       @relation(fields: [updatedByAdminId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@map("website_launch_state")
 }
 
 model ActiveSession {
