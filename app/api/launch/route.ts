@@ -1,8 +1,7 @@
-import { NextResponse, connection } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getPublicLaunchState } from '@/lib/launch/state'
 
 export async function GET() {
-  await connection()
   try {
     const state = await getPublicLaunchState()
     return NextResponse.json({ state })
