@@ -122,34 +122,47 @@ export async function getAuthenticatedConnectAdmin(req: Request): Promise<AdminU
 }
 
 export function getConnectAppUrl(req: Request): URL {
-  const configuredUrl = env.CONNECT_APP_URL.trim()
-  if (!configuredUrl) {
-    if (env.IS_PRODUCTION) {
-      throw new Error('CONNECT_APP_URL must be configured for Connect authentication.')
+  const rawConfigured = (
+    process.env.CONNECT_APP_URL ||
+    env.CONNECT_APP_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '') ||
+    ''
+  ).trim()
+
+  if (rawConfigured) {
+    try {
+      const withProto =
+        rawConfigured.startsWith('http://') || rawConfigured.startsWith('https://')
+          ? rawConfigured
+          : `https://${rawConfigured}`
+      const parsed = new URL(withProto)
+      return new URL(parsed.origin)
+    } catch (e) {
+      console.warn('[CONNECT_AUTH] Failed to parse configured CONNECT_APP_URL, falling back to request origin:', e)
     }
-    return new URL(new URL(req.url).origin)
   }
 
-  let appUrl: URL
+  // Fallback: derive origin dynamically from incoming request headers
+  const forwardedHost = req.headers.get('x-forwarded-host')?.split(',')[0]?.trim()
+  const host = forwardedHost || req.headers.get('host')
+  const forwardedProto = req.headers.get('x-forwarded-proto')?.split(',')[0]?.trim()
+
+  if (host) {
+    const isLocal = host.includes('localhost') || host.includes('127.0.0.1')
+    const proto = forwardedProto || (isLocal ? 'http' : 'https')
+    try {
+      return new URL(`${proto}://${host}`)
+    } catch {
+      // fallback to req.url
+    }
+  }
+
   try {
-    appUrl = new URL(configuredUrl)
+    return new URL(new URL(req.url).origin)
   } catch {
-    throw new Error('CONNECT_APP_URL must be an absolute HTTP(S) origin.')
+    return new URL('http://localhost:3000')
   }
-
-  if (
-    (appUrl.protocol !== 'https:' && appUrl.protocol !== 'http:') ||
-    appUrl.username ||
-    appUrl.password ||
-    appUrl.pathname !== '/' ||
-    appUrl.search ||
-    appUrl.hash ||
-    (env.IS_PRODUCTION && appUrl.protocol !== 'https:')
-  ) {
-    throw new Error('CONNECT_APP_URL must be a secure HTTPS origin without credentials or a path.')
-  }
-
-  return new URL(appUrl.origin)
 }
 
 export function isSameOriginRequest(req: Request): boolean {
