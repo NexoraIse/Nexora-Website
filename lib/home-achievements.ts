@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { INITIAL_ACHIEVEMENTS } from "@/lib/data/initial-achievements";
+import { sortAchievementsByDate } from "@/lib/achievement-sorting";
 
 export type HomepageAchievement = {
   id: string;
@@ -21,11 +21,7 @@ export async function getHomepageAchievements(): Promise<HomepageAchievementData
   try {
     const achievements = await prisma.achievement.findMany({
       where: { status: "PUBLISHED" },
-      orderBy: [
-        { achievementDate: { sort: "desc", nulls: "last" } },
-        { createdAt: "desc" },
-      ],
-      take: 5,
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         title: true,
@@ -38,24 +34,10 @@ export async function getHomepageAchievements(): Promise<HomepageAchievementData
       },
     });
 
-    if (achievements.length === 0) {
-      return {
-        achievements: INITIAL_ACHIEVEMENTS.slice(0, 5).map((achievement) => ({
-          id: achievement.id,
-          title: achievement.title,
-          category: achievement.category,
-          competitionOrEvent: achievement.competitionOrEvent ?? null,
-          awardOrPosition: achievement.awardOrPosition ?? null,
-          achievementDate: achievement.achievementDate ?? null,
-          dateDisplay: achievement.dateDisplay ?? null,
-          image: achievement.image ?? null,
-        })),
-        unavailable: false,
-      };
-    }
+    const sortedAchievements = sortAchievementsByDate(achievements);
 
     return {
-      achievements: achievements.map((achievement) => ({
+      achievements: sortedAchievements.slice(0, 5).map((achievement) => ({
         ...achievement,
         achievementDate: achievement.achievementDate?.toISOString() ?? null,
       })),

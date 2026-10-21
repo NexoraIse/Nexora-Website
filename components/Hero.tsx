@@ -6,7 +6,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar, BookOpen } from 'lucide-react';
 import gsap from 'gsap';
-import { AnimatePresence, motion } from 'motion/react';
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react';
 import Marquee from './Marquee';
 import ContourBackdrop from './ContourBackdrop';
 
@@ -73,6 +80,44 @@ function HeroClouds() {
 const REPLAY_TRIGGER_COUNT = 5;
 const FLASH_VISIBLE_MS = 2400;
 
+function MissionScrollWord({
+  children,
+  index,
+  progress,
+  className = '',
+  prefersReducedMotion,
+}: {
+  children: string;
+  index: number;
+  progress: ReturnType<typeof useSpring>;
+  className?: string;
+  prefersReducedMotion: boolean | null;
+}) {
+  const revealProgress = useTransform(
+    progress,
+    [index / 3, (index + 1) / 3],
+    [100, 0],
+    { clamp: true },
+  );
+  const clipPath = useTransform(revealProgress, (remaining) => `inset(0 ${remaining}% 0 0)`);
+
+  return (
+    <span
+      className={`mission-scroll-word ${className}`}
+      data-accent={className ? 'true' : undefined}
+    >
+      <span>{children}</span>
+      <motion.span
+        aria-hidden="true"
+        className={`mission-scroll-word-fill ${className}`}
+        style={prefersReducedMotion ? undefined : { clipPath }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
 export default function Hero({
   introStarted,
   children,
@@ -82,6 +127,8 @@ export default function Hero({
 }) {
   const sceneRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
+  const missionSectionRef = useRef<HTMLElement>(null);
+  const missionHeadingRef = useRef<HTMLHeadingElement>(null);
   const landscapeContainerRef = useRef<HTMLDivElement>(null);
   const skyRevealRef = useRef<HTMLDivElement>(null);
   const landscapeRevealRef = useRef<HTMLDivElement>(null);
@@ -91,7 +138,38 @@ export default function Hero({
   const dateRef = useRef<HTMLParagraphElement>(null);
   const clicksRef = useRef(0);
   const replayIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress: missionScrollProgress } = useScroll({
+    target: missionSectionRef,
+    offset: ['start end', 'start 55%'],
+  });
+  const { scrollYProgress: missionTextProgress } = useScroll({
+    target: missionHeadingRef,
+    offset: ['start 80%', 'end center'],
+  });
+  const smoothMissionProgress = useSpring(missionScrollProgress, {
+    stiffness: 110,
+    damping: 30,
+    restDelta: 0.001,
+  });
+  const smoothMissionTextProgress = useSpring(missionTextProgress, {
+    stiffness: 120,
+    damping: 32,
+    restDelta: 0.001,
+  });
+  const missionOpacity = useTransform(smoothMissionProgress, [0, 1], isMobile ? [0.78, 1] : [0.44, 1]);
+  const missionY = useTransform(smoothMissionProgress, [0, 1], isMobile ? [44, 0] : [104, 0]);
+  const missionScale = useTransform(smoothMissionProgress, [0, 1], isMobile ? [0.98, 1] : [0.93, 1]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 640px)');
+    const updateViewport = () => setIsMobile(mediaQuery.matches);
+    updateViewport();
+    mediaQuery.addEventListener('change', updateViewport);
+    return () => mediaQuery.removeEventListener('change', updateViewport);
+  }, []);
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -397,17 +475,43 @@ export default function Hero({
         <ContourBackdrop />
         <div className="relative z-10">
           {/* Mission & Purpose Statement */}
-          <section className="px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32 py-20 sm:py-28 md:py-36">
-            <p
+          <motion.section
+            ref={missionSectionRef}
+            className="px-6 sm:px-10 md:px-16 lg:px-24 xl:px-32 py-14 sm:py-28 md:py-36"
+            style={prefersReducedMotion
+              ? undefined
+              : { opacity: missionOpacity, y: missionY, scale: missionScale }}
+          >
+            <h2
+              ref={missionHeadingRef}
               className="font-clash font-bold leading-[0.88] text-[var(--theme-bg-hero,#dce6ef)]"
               style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
             >
-              Think.
+              <MissionScrollWord
+                index={0}
+                progress={smoothMissionTextProgress}
+                prefersReducedMotion={prefersReducedMotion}
+              >
+                Think.
+              </MissionScrollWord>
               <br />
-              <span className="text-[var(--theme-primary,#00f0ff)]">Build.</span>
+              <MissionScrollWord
+                index={1}
+                progress={smoothMissionTextProgress}
+                className="text-[var(--theme-primary,#00f0ff)]"
+                prefersReducedMotion={prefersReducedMotion}
+              >
+                Build.
+              </MissionScrollWord>
               <br />
-              Innovate.
-            </p>
+              <MissionScrollWord
+                index={2}
+                progress={smoothMissionTextProgress}
+                prefersReducedMotion={prefersReducedMotion}
+              >
+                Innovate.
+              </MissionScrollWord>
+            </h2>
             <p className="mt-8 max-w-2xl font-cabinet font-medium text-[var(--theme-primary,#00f0ff)]/80 leading-relaxed text-sm sm:text-base md:text-lg">
               Nexora is the student-led technical body of the Department of Information Science &amp; Engineering
               at A J Institute of Engineering &amp; Technology, Mangaluru. From competitive programming and
@@ -434,7 +538,7 @@ export default function Hero({
                 <span>Learning Hub</span>
               </Link>
             </div>
-          </section>
+          </motion.section>
           {children}
         </div>
       </div>

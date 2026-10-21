@@ -301,7 +301,7 @@ export default function HomeGallerySection() {
       `}</style>
 
       {/* Header Container - aligned with existing homepage section headers */}
-      <div className="relative mx-auto w-[min(calc(100%-2rem),80rem)] mb-8 sm:mb-10">
+      <div className="relative mx-auto mb-8 w-[min(calc(100%-2rem),80rem)] sm:mb-10 sm:w-[min(calc(100%-3rem),80rem)] md:w-[min(calc(100%-8rem),80rem)] lg:w-[min(calc(100%-12rem),80rem)] xl:w-[min(calc(100%-16rem),80rem)]">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <header className="max-w-2xl">
             <p className="text-[10px] font-mono font-semibold tracking-[0.2em] text-[#00f0ff] uppercase">
@@ -542,4 +542,3 @@ export default function HomeGallerySection() {
     </section>
   );
 }
-

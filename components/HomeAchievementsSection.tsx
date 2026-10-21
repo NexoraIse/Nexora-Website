@@ -7,8 +7,8 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } 
 import type { HomepageAchievement } from "@/lib/home-achievements";
 
 function getYear(achievement: HomepageAchievement) {
-  const displayYear = achievement.dateDisplay?.match(/\b(?:19|20)\d{2}\b/)?.[0];
-  return displayYear ?? achievement.achievementDate?.slice(0, 4) ?? "Year not listed";
+  const displayYear = achievement.dateDisplay?.match(/\b(?:19|20)\d{2}(?:\s*[-–]\s*(?:19|20)?\d{2})?\b/)?.[0];
+  return displayYear ?? achievement.achievementDate?.slice(0, 4) ?? null;
 }
 
 function getEventName(achievement: HomepageAchievement) {
@@ -23,7 +23,6 @@ export default function HomeAchievementsSection({
   unavailable: boolean;
 }) {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const cursorX = useMotionValue(-400);
@@ -105,7 +104,7 @@ export default function HomeAchievementsSection({
             {achievements.map((achievement, index) => (
               <article
                 key={achievement.id}
-                className={`home-achievement-row${index === 0 ? ` home-achievement-row--featured${achievement.image ? " has-image" : ""}` : ""}${expandedIndex === index ? " is-expanded" : ""}`}
+                className={`home-achievement-row${index === 0 ? " home-achievement-row--featured" : ""}`}
                 style={{ transitionDelay: `${index * 100}ms` }}
                 onMouseEnter={achievement.image ? () => setPreviewIndex(index) : undefined}
                 onMouseMove={achievement.image ? movePreview : undefined}
@@ -118,30 +117,14 @@ export default function HomeAchievementsSection({
                   <h3>{achievement.title}</h3>
                   <p className="home-achievement-meta">
                     <span>{getEventName(achievement)}</span>
-                    <span aria-hidden="true"> · </span>
-                    <span>{getYear(achievement)}</span>
+                    {getYear(achievement) && (
+                      <>
+                        <span aria-hidden="true"> · </span>
+                        <span>{getYear(achievement)}</span>
+                      </>
+                    )}
                   </p>
-                  {achievement.image && index !== 0 && (
-                    <button
-                      className="home-achievement-photo-toggle"
-                      type="button"
-                      aria-expanded={expandedIndex === index}
-                      onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-                    >
-                      {expandedIndex === index ? "Hide photo" : "Show photo"}
-                    </button>
-                  )}
-                  {achievement.image && index !== 0 && expandedIndex === index && (
-                    <div className="home-achievement-inline-image">
-                      <Image src={achievement.image} alt={`Photo for ${achievement.title}`} fill unoptimized sizes="(max-width: 767px) 90vw, 420px" />
-                    </div>
-                  )}
                 </div>
-                {index === 0 && achievement.image && (
-                  <div className="home-achievement-feature-image">
-                    <Image src={achievement.image} alt={`Photo for ${achievement.title}`} fill unoptimized sizes="(max-width: 767px) 90vw, 320px" />
-                  </div>
-                )}
                 <span className="home-achievement-position">
                   {achievement.awardOrPosition?.trim() || "Position not listed"}
                 </span>
