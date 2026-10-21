@@ -37,31 +37,71 @@ function toSafeAdminUuid(id?: string | null): string | null {
   return uuidRegex.test(id) ? id : null
 }
 
+// In-memory cache to keep read latency <1ms and prevent saturating PgBouncer connection pools
+let cachedInternalState: InternalLaunchState | null = null
+let cacheExpiresAt = 0
+
+export function invalidateLaunchCache() {
+  cachedInternalState = null
+  cacheExpiresAt = 0
+}
+
 export async function getOrCreateLaunchState(): Promise<InternalLaunchState> {
-  const row = await prisma.websiteLaunchState.upsert({
+  // Use findUnique first for fast indexed read without acquiring write locks
+  let row = await prisma.websiteLaunchState.findUnique({
     where: { id: SINGLETON_ID },
-    update: {},
-    create: {
-      id: SINGLETON_ID,
-      status: 'NORMAL',
-      version: BigInt(0),
-    },
   })
+
+  if (!row) {
+    try {
+      row = await prisma.websiteLaunchState.create({
+        data: {
+          id: SINGLETON_ID,
+          status: 'NORMAL',
+          version: BigInt(0),
+        },
+      })
+    } catch {
+      row = await prisma.websiteLaunchState.findUnique({
+        where: { id: SINGLETON_ID },
+      })
+    }
+  }
 
   return row as InternalLaunchState
 }
 
 export async function reconcileLaunchStateNow(): Promise<InternalLaunchState> {
   const now = new Date()
+  const nowMs = now.getTime()
+
+  // Return cached state if valid and no timed transition is due
+  if (cachedInternalState && nowMs < cacheExpiresAt) {
+    const isCountdownDue =
+      cachedInternalState.status === 'COUNTDOWN_RUNNING' &&
+      cachedInternalState.countdownEndsAt &&
+      cachedInternalState.countdownEndsAt.getTime() <= nowMs
+
+    const isAnimationDue =
+      cachedInternalState.status === 'ANIMATION' &&
+      cachedInternalState.animationEndsAt &&
+      cachedInternalState.animationEndsAt.getTime() <= nowMs
+
+    if (!isCountdownDue && !isAnimationDue) {
+      return cachedInternalState
+    }
+  }
+
   const current = await getOrCreateLaunchState()
 
+  // Auto-advance COUNTDOWN_RUNNING -> ANIMATION when countdown period expires
   if (current.status === 'COUNTDOWN_RUNNING' && current.countdownEndsAt && current.countdownEndsAt <= now) {
     const animationStartedAt = current.countdownEndsAt
     const animationEndsAt = new Date(animationStartedAt.getTime() + ANIMATION_SECONDS * 1000)
 
     try {
       const updated = await prisma.websiteLaunchState.update({
-        where: { id: SINGLETON_ID, version: current.version },
+        where: { id: SINGLETON_ID },
         data: {
           status: 'ANIMATION',
           animationStartedAt,
@@ -70,16 +110,21 @@ export async function reconcileLaunchStateNow(): Promise<InternalLaunchState> {
         },
       })
 
-      return updated as InternalLaunchState
+      cachedInternalState = updated as InternalLaunchState
+      cacheExpiresAt = nowMs + 1000
+      return cachedInternalState
     } catch {
-      return await getOrCreateLaunchState()
+      cachedInternalState = current
+      cacheExpiresAt = nowMs + 1000
+      return current
     }
   }
 
+  // Auto-advance ANIMATION -> LAUNCHED when animation period expires
   if (current.status === 'ANIMATION' && current.animationEndsAt && current.animationEndsAt <= now) {
     try {
       const updated = await prisma.websiteLaunchState.update({
-        where: { id: SINGLETON_ID, version: current.version },
+        where: { id: SINGLETON_ID },
         data: {
           status: 'LAUNCHED',
           launchedAt: current.animationEndsAt,
@@ -87,12 +132,18 @@ export async function reconcileLaunchStateNow(): Promise<InternalLaunchState> {
         },
       })
 
-      return updated as InternalLaunchState
+      cachedInternalState = updated as InternalLaunchState
+      cacheExpiresAt = nowMs + 1000
+      return cachedInternalState
     } catch {
-      return await getOrCreateLaunchState()
+      cachedInternalState = current
+      cacheExpiresAt = nowMs + 1000
+      return current
     }
   }
 
+  cachedInternalState = current
+  cacheExpiresAt = nowMs + 1000
   return current
 }
 
@@ -102,6 +153,7 @@ export async function getPublicLaunchState(): Promise<PublicLaunchState> {
 }
 
 export async function enableCountdown(adminId?: string | null): Promise<PublicLaunchState> {
+  invalidateLaunchCache()
   const row = await reconcileLaunchStateNow()
 
   if (row.status === 'COUNTDOWN_RUNNING' || row.status === 'ANIMATION') {
@@ -122,15 +174,20 @@ export async function enableCountdown(adminId?: string | null): Promise<PublicLa
     },
   })
 
-  return toPublicState(updated as InternalLaunchState)
+  cachedInternalState = updated as InternalLaunchState
+  cacheExpiresAt = Date.now() + 1000
+  return toPublicState(cachedInternalState)
 }
 
 export async function startLaunchCountdown(adminId?: string | null): Promise<{ state: PublicLaunchState; alreadyRunning: boolean }> {
+  invalidateLaunchCache()
   const now = new Date()
   const current = await getOrCreateLaunchState()
 
   if (current.status === 'COUNTDOWN_RUNNING') {
     if (current.countdownEndsAt && current.countdownEndsAt > now) {
+      cachedInternalState = current
+      cacheExpiresAt = Date.now() + 1000
       return { state: toPublicState(current), alreadyRunning: true }
     }
   }
@@ -152,13 +209,17 @@ export async function startLaunchCountdown(adminId?: string | null): Promise<{ s
     },
   })
 
+  cachedInternalState = started as InternalLaunchState
+  cacheExpiresAt = Date.now() + 1000
+
   return {
-    state: toPublicState(started as InternalLaunchState),
+    state: toPublicState(cachedInternalState),
     alreadyRunning: false,
   }
 }
 
 export async function resetLaunch(adminId?: string | null): Promise<PublicLaunchState> {
+  invalidateLaunchCache()
   const updated = await prisma.websiteLaunchState.update({
     where: { id: SINGLETON_ID },
     data: {
@@ -173,5 +234,7 @@ export async function resetLaunch(adminId?: string | null): Promise<PublicLaunch
     },
   })
 
-  return toPublicState(updated as InternalLaunchState)
+  cachedInternalState = updated as InternalLaunchState
+  cacheExpiresAt = Date.now() + 1000
+  return toPublicState(cachedInternalState)
 }

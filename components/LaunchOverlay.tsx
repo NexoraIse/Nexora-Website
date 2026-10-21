@@ -175,15 +175,22 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
   })
 
   // Controls transition to the main branch preloader animation
-  const [showPreloader, setShowPreloader] = useState(false)
+  const [showPreloader, setShowPreloader] = useState(() => state.status === 'ANIMATION')
   const [isStandby, setIsStandby] = useState(() => state.status === 'STAY_TUNED')
 
-  // Guard: strictly run countdown ONCE and never repeat
+  // Guard: strictly run countdown ONCE and never cancel prematurely
   const countdownStartedRef = useRef(false)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
   const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {
     setHasMounted(true)
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
+    }
   }, [])
 
   // Dot coordinates in SVG canvas (560 x 360)
@@ -205,7 +212,7 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
     return coords
   }, [])
 
-  // Master Countdown Sequence: 10 -> 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> blank -> Preloader
+  // Master Countdown Sequence: 10 -> 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> blank (400ms) -> Preloader
   useEffect(() => {
     if (!hasMounted) return
 
@@ -215,7 +222,7 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
       return
     }
 
-    // If status is ANIMATION directly, transition straight to preloader
+    // If status is ANIMATION directly and countdown hasn't run, show preloader immediately
     if (state.status === 'ANIMATION' && !countdownStartedRef.current) {
       countdownStartedRef.current = true
       setIsStandby(false)
@@ -232,25 +239,32 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
       setCurrentNumber(10)
 
       let current = 10
-      const timer = setInterval(() => {
+      timerRef.current = setInterval(() => {
         current -= 1
         if (current >= 1) {
           setCurrentNumber(current)
         } else {
-          clearInterval(timer)
+          if (timerRef.current) {
+            clearInterval(timerRef.current)
+            timerRef.current = null
+          }
           // 1 concludes: transition to clean blank black screen
           setCurrentNumber(null)
 
-          // Blank black screen for 450ms, then launch the default main branch preloader animation
+          // Blank black screen for 400ms, then launch the default main branch preloader animation
           setTimeout(() => {
             setShowPreloader(true)
-          }, 450)
+          }, 400)
         }
       }, 1000)
-
-      return () => clearInterval(timer)
     }
   }, [hasMounted, state.status])
+
+  // When showPreloader is active, render Preloader directly so its curtain-lift (-translate-y-full rounded-b-[50%])
+  // smoothly reveals the live homepage underneath without an extra black container blocking it!
+  if (showPreloader) {
+    return <Preloader onFinish={onOverlayDone} />
+  }
 
   return (
     <div
@@ -261,7 +275,7 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
       suppressHydrationWarning
     >
       {/* ── 1. STAY TUNED STANDBY SCREEN ── */}
-      {isStandby && !showPreloader && (
+      {isStandby && (
         <div className="flex flex-col items-center justify-center text-center px-4 animate-in fade-in duration-500">
           <img
             src="/logo-navbar.png"
@@ -278,7 +292,7 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
       )}
 
       {/* ── 2. SVG DOT-MATRIX COUNTDOWN (10 TO 1 ONCE) ── */}
-      {!isStandby && !showPreloader && (
+      {!isStandby && (
         <div className="relative flex items-center justify-center w-full max-w-[92vw] sm:max-w-[85vw] md:max-w-[700px] lg:max-w-[820px]">
           <svg
             className="w-full h-auto overflow-visible"
@@ -327,11 +341,6 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
             })}
           </svg>
         </div>
-      )}
-
-      {/* ── 3. DEFAULT MAIN BRANCH NEXORA PRELOADER & CURTAIN LIFT ── */}
-      {showPreloader && (
-        <Preloader onFinish={onOverlayDone} />
       )}
     </div>
   )
