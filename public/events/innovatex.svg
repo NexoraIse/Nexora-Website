@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050610"/>
+      <stop offset="50%" stop-color="#120e28"/>
+      <stop offset="100%" stop-color="#040614"/>
+    </linearGradient>
+    <linearGradient id="bulb-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#facc15"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <filter id="glow6" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="9" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg6)"/>
+
+  <!-- Radial glow backdrop -->
+  <circle cx="400" cy="215" r="230" fill="#facc15" fill-opacity="0.09" filter="url(#glow6)"/>
+  <circle cx="400" cy="215" r="140" fill="#a855f7" fill-opacity="0.1" filter="url(#glow6)"/>
+
+  <!-- Geometric blueprint circles -->
+  <circle cx="400" cy="215" r="170" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-opacity="0.25" stroke-dasharray="6,6"/>
+  <circle cx="400" cy="215" r="110" fill="none" stroke="#facc15" stroke-width="1" stroke-opacity="0.3"/>
+
+  <!-- Quantum Idea Lightbulb Centerpiece -->
+  <g transform="translate(400, 205)" filter="url(#glow6)">
+    <!-- Bulb Glass Outline -->
+    <path d="M 0 -85 C 45 -85 75 -50 75 -15 C 75 15 50 40 40 60 L -40 60 C -50 40 -75 15 -75 -15 C -75 -50 -45 -85 0 -85 Z"
+          fill="#06091e" stroke="url(#bulb-grad)" stroke-width="3"/>
+
+    <!-- Filament Glow -->
+    <path d="M -22 25 L -14 -20 L 0 -5 L 14 -20 L 22 25" fill="none" stroke="#fef08a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="0" cy="-5" r="8" fill="#facc15"/>
+
+    <!-- Bulb Screw Base -->
+    <rect x="-30" y="66" width="60" height="12" rx="4" fill="#1e1b4b" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="-24" y="80" width="48" height="10" rx="4" fill="#1e1b4b" stroke="#38bdf8" stroke-width="1.5"/>
+    <path d="M -15 92 L 15 92 L 0 102 Z" fill="#38bdf8"/>
+
+    <!-- Innovation Rays radiating outwards -->
+    <line x1="-95" y1="-50" x2="-130" y2="-70" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.8"/>
+    <line x1="95" y1="-50" x2="130" y2="-70" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.8"/>
+    <line x1="0" y1="-105" x2="0" y2="-135" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.8"/>
+    <line x1="-80" y1="15" x2="-115" y2="25" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
+    <line x1="80" y1="15" x2="115" y2="25" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
+  </g>
+
+  <!-- Category badge -->
+  <rect x="50" y="45" width="180" height="28" rx="14" fill="#facc15" fill-opacity="0.15" stroke="#facc15" stroke-width="1"/>
+  <text x="140" y="63" fill="#fef08a" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1.2">PROJECT EXHIBITION</text>
+
+  <!-- Corner tech accents -->
+  <path d="M 30 50 L 30 30 L 50 30" fill="none" stroke="#facc15" stroke-width="2"/>
+  <path d="M 770 50 L 770 30 L 750 30" fill="none" stroke="#facc15" stroke-width="2"/>
+  <path d="M 30 400 L 30 420 L 50 420" fill="none" stroke="#facc15" stroke-width="2"/>
+  <path d="M 770 400 L 770 420 L 750 420" fill="none" stroke="#facc15" stroke-width="2"/>
+</svg>

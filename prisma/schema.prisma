@@ -1,0 +1,427 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MemberType {
+  STUDENT
+  ALUMNUS
+}
+
+enum MemberApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum ProfileVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum MemberExperienceType {
+  EMPLOYMENT
+  INTERNSHIP
+  HIGHER_STUDIES
+  FREELANCE
+  OTHER
+}
+
+enum ConnectReportTarget {
+  PROFILE
+  KNOWLEDGE_PAGE
+}
+
+enum ConnectReportStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum UsnDisputeStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum LaunchStatus {
+  NORMAL
+  STAY_TUNED
+  COUNTDOWN_RUNNING
+  ANIMATION
+  LAUNCHED
+}
+
+model Admin {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email     String   @unique
+  name      String?
+  password  String?
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  events                 Event[]
+  achievements           Achievement[]
+  resources              LearningResource[]
+  auditLogs              AuditLog[]
+  reviewedMemberProfiles MemberProfile[]    @relation("MemberProfileReviewer")
+  reviewedConnectReports ConnectReport[]    @relation("ConnectReportReviewer")
+  reviewedUsnDisputes    UsnDispute[]       @relation("UsnDisputeReviewer")
+  launchStateUpdates     WebsiteLaunchState[]
+
+  @@map("admins")
+}
+
+model Event {
+  id                   String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title                String
+  slug                 String        @unique
+  category             String
+  description          String
+  fullDescription      String?       @map("full_description")
+  imageUrl             String?       @map("image_url")
+  iconName             String?       @default("Code") @map("icon_name")
+  startDate            DateTime?     @map("start_date") @db.Timestamptz
+  endDate              DateTime?     @map("end_date") @db.Timestamptz
+  dateDisplay          String?       @map("date_display")
+  venue                String?
+  venueDisplay         String?       @map("venue_display")
+  status               PublishStatus @default(PUBLISHED)
+  registrationOpen     Boolean       @default(true) @map("registration_open")
+  registrationUrl      String?       @map("registration_url")
+  registrationDeadline DateTime?     @map("registration_deadline") @db.Timestamptz
+  eligibility          String?
+  organizer            String?       @default("Nexora ISE Technical Committee")
+  tags                 String[]      @default([])
+  createdById          String?       @map("created_by_id") @db.Uuid
+  createdBy            Admin?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt            DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@index([category])
+  @@map("events")
+}
+
+model Achievement {
+  id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title              String
+  slug               String        @unique
+  description        String
+  studentOrTeamName  String?       @map("student_or_team_name")
+  category           String
+  competitionOrEvent String?       @map("competition_or_event")
+  awardOrPosition    String?       @map("award_or_position")
+  achievementDate    DateTime?     @map("achievement_date") @db.Timestamptz
+  dateDisplay        String?       @map("date_display")
+  image              String?
+  externalUrl        String?       @map("external_url")
+  status             PublishStatus @default(PUBLISHED)
+  createdById        String?       @map("created_by_id") @db.Uuid
+  createdBy          Admin?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@index([category])
+  @@map("achievements")
+}
+
+model LearningResource {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  slug         String?       @unique
+  description  String
+  subject      String
+  semester     Int?
+  academicYear String?       @map("academic_year")
+  category     String        @default("notes")
+  resourceType String        @default("PDF") @map("resource_type")
+  fileUrl      String?       @map("file_url")
+  thumbnailUrl String?       @map("thumbnail_url")
+  tags         String[]      @default([])
+  status       PublishStatus @default(PUBLISHED)
+  createdById  String?       @map("created_by_id") @db.Uuid
+  createdBy    Admin?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@index([subject])
+  @@index([semester])
+  @@map("learning_resources")
+}
+
+model ContentCategory {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique
+  type        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("content_categories")
+}
+
+model AuditLog {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  action    String
+  entity    String
+  entityId  String?  @map("entity_id")
+  details   String?
+  ipAddress String?  @map("ip_address")
+  adminId   String?  @map("admin_id") @db.Uuid
+  admin     Admin?   @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model WebsiteLaunchState {
+  id               Int          @id @default(1)
+  status           LaunchStatus @default(NORMAL)
+  countdownStartedAt DateTime?  @map("countdown_started_at") @db.Timestamptz
+  countdownEndsAt  DateTime?    @map("countdown_ends_at") @db.Timestamptz
+  animationStartedAt DateTime?  @map("animation_started_at") @db.Timestamptz
+  animationEndsAt  DateTime?    @map("animation_ends_at") @db.Timestamptz
+  launchedAt       DateTime?    @map("launched_at") @db.Timestamptz
+  version          BigInt       @default(0)
+  updatedAt        DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  updatedByAdminId String?      @map("updated_by_admin_id") @db.Uuid
+  updatedByAdmin   Admin?       @relation(fields: [updatedByAdminId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@map("website_launch_state")
+}
+
+model ActiveSession {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tokenHash  String   @unique @map("token_hash")
+  adminEmail String   @map("admin_email")
+  userAgent  String?  @map("user_agent")
+  ipAddress  String?  @map("ip_address")
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("active_sessions")
+}
+
+model UsnClaim {
+  usn       String         @id @db.VarChar(20)
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+  profile   MemberProfile?
+  disputes  UsnDispute[]
+
+  @@map("connect_usn_claims")
+}
+
+model ConnectRegistration {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authUserId       String?   @unique @map("auth_user_id") @db.Uuid
+  email            String    @unique @db.VarChar(320)
+  usn              String    @unique @db.VarChar(20)
+  fullName         String    @map("full_name") @db.VarChar(120)
+  emailConfirmedAt DateTime? @map("email_confirmed_at") @db.Timestamptz
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([emailConfirmedAt])
+  @@map("connect_registrations")
+}
+
+model UsnRosterEntry {
+  usn        String   @id @db.VarChar(20)
+  fullName   String   @map("full_name") @db.VarChar(120)
+  isActive   Boolean  @default(true) @map("is_active")
+  importedAt DateTime @default(now()) @map("imported_at") @db.Timestamptz
+
+  @@index([fullName])
+  @@index([isActive])
+  @@map("connect_usn_roster")
+}
+
+model ConnectAuthRateLimit {
+  ipHash          String   @id @map("ip_hash") @db.Char(64)
+  windowStartedAt DateTime @map("window_started_at") @db.Timestamptz
+  attempts        Int      @default(1)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([updatedAt])
+  @@map("connect_auth_rate_limits")
+}
+
+model MemberProfile {
+  authUserId          String               @id @map("auth_user_id") @db.Uuid
+  slug                String               @unique @db.VarChar(100)
+  usn                 String               @unique @db.VarChar(20)
+  fullName            String               @map("full_name") @db.VarChar(120)
+  graduationYear      Int                  @map("graduation_year") @db.SmallInt
+  memberType          MemberType           @map("member_type")
+  bio                 String?              @db.VarChar(600)
+  avatarUrl           String?              @map("avatar_url")
+  skills              String[]             @default([])
+  interests           String[]             @default([])
+  skillsInDevelopment String[]             @default([]) @map("skills_in_development")
+  location            String?              @db.VarChar(120)
+  phone               String?              @db.VarChar(40)
+  phonePublic         Boolean              @default(false) @map("phone_public")
+  contactEmail        String?              @map("contact_email")
+  contactEmailPublic  Boolean              @default(false) @map("contact_email_public")
+  visibility          ProfileVisibility    @default(PUBLIC)
+  approvalStatus      MemberApprovalStatus @default(PENDING) @map("approval_status")
+  reviewedById        String?              @map("reviewed_by_id") @db.Uuid
+  reviewNote          String?              @map("review_note")
+  reviewedAt          DateTime?            @map("reviewed_at") @db.Timestamptz
+  currentRole         String?              @map("current_role") @db.VarChar(160)
+  company             String?              @db.VarChar(160)
+  openToCollaborate   Boolean              @default(false) @map("open_to_collaborate")
+  mentoringAvailable  Boolean              @default(false) @map("mentoring_available")
+  referralAvailable   Boolean              @default(false) @map("referral_available")
+  createdAt           DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime             @updatedAt @map("updated_at") @db.Timestamptz
+
+  usnClaim      UsnClaim             @relation(fields: [usn], references: [usn], onDelete: Restrict)
+  reviewedBy    Admin?               @relation("MemberProfileReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  socialLinks   MemberSocialLink[]
+  experiences   MemberExperience[]
+  achievements  MemberAchievement[]
+  knowledgePage MemberKnowledgePage?
+  reports       ConnectReport[]
+
+  @@index([approvalStatus, visibility, memberType, graduationYear])
+  @@index([graduationYear])
+  @@index([fullName])
+  @@index([currentRole])
+  @@index([company])
+  @@map("connect_member_profiles")
+}
+
+model MemberSocialLink {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profileId String        @map("profile_id") @db.Uuid
+  label     String        @db.VarChar(60)
+  url       String        @db.VarChar(2048)
+  sortOrder Int           @default(0) @map("sort_order")
+  profile   MemberProfile @relation(fields: [profileId], references: [authUserId], onDelete: Cascade)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([profileId, url])
+  @@index([profileId, sortOrder])
+  @@map("connect_member_social_links")
+}
+
+model MemberExperience {
+  id           String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profileId    String               @map("profile_id") @db.Uuid
+  type         MemberExperienceType @default(EMPLOYMENT)
+  role         String               @db.VarChar(160)
+  organization String?              @db.VarChar(180)
+  description  String?              @db.Text
+  startedAt    DateTime?            @map("started_at") @db.Date
+  endedAt      DateTime?            @map("ended_at") @db.Date
+  isCurrent    Boolean              @default(false) @map("is_current")
+  sortOrder    Int                  @default(0) @map("sort_order")
+  profile      MemberProfile        @relation(fields: [profileId], references: [authUserId], onDelete: Cascade)
+  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime             @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([profileId, sortOrder])
+  @@index([organization])
+  @@index([role])
+  @@map("connect_member_experiences")
+}
+
+model MemberAchievement {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profileId   String        @map("profile_id") @db.Uuid
+  title       String        @db.VarChar(180)
+  description String?       @db.Text
+  achievedAt  DateTime?     @map("achieved_at") @db.Date
+  url         String?       @db.VarChar(2048)
+  sortOrder   Int           @default(0) @map("sort_order")
+  profile     MemberProfile @relation(fields: [profileId], references: [authUserId], onDelete: Cascade)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([profileId, sortOrder])
+  @@map("connect_member_achievements")
+}
+
+model MemberKnowledgePage {
+  id                String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profileId         String        @unique @map("profile_id") @db.Uuid
+  draftMarkdown     String?       @map("draft_markdown") @db.Text
+  publishedMarkdown String?       @map("published_markdown") @db.Text
+  draftUpdatedAt    DateTime?     @map("draft_updated_at") @db.Timestamptz
+  publishedAt       DateTime?     @map("published_at") @db.Timestamptz
+  profile           MemberProfile @relation(fields: [profileId], references: [authUserId], onDelete: Cascade)
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("connect_member_knowledge_pages")
+}
+
+model ConnectReport {
+  id                 String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profileId          String              @map("profile_id") @db.Uuid
+  target             ConnectReportTarget
+  reporterAuthUserId String              @map("reporter_auth_user_id") @db.Uuid
+  reason             String              @db.VarChar(80)
+  details            String?             @db.VarChar(2000)
+  status             ConnectReportStatus @default(OPEN)
+  reviewedById       String?             @map("reviewed_by_id") @db.Uuid
+  resolutionNote     String?             @map("resolution_note") @db.VarChar(2000)
+  reviewedAt         DateTime?           @map("reviewed_at") @db.Timestamptz
+  profile            MemberProfile       @relation(fields: [profileId], references: [authUserId], onDelete: Restrict)
+  reviewedBy         Admin?              @relation("ConnectReportReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, createdAt])
+  @@index([profileId, target])
+  @@index([reporterAuthUserId, createdAt])
+  @@map("connect_reports")
+}
+
+model UsnDispute {
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usn                String           @map("usn") @db.VarChar(20)
+  reporterAuthUserId String           @map("reporter_auth_user_id") @db.Uuid
+  details            String           @db.VarChar(4000)
+  status             UsnDisputeStatus @default(OPEN)
+  reviewedById       String?          @map("reviewed_by_id") @db.Uuid
+  resolutionNote     String?          @map("resolution_note") @db.VarChar(2000)
+  reviewedAt         DateTime?        @map("reviewed_at") @db.Timestamptz
+  claim              UsnClaim         @relation(fields: [usn], references: [usn], onDelete: Restrict)
+  reviewedBy         Admin?           @relation("UsnDisputeReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, createdAt])
+  @@index([reporterAuthUserId, createdAt])
+  @@map("connect_usn_disputes")
+}

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050610"/>
+      <stop offset="50%" stop-color="#071b26"/>
+      <stop offset="100%" stop-color="#030814"/>
+    </linearGradient>
+    <linearGradient id="globe-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#2dd4bf"/>
+    </linearGradient>
+    <filter id="glow4" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg4)"/>
+
+  <!-- Glowing atmospheric aura -->
+  <circle cx="400" cy="225" r="230" fill="#0284c7" fill-opacity="0.1" filter="url(#glow4)"/>
+  <circle cx="580" cy="180" r="140" fill="#2dd4bf" fill-opacity="0.08"/>
+
+  <!-- Floating browser wireframes -->
+  <!-- Browser Window 1 (Background left) -->
+  <g transform="translate(140, 110) rotate(-4)" opacity="0.6">
+    <rect width="260" height="180" rx="12" fill="#081426" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect width="260" height="28" rx="12" fill="#0f2440"/>
+    <circle cx="16" cy="14" r="3.5" fill="#f87171"/>
+    <circle cx="28" cy="14" r="3.5" fill="#fbbf24"/>
+    <circle cx="40" cy="14" r="3.5" fill="#34d399"/>
+    <rect x="20" y="45" width="80" height="12" rx="3" fill="#38bdf8" fill-opacity="0.4"/>
+    <rect x="20" y="65" width="130" height="8" rx="2" fill="#64748b" fill-opacity="0.4"/>
+    <rect x="20" y="80" width="110" height="8" rx="2" fill="#64748b" fill-opacity="0.4"/>
+  </g>
+
+  <!-- Browser Window 2 (Foreground main) -->
+  <g transform="translate(260, 95)" filter="url(#glow4)">
+    <rect width="360" height="240" rx="14" fill="#030b18" fill-opacity="0.9" stroke="url(#globe-glow)" stroke-width="2"/>
+    <rect width="360" height="34" rx="14" fill="#0d1b30"/>
+    <circle cx="20" cy="17" r="4" fill="#f43f5e"/>
+    <circle cx="34" cy="17" r="4" fill="#f59e0b"/>
+    <circle cx="48" cy="17" r="4" fill="#10b981"/>
+    <!-- URL Bar -->
+    <rect x="70" y="8" width="220" height="18" rx="9" fill="#172b47"/>
+    <text x="180" y="21" fill="#7dd3fc" font-family="monospace" font-size="10" text-anchor="middle">https://nexora.dev/webcraft</text>
+
+    <!-- Globe / Web Wireframe Inside -->
+    <g transform="translate(180, 140)">
+      <circle cx="0" cy="0" r="60" fill="none" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.7"/>
+      <ellipse cx="0" cy="0" rx="60" ry="24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-opacity="0.8"/>
+      <ellipse cx="0" cy="0" rx="24" ry="60" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.8"/>
+      <line x1="-60" y1="0" x2="60" y2="0" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.5"/>
+      <circle cx="0" cy="0" r="8" fill="#38bdf8" filter="url(#glow4)"/>
+    </g>
+
+    <!-- Tech Stack Pill Badges -->
+    <rect x="25" y="55" width="60" height="18" rx="9" fill="#38bdf8" fill-opacity="0.2"/>
+    <text x="55" y="68" fill="#7dd3fc" font-family="sans-serif" font-size="9" font-weight="bold" text-anchor="middle">NEXT.JS</text>
+
+    <rect x="95" y="55" width="60" height="18" rx="9" fill="#2dd4bf" fill-opacity="0.2"/>
+    <text x="125" y="68" fill="#5eead4" font-family="sans-serif" font-size="9" font-weight="bold" text-anchor="middle">REACT</text>
+
+    <rect x="165" y="55" width="70" height="18" rx="9" fill="#818cf8" fill-opacity="0.2"/>
+    <text x="200" y="68" fill="#a5b4fc" font-family="sans-serif" font-size="9" font-weight="bold" text-anchor="middle">TAILWIND</text>
+  </g>
+
+  <!-- Category badge -->
+  <rect x="50" y="45" width="130" height="28" rx="14" fill="#2dd4bf" fill-opacity="0.15" stroke="#2dd4bf" stroke-width="1"/>
+  <text x="115" y="63" fill="#5eead4" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1.5">WORKSHOP</text>
+
+  <!-- Corner tech accents -->
+  <path d="M 30 50 L 30 30 L 50 30" fill="none" stroke="#2dd4bf" stroke-width="2"/>
+  <path d="M 770 50 L 770 30 L 750 30" fill="none" stroke="#2dd4bf" stroke-width="2"/>
+  <path d="M 30 400 L 30 420 L 50 420" fill="none" stroke="#2dd4bf" stroke-width="2"/>
+  <path d="M 770 400 L 770 420 L 750 420" fill="none" stroke="#2dd4bf" stroke-width="2"/>
+</svg>

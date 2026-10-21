@@ -1,27 +1,47 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import localFont from "next/font/local";
+import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import SmoothScroll from "@/components/SmoothScroll";
+import { AudioProvider } from "@/components/AudioProvider";
+import CustomCursor from "@/components/CustomCursor";
+import ContextMenu from "@/components/ContextMenu";
+import BottomNavCluster from "@/components/BottomNavCluster";
+import Terminal from "@/components/Terminal";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const clashDisplay = localFont({
+  src: "../public/fonts/clash.woff2",
+  variable: "--font-clash-display",
+  display: "swap",
+  weight: "200 800",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const cabinetGrotesk = localFont({
+  src: "../public/fonts/cabinet.woff2",
+  variable: "--font-cabinet-grotesk",
+  display: "swap",
+  weight: "200 800",
 });
 
-const jersey10 = localFont({
-  src: "../public/fonts/Jersey10-Regular.ttf",
-  variable: "--font-jersey10",
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-ibm-plex-mono",
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#060913",
+};
+
 export const metadata: Metadata = {
-  title: "Nexora | ISE Club",
-  description: "Official website of the Nexora ISE Club.",
+  title: "Nexora | ISE Technical Club",
+  description:
+    "Official website of the Nexora ISE Club, Department of Information Science and Engineering at AJIET Mangaluru.",
 };
 
 export default function RootLayout({
@@ -32,10 +52,28 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${jersey10.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${clashDisplay.variable} ${cabinetGrotesk.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        {children}
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=window.location.pathname;if(p==='/'||p===''){document.documentElement.style.backgroundColor='#dce6ef';}else{document.documentElement.style.backgroundColor='#060913';}}catch(e){}})()`,
+          }}
+        />
+      </head>
+      <body className="flex min-h-full flex-col font-sans">
+        <Suspense fallback={<div className="min-h-screen bg-[#060913]" />}>
+          <SmoothScroll>
+            <AudioProvider>
+              <CustomCursor />
+              <ContextMenu />
+              <BottomNavCluster />
+              <Terminal />
+              {children}
+            </AudioProvider>
+          </SmoothScroll>
+        </Suspense>
       </body>
     </html>
   );

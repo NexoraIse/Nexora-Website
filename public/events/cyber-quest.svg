@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050610"/>
+      <stop offset="50%" stop-color="#07192b"/>
+      <stop offset="100%" stop-color="#020612"/>
+    </linearGradient>
+    <linearGradient id="shield-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <filter id="glow5" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="hex-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 40 10 L 40 30 L 20 40 L 0 30 L 0 10 Z" fill="none" stroke="#06b6d4" stroke-width="1" stroke-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg5)"/>
+  <rect width="800" height="450" fill="url(#hex-pattern)"/>
+
+  <!-- Radial lighting -->
+  <circle cx="400" cy="225" r="220" fill="#0284c7" fill-opacity="0.12" filter="url(#glow5)"/>
+
+  <!-- Binary data streams in background -->
+  <g fill="#38bdf8" fill-opacity="0.25" font-family="monospace" font-size="11">
+    <text x="100" y="140">01000011 01011001 01000010</text>
+    <text x="100" y="165">01000101 01010010 00100000</text>
+    <text x="100" y="190">01010001 01010101 01000101</text>
+    <text x="560" y="270">11001010 10101101 00110011</text>
+    <text x="560" y="295">01100001 01110101 01110100</text>
+    <text x="560" y="320">01101000 00111010 01110000</text>
+  </g>
+
+  <!-- High-Tech Shield Centerpiece -->
+  <g transform="translate(400, 225)" filter="url(#glow5)">
+    <!-- Outer Shield Outline -->
+    <path d="M 0 -110 C 65 -110 115 -85 115 -25 C 115 55 55 105 0 130 C -55 105 -115 55 -115 -25 C -115 -85 -65 -110 0 -110 Z"
+          fill="#030c1e" stroke="url(#shield-grad)" stroke-width="3.5"/>
+
+    <!-- Inner Shield Layer -->
+    <path d="M 0 -90 C 50 -90 90 -70 90 -20 C 90 45 45 85 0 105 C -45 85 -90 45 -90 -20 C -90 -70 -50 -90 0 -90 Z"
+          fill="#081832" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.6"/>
+
+    <!-- Padlock & Keyhole -->
+    <!-- Shackle -->
+    <path d="M -22 -10 A 22 22 0 0 1 22 -10 L 22 10 L -22 10 Z" fill="none" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Lock Body -->
+    <rect x="-30" y="8" width="60" height="45" rx="8" fill="#0f2648" stroke="#38bdf8" stroke-width="2.5"/>
+    <!-- Keyhole -->
+    <circle cx="0" cy="26" r="6" fill="#38bdf8"/>
+    <polygon points="-3,26 3,26 4,40 -4,40" fill="#38bdf8"/>
+
+    <!-- Checkmark Badge on top -->
+    <circle cx="0" cy="-60" r="14" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <path d="M -6 -60 L -2 -56 L 7 -65" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Category badge -->
+  <rect x="50" y="45" width="150" height="28" rx="14" fill="#0284c7" fill-opacity="0.15" stroke="#38bdf8" stroke-width="1"/>
+  <text x="125" y="63" fill="#38bdf8" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1.5">CYBERSECURITY</text>
+
+  <!-- Corner tech accents -->
+  <path d="M 30 50 L 30 30 L 50 30" fill="none" stroke="#38bdf8" stroke-width="2"/>
+  <path d="M 770 50 L 770 30 L 750 30" fill="none" stroke="#38bdf8" stroke-width="2"/>
+  <path d="M 30 400 L 30 420 L 50 420" fill="none" stroke="#38bdf8" stroke-width="2"/>
+  <path d="M 770 400 L 770 420 L 750 420" fill="none" stroke="#38bdf8" stroke-width="2"/>
+</svg>

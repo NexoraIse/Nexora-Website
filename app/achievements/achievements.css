@@ -1,0 +1,21 @@
+.achievement-motion-ready .achievement-reveal:not([data-visible="true"]) {
+  opacity: 0;
+  transform: translateY(1.25rem);
+}
+
+.achievement-motion-ready .achievement-reveal[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .achievement-reveal {
+    transition: none !important;
+  }
+
+  .achievement-motion-ready .achievement-reveal:not([data-visible="true"]) {
+    opacity: 1;
+    transform: none;
+  }
+}
+
