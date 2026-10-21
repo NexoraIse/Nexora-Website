@@ -1,32 +1,25 @@
 import { Suspense } from "react";
-import { connection } from "next/server";
 import HomepageLaunchGate from "@/components/HomepageLaunchGate";
 import HomeSections from "@/components/HomeSections";
-import { getPublicLaunchState } from "@/lib/launch/state";
+import type { PublicLaunchState } from "@/lib/launch/types";
 
-export const instant = false;
+const initialLaunchState: PublicLaunchState = {
+  status: "NORMAL",
+  countdownStartedAt: null,
+  countdownEndsAt: null,
+  animationStartedAt: null,
+  animationEndsAt: null,
+  launchedAt: null,
+  version: "0",
+  updatedAt: "1970-01-01T00:00:00.000Z",
+};
 
-export default async function HomePage() {
-  await connection();
-  const launchState = await getPublicLaunchState().catch(() => null);
-
-  const fallbackLaunchState = {
-    status: "NORMAL" as const,
-    countdownStartedAt: null,
-    countdownEndsAt: null,
-    animationStartedAt: null,
-    animationEndsAt: null,
-    launchedAt: null,
-    version: "0",
-    updatedAt: new Date().toISOString(),
-  };
-
+export default function HomePage() {
   return (
-    <HomepageLaunchGate initialLaunchState={launchState ?? fallbackLaunchState}>
+    <HomepageLaunchGate initialLaunchState={initialLaunchState}>
       <Suspense fallback={null}>
         <HomeSections />
       </Suspense>
     </HomepageLaunchGate>
   );
 }
-

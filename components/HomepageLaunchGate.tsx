@@ -21,6 +21,13 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
   const router = useRouter()
   const lastStatusRef = useRef(initialLaunchState.status)
 
+  const updateLaunchState = useCallback((state: PublicLaunchState) => {
+    setLaunchState(state)
+    if (isOverlayStatus(state.status)) {
+      setOverlayMounted(true)
+    }
+  }, [])
+
   // Direct fetch function for initial sync and fallbacks
   const fetchLatestState = useCallback(async () => {
     try {
@@ -28,22 +35,18 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
       if (!res.ok) return
       const data = await res.json()
       if (data?.state) {
-        setLaunchState(data.state)
+        updateLaunchState(data.state)
       }
     } catch {
       // background sync catch
     }
-  }, [])
+  }, [updateLaunchState])
 
   // Manage overlay mounted state and router refresh on launch completion
   useEffect(() => {
     const prevStatus = lastStatusRef.current
     const nextStatus = launchState.status
     lastStatusRef.current = nextStatus
-
-    if (isOverlayStatus(nextStatus)) {
-      setOverlayMounted(true)
-    }
 
     // When transitioning from a launch phase to LAUNCHED or NORMAL, refresh server components
     if (
@@ -66,7 +69,7 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
         sse.addEventListener('state', (event) => {
           try {
             const payload = JSON.parse((event as MessageEvent).data) as PublicLaunchState
-            setLaunchState(payload)
+            updateLaunchState(payload)
           } catch {
             void fetchLatestState()
           }
@@ -78,11 +81,13 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
             sse.close()
             sse = null
           }
+          void fetchLatestState()
           if (!pollInterval) {
             pollInterval = setInterval(fetchLatestState, 2500)
           }
         })
       } catch {
+        void fetchLatestState()
         if (!pollInterval) {
           pollInterval = setInterval(fetchLatestState, 2500)
         }
@@ -106,7 +111,7 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
       window.removeEventListener('visibilitychange', handleVisibility)
       window.removeEventListener('focus', handleVisibility)
     }
-  }, [fetchLatestState])
+  }, [fetchLatestState, updateLaunchState])
 
   const handleOverlayDone = useCallback(() => {
     setOverlayMounted(false)
