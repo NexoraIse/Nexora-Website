@@ -24,14 +24,6 @@ export type ScoreBreakdown = {
   education: number;
 };
 
-export type Recommendation = {
-  priority: "high" | "medium" | "low";
-  section: string;
-  issue: string;
-  action: string;
-  example?: string;
-};
-
 export type EvaluationResult = {
   fileName: string;
   candidateName: string;
@@ -40,9 +32,7 @@ export type EvaluationResult = {
   scoreBreakdown: ScoreBreakdown;
   strengths: string[];
   weaknesses: string[];
-  recommendations: Recommendation[];
   missingKeywords: string[];
-  improvedResume: string;
   matchingSkills: string[];
   missingSkills: string[];
   experienceAlignment: string;
@@ -52,5 +42,5 @@ export type EvaluationResult = {
 
 export type EvaluationResponse = {
   jobRequirements: JobRequirements | null;
-  results: EvaluationResult[];
+  result: EvaluationResult;
 };
