@@ -21,6 +21,12 @@ const RESOURCE_LINKS = [
   { href: "/learn", label: "Laboratory Manuals" },
 ];
 
+const LEGAL_LINKS = [
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms & Conditions" },
+  { href: "/faq", label: "FAQ & Support" },
+];
+
 export default function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -29,9 +35,9 @@ export default function Footer() {
   return (
     <footer className="relative bg-[var(--theme-bg-main,#060913)] text-white overflow-hidden border-t border-[var(--theme-primary,#00f0ff)]/20">
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 py-16 sm:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 sm:gap-10 pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
           {/* Brand Info */}
-          <div className="md:col-span-2 space-y-4 max-w-md">
+          <div className="sm:col-span-2 lg:col-span-2 space-y-4 max-w-md">
             <div className="flex items-center gap-2.5">
               <Link href="/" aria-label="Nexora home" className="inline-flex">
                 <Image
@@ -124,16 +130,50 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+
+          {/* Legal & Support */}
+          <div className="space-y-3">
+            <h4 className="font-clash font-bold uppercase text-xs tracking-[0.2em] text-[var(--theme-primary,#00f0ff)]">
+              Legal & Support
+            </h4>
+            <ul className="space-y-2 text-xs sm:text-sm">
+              {LEGAL_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    data-cursor={link.label}
+                    className="text-white/75 hover:text-[var(--theme-primary,#00f0ff)] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
-          <p>© 2026 Nexora ISE Club · All rights reserved.</p>
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1">
+            <p>© 2026 Nexora ISE Club · All rights reserved.</p>
+            <span className="hidden sm:inline text-white/30">|</span>
+            <Link href="/privacy" className="hover:text-[var(--theme-primary,#00f0ff)] transition-colors">
+              Privacy Policy
+            </Link>
+            <span className="text-white/30">·</span>
+            <Link href="/terms" className="hover:text-[var(--theme-primary,#00f0ff)] transition-colors">
+              Terms & Conditions
+            </Link>
+            <span className="text-white/30">·</span>
+            <Link href="/faq" className="hover:text-[var(--theme-primary,#00f0ff)] transition-colors">
+              FAQ
+            </Link>
+          </div>
 
           <button
             onClick={scrollToTop}
             data-cursor="Top"
-            className="flex items-center gap-2 text-white/80 hover:text-[var(--theme-primary,#00f0ff)] transition-colors cursor-pointer"
+            className="flex items-center gap-2 text-white/80 hover:text-[var(--theme-primary,#00f0ff)] transition-colors cursor-pointer shrink-0"
           >
             <span>Back to Top</span>
             <ArrowUp className="w-3.5 h-3.5" />
