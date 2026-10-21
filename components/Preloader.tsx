@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import localFont from "next/font/local";
 
 const bartle = localFont({
@@ -18,15 +18,31 @@ export default function Preloader({ onFinish }: PreloaderProps) {
   const [hide, setHide] = useState(false);
   const [displayCount, setDisplayCount] = useState(0);
 
+  const onFinishRef = useRef(onFinish);
+  useEffect(() => {
+    onFinishRef.current = onFinish;
+  });
+
   const text = "NEXORA";
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    const duration = 1200;
+    const duration = 1100;
     const startTime = performance.now();
     let completeTimer: number | undefined;
     let finishTimer: number | undefined;
+    let safetyTimer: number | undefined;
+    let finished = false;
+
+    const triggerFinish = () => {
+      if (finished) return;
+      finished = true;
+      document.body.style.overflow = "";
+      setHide(true);
+      onFinishRef.current?.();
+    };
+
     const interval = window.setInterval(() => {
       const progress = Math.min((performance.now() - startTime) / duration, 1);
       setDisplayCount(Math.round(progress * 100));
@@ -36,20 +52,24 @@ export default function Preloader({ onFinish }: PreloaderProps) {
       completeTimer = window.setTimeout(() => {
         setComplete(true);
         finishTimer = window.setTimeout(() => {
-          document.body.style.overflow = "";
-          setHide(true);
-          onFinish?.();
-        }, 700);
-      }, 250);
-    }, 50);
+          triggerFinish();
+        }, 650);
+      }, 200);
+    }, 40);
+
+    // Hard fallback safety timer (2.6s) ensuring the screen never hangs on any device
+    safetyTimer = window.setTimeout(() => {
+      triggerFinish();
+    }, 2600);
 
     return () => {
       window.clearInterval(interval);
       if (completeTimer) window.clearTimeout(completeTimer);
       if (finishTimer) window.clearTimeout(finishTimer);
+      if (safetyTimer) window.clearTimeout(safetyTimer);
       document.body.style.overflow = "";
     };
-  }, [onFinish]);
+  }, []);
 
   if (hide) return null;
 
