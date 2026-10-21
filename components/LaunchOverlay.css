@@ -1,0 +1,367 @@
+.launch-overlay {
+  position: fixed;
+  z-index: 2147483647;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+  color: #f5f5f2;
+  isolation: isolate;
+  user-select: none;
+  transition:
+    opacity var(--dissolve-duration, 850ms) ease,
+    filter var(--dissolve-duration, 850ms) ease,
+    transform var(--dissolve-duration, 850ms) ease;
+  cursor: none !important;
+}
+
+.launch-overlay *,
+.launch-overlay *::before,
+.launch-overlay *::after {
+  cursor: none !important;
+}
+
+.launch-core-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  transition: opacity 150ms linear;
+}
+
+.launch-flash {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, #f5ffff 0%, #00f0ff 18%, rgb(0 240 255 / 34%) 42%, transparent 70%);
+  mix-blend-mode: screen;
+}
+
+.launch-scanline {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #00f0ff 50%, transparent);
+  box-shadow: 0 0 12px rgb(0 240 255 / 60%);
+  opacity: 0.42;
+  animation: launch-scan 9s linear infinite;
+}
+
+.launch-overlay[data-launch-phase='silence'] .launch-core-canvas {
+  opacity: 0;
+}
+
+.launch-hud {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.launch-boot-log {
+  position: absolute;
+  top: 37vh;
+  left: 5vw;
+  display: grid;
+  gap: 1.1vh;
+  width: min(36vw, 680px);
+  color: rgb(245 245 242 / 58%);
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: max(1.6vw, 14px);
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+}
+
+.launch-boot-log p {
+  margin: 0;
+  animation: launch-log-arrive 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.launch-boot-log p:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.launch-boot-log p:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.launch-boot-log p:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.launch-log-idle {
+  opacity: 0.36;
+}
+
+.launch-transmission {
+  position: absolute;
+  bottom: 9vh;
+  left: 50%;
+  display: flex;
+  width: 90vw;
+  justify-content: center;
+  color: #f5f5f2;
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: max(2.1vw, 18px);
+  letter-spacing: 0.34em;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.launch-transmission span {
+  opacity: 0;
+  animation: launch-type 400ms steps(1, end) forwards;
+}
+
+.launch-transmission-space {
+  width: 0.7em;
+}
+
+.launch-system-progress {
+  position: absolute;
+  bottom: 7vh;
+  left: 5vw;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.8vh 1vw;
+  width: min(29vw, 560px);
+  color: rgb(245 245 242 / 72%);
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: max(1.6vw, 14px);
+  letter-spacing: 0.06em;
+}
+
+.launch-system-progress i {
+  grid-column: 1 / -1;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+  background: rgb(245 245 242 / 16%);
+}
+
+.launch-system-progress b {
+  display: block;
+  height: 100%;
+  background: #00f0ff;
+  box-shadow: 0 0 12px rgb(0 240 255 / 50%);
+  transition: width 180ms linear;
+}
+
+.launch-countdown-readout {
+  position: absolute;
+  right: 5vw;
+  top: 50%;
+  width: 38vw;
+  display: grid;
+  justify-items: center;
+  gap: 0.7vh;
+  transform: translateY(-50%);
+  color: rgb(245 245 242 / 58%);
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.launch-countdown-label {
+  color: rgb(0 240 255 / 70%);
+  font-size: max(1vw, 11px);
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  line-height: 1;
+  padding-left: 0.34em;
+}
+
+.launch-countdown-digits {
+  min-width: 1.4em;
+  font-size: 11.5vw;
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 55%);
+  animation: launch-digit-slam var(--digit-duration, 760ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.launch-overlay[data-final-countdown='true'] {
+  animation: launch-screen-shake var(--shake-duration, 980ms) ease-in-out infinite;
+}
+
+.launch-brand {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: min(39vw, 72vh);
+  height: auto;
+  opacity: 0;
+  object-fit: contain;
+  transform: translate(-50%, -50%) scale(0.96);
+  transition:
+    opacity var(--logo-transition-duration, 220ms) ease-out,
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.launch-brand-standby {
+  width: min(30vw, 55vh);
+  opacity: 0.14;
+  animation: launch-logo-pulse var(--logo-pulse-duration, 4300ms) ease-in-out infinite;
+}
+
+.launch-brand-lock {
+  opacity: var(--logo-opacity, 0);
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.launch-fallback-x {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: #00f0ff;
+  font-family: var(--font-clash-display), sans-serif;
+  font-size: min(30vw, 50vh);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 16px rgb(0 240 255 / 75%), 0 0 70px rgb(0 240 255 / 42%);
+  transform: translate(-50%, -50%) rotate(45deg);
+  animation: launch-fallback-pulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.launch-overlay-dissolving {
+  opacity: 0;
+  filter: blur(12px);
+  transform: scale(1.025);
+  pointer-events: none;
+}
+
+@keyframes launch-type {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes launch-scan {
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes launch-log-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes launch-logo-pulse {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+  50% {
+    opacity: 0.24;
+    transform: translate(-50%, -50%) scale(1.015);
+  }
+}
+
+@keyframes launch-digit-slam {
+  0% {
+    opacity: 0;
+    transform: scale(1.42);
+  }
+  44% {
+    opacity: 1;
+    transform: scale(0.94);
+  }
+  65% {
+    transform: scale(1.025);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes launch-screen-shake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-0.12vw, 0.08vh, 0);
+  }
+  50% {
+    transform: translate3d(0.1vw, -0.06vh, 0);
+  }
+  75% {
+    transform: translate3d(-0.06vw, -0.04vh, 0);
+  }
+}
+
+@keyframes launch-fallback-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.76;
+  }
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .launch-boot-log {
+    top: 16vh;
+    width: 90vw;
+  }
+
+  .launch-system-progress {
+    bottom: 15vh;
+    width: 90vw;
+  }
+
+  .launch-countdown-readout {
+    top: 50%;
+    right: 5vw;
+    left: auto;
+    width: 42vw;
+  }
+
+  .launch-countdown-digits {
+    font-size: 20vw;
+  }
+
+  .launch-brand {
+    width: 65vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launch-overlay,
+  .launch-brand,
+  .launch-system-progress b {
+    transition-duration: 1ms;
+  }
+
+  .launch-overlay[data-final-countdown='true'],
+  .launch-scanline,
+  .launch-brand-standby,
+  .launch-countdown-readout span,
+  .launch-transmission span,
+  .launch-boot-log p,
+  .launch-fallback-x {
+    animation: none;
+  }
+
+  .launch-transmission span {
+    opacity: 1;
+  }
+}

@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useEffect, useState, useCallback } from 'react'
 import HomePageExperience from '@/components/HomePageExperience'
 import LaunchOverlay from '@/components/LaunchOverlay'
 import type { PublicLaunchState } from '@/lib/launch/types'
@@ -18,8 +17,7 @@ function isOverlayStatus(status: string) {
 export default function HomepageLaunchGate({ initialLaunchState, children }: HomepageLaunchGateProps) {
   const [launchState, setLaunchState] = useState<PublicLaunchState>(initialLaunchState)
   const [overlayMounted, setOverlayMounted] = useState(() => isOverlayStatus(initialLaunchState.status))
-  const router = useRouter()
-  const lastStatusRef = useRef(initialLaunchState.status)
+  const [postLaunchCycle, setPostLaunchCycle] = useState(0)
 
   const updateLaunchState = useCallback((state: PublicLaunchState) => {
     setLaunchState(state)
@@ -41,21 +39,6 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
       // background sync catch
     }
   }, [updateLaunchState])
-
-  // Manage overlay mounted state and router refresh on launch completion
-  useEffect(() => {
-    const prevStatus = lastStatusRef.current
-    const nextStatus = launchState.status
-    lastStatusRef.current = nextStatus
-
-    // When transitioning from a launch phase to LAUNCHED or NORMAL, refresh server components
-    if (
-      (prevStatus === 'ANIMATION' || prevStatus === 'COUNTDOWN_RUNNING' || prevStatus === 'STAY_TUNED') &&
-      (nextStatus === 'LAUNCHED' || nextStatus === 'NORMAL')
-    ) {
-      router.refresh()
-    }
-  }, [launchState.status, router])
 
   // Persistent Real-time SSE Connection across all devices
   useEffect(() => {
@@ -114,15 +97,23 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
   }, [fetchLatestState, updateLaunchState])
 
   const handleOverlayDone = useCallback(() => {
+    if (launchState.status === 'LAUNCHED') {
+      try {
+        sessionStorage.removeItem('preloaderShown')
+      } catch (error) {
+        console.error('Failed to reset the homepage preloader after launch:', error)
+      }
+      setPostLaunchCycle((cycle) => cycle + 1)
+    }
     setOverlayMounted(false)
-  }, [])
-
-  const isCurrentlyInLaunch = isOverlayStatus(launchState.status)
+  }, [launchState.status])
 
   return (
     <>
-      {/* Underlying Homepage Experience */}
-      <HomePageExperience suppressPreloader={overlayMounted || isCurrentlyInLaunch}>
+      <HomePageExperience
+        launchActive={overlayMounted}
+        postLaunchCycle={postLaunchCycle}
+      >
         {children}
       </HomePageExperience>
 

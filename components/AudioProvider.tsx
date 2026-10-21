@@ -7,6 +7,7 @@ interface AudioContextType {
   audioInitialized: boolean;
   toggleMusic: () => void;
   initializeAudio: (play: boolean) => void;
+  setLaunchAudioActive: (active: boolean) => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -17,6 +18,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const playRequestedRef = useRef(false);
   const playRequestIdRef = useRef(0);
+  const launchAudioActiveRef = useRef(false);
+  const resumeMusicAfterLaunchRef = useRef(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && sessionStorage.getItem("hasVisited")) {
@@ -27,6 +30,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const startPlayback = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    if (launchAudioActiveRef.current) {
+      resumeMusicAfterLaunchRef.current = true;
+      return;
+    }
 
     const requestId = ++playRequestIdRef.current;
     playRequestedRef.current = true;
@@ -51,6 +58,32 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (play) startPlayback();
   }, [startPlayback]);
 
+  const setLaunchAudioActive = useCallback((active: boolean) => {
+    if (active) {
+      if (launchAudioActiveRef.current) return;
+      launchAudioActiveRef.current = true;
+
+      const audio = audioRef.current;
+      resumeMusicAfterLaunchRef.current = Boolean(
+        audio && (!audio.paused || playRequestedRef.current),
+      );
+      if (audio && resumeMusicAfterLaunchRef.current) {
+        playRequestIdRef.current += 1;
+        playRequestedRef.current = false;
+        audio.pause();
+        setMusicPlaying(false);
+      }
+      return;
+    }
+
+    if (!launchAudioActiveRef.current) return;
+    launchAudioActiveRef.current = false;
+    if (!resumeMusicAfterLaunchRef.current) return;
+
+    resumeMusicAfterLaunchRef.current = false;
+    startPlayback();
+  }, [startPlayback]);
+
   const toggleMusic = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -66,7 +99,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, [startPlayback]);
 
   return (
-    <AudioContext.Provider value={{ musicPlaying, audioInitialized, toggleMusic, initializeAudio }}>
+    <AudioContext.Provider value={{
+      musicPlaying,
+      audioInitialized,
+      toggleMusic,
+      initializeAudio,
+      setLaunchAudioActive,
+    }}>
       <audio
         ref={audioRef}
         src="/song.mp3"
