@@ -162,36 +162,21 @@ function computeActiveDots(num: number): number[] {
   return active
 }
 
-// Precompute dot indices for sequence 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+// Precompute active dot indices for 1..10
 const ACTIVE_DOTS_BY_NUMBER: Record<number, number[]> = {}
 for (let i = 1; i <= 10; i++) {
   ACTIVE_DOTS_BY_NUMBER[i] = computeActiveDots(i)
 }
 
 export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayProps) {
-  // Current active countdown number: 10 down to 1, or null for blank screen
-  const [currentNumber, setCurrentNumber] = useState<number | null>(() => {
-    return state.status === 'COUNTDOWN_RUNNING' ? 10 : null
-  })
+  const [currentNumber, setCurrentNumber] = useState<number | null>(null)
+  const [showPreloader, setShowPreloader] = useState(false)
+  const [isStandby, setIsStandby] = useState(false)
 
-  // Controls transition to the main branch preloader animation
-  const [showPreloader, setShowPreloader] = useState(() => state.status === 'ANIMATION')
-  const [isStandby, setIsStandby] = useState(() => state.status === 'STAY_TUNED')
-
-  // Guard: strictly run countdown ONCE and never cancel prematurely
-  const countdownStartedRef = useRef(false)
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const [hasMounted, setHasMounted] = useState(false)
-
+  const onOverlayDoneRef = useRef(onOverlayDone)
   useEffect(() => {
-    setHasMounted(true)
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
-      }
-    }
-  }, [])
+    onOverlayDoneRef.current = onOverlayDone
+  })
 
   // Dot coordinates in SVG canvas (560 x 360)
   const dotCoords = useMemo(() => {
@@ -212,56 +197,82 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
     return coords
   }, [])
 
-  // Master Countdown Sequence: 10 -> 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> blank (400ms) -> Preloader
-  useEffect(() => {
-    if (!hasMounted) return
+  // Active indices for the current number (if any)
+  const activeIndices = useMemo(() => {
+    if (currentNumber === null) return new Set<number>()
+    return new Set(ACTIVE_DOTS_BY_NUMBER[currentNumber] || [])
+  }, [currentNumber])
 
-    // If website is placed in STAY_TUNED standby mode
-    if (state.status === 'STAY_TUNED' && !countdownStartedRef.current) {
-      setIsStandby(true)
+  // Master Synchronized State Machine across all devices
+  useEffect(() => {
+    const { status, countdownEndsAt, serverTime } = state
+
+    // If website is already launched or in normal state, dismiss overlay immediately
+    if (status === 'LAUNCHED' || status === 'NORMAL') {
+      onOverlayDoneRef.current?.()
       return
     }
 
-    // If status is ANIMATION directly and countdown hasn't run, show preloader immediately
-    if (state.status === 'ANIMATION' && !countdownStartedRef.current) {
-      countdownStartedRef.current = true
+    // If website is placed in STAY_TUNED standby mode
+    if (status === 'STAY_TUNED') {
+      setIsStandby(true)
+      setShowPreloader(false)
+      setCurrentNumber(null)
+      return
+    }
+
+    // If website is in ANIMATION mode, show Preloader directly
+    if (status === 'ANIMATION') {
       setIsStandby(false)
       setShowPreloader(true)
       return
     }
 
-    // Trigger countdown when status is COUNTDOWN_RUNNING and not started yet
-    if (state.status === 'COUNTDOWN_RUNNING' && !countdownStartedRef.current) {
-      countdownStartedRef.current = true
+    // When status is COUNTDOWN_RUNNING: sync across all devices via server timestamp
+    if (status === 'COUNTDOWN_RUNNING') {
       setIsStandby(false)
 
-      // Start at 10 immediately
-      setCurrentNumber(10)
+      // Calculate clock offset between server and client device
+      const serverMs = serverTime ? new Date(serverTime).getTime() : Date.now()
+      const clientMs = Date.now()
+      const clockOffset = serverMs - clientMs
 
-      let current = 10
-      timerRef.current = setInterval(() => {
-        current -= 1
-        if (current >= 1) {
-          setCurrentNumber(current)
+      const targetEndMs = countdownEndsAt
+        ? new Date(countdownEndsAt).getTime()
+        : Date.now() + 10000
+
+      let blankTimeout: NodeJS.Timeout | null = null
+      let animationFrameId: number | null = null
+
+      const updateSync = () => {
+        const nowAdjusted = Date.now() + clockOffset
+        const diffMs = targetEndMs - nowAdjusted
+        const remainingSec = Math.ceil(diffMs / 1000)
+
+        if (remainingSec >= 1 && remainingSec <= 10) {
+          setCurrentNumber(remainingSec)
+          animationFrameId = requestAnimationFrame(updateSync)
         } else {
-          if (timerRef.current) {
-            clearInterval(timerRef.current)
-            timerRef.current = null
-          }
-          // 1 concludes: transition to clean blank black screen
+          // Countdown reached 0 on all devices: clear digit to pure black screen
           setCurrentNumber(null)
 
-          // Blank black screen for 400ms, then launch the default main branch preloader animation
-          setTimeout(() => {
+          // 300ms pure black pause, then launch Nexora preloader animation
+          blankTimeout = setTimeout(() => {
             setShowPreloader(true)
-          }, 400)
+          }, 300)
         }
-      }, 1000)
-    }
-  }, [hasMounted, state.status])
+      }
 
-  // When showPreloader is active, render Preloader directly so its curtain-lift (-translate-y-full rounded-b-[50%])
-  // smoothly reveals the live homepage underneath without an extra black container blocking it!
+      updateSync()
+
+      return () => {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId)
+        if (blankTimeout) clearTimeout(blankTimeout)
+      }
+    }
+  }, [state])
+
+  // Direct render of Preloader so the curtain-lift (-translate-y-full) reveals the homepage underneath
   if (showPreloader) {
     return <Preloader onFinish={onOverlayDone} />
   }
@@ -276,13 +287,13 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
     >
       {/* ── 1. STAY TUNED STANDBY SCREEN ── */}
       {isStandby && (
-        <div className="flex flex-col items-center justify-center text-center px-4 animate-in fade-in duration-500">
+        <div className="flex flex-col items-center justify-center text-center px-4 animate-in fade-in duration-300">
           <img
             src="/logo-navbar.png"
             alt="NEXORA"
-            className="h-14 sm:h-20 w-auto object-contain select-none mb-6 drop-shadow-[0_0_25px_rgba(0,240,255,0.75)] animate-pulse"
+            className="h-12 sm:h-18 w-auto object-contain select-none mb-6 drop-shadow-[0_0_25px_rgba(0,240,255,0.75)] animate-pulse"
           />
-          <h1 className="font-[var(--font-clash-display)] text-4xl sm:text-6xl font-black tracking-[0.2em] text-white drop-shadow-[0_0_20px_rgba(0,240,255,0.8)]">
+          <h1 className="font-[var(--font-clash-display)] text-3xl sm:text-6xl font-black tracking-[0.2em] text-white drop-shadow-[0_0_20px_rgba(0,240,255,0.8)]">
             STAY TUNED
           </h1>
           <p className="mt-4 font-[var(--font-ibm-plex-mono)] text-xs tracking-[0.3em] text-cyan-300/80 uppercase">
@@ -291,7 +302,7 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
         </div>
       )}
 
-      {/* ── 2. SVG DOT-MATRIX COUNTDOWN (10 TO 1 ONCE) ── */}
+      {/* ── 2. HIGH-PERFORMANCE SVG DOT-MATRIX COUNTDOWN (10 TO 1) ── */}
       {!isStandby && (
         <div className="relative flex items-center justify-center w-full max-w-[92vw] sm:max-w-[85vw] md:max-w-[700px] lg:max-w-[820px]">
           <svg
@@ -299,12 +310,13 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
             viewBox="0 0 560 360"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            style={{ willChange: 'transform', transform: 'translateZ(0)' }}
           >
             <defs>
-              {/* White core with restrained electric cyan halo glow */}
-              <filter id="matrixCyanGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
-                <feFlood floodColor="#00f0ff" floodOpacity="0.8" result="cyanHalo" />
+              {/* Single grouped glow filter: eliminates 50 separate filter passes on mobile GPUs */}
+              <filter id="matrixCyanGlowGroup" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
+                <feFlood floodColor="#00f0ff" floodOpacity="0.85" result="cyanHalo" />
                 <feComposite in="cyanHalo" in2="blur" operator="in" result="coloredBlur" />
                 <feMerge>
                   <feMergeNode in="coloredBlur" />
@@ -313,32 +325,38 @@ export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayPro
               </filter>
             </defs>
 
-            {/* 14x9 Dot-Matrix Circles with Synchronous State Binding */}
-            {dotCoords.map((coord, idx) => {
-              const isActive =
-                currentNumber !== null &&
-                ACTIVE_DOTS_BY_NUMBER[currentNumber]?.includes(idx)
+            {/* Inactive background dots: grouped and static for zero CPU/GPU overhead */}
+            <g fill="#ffffff" opacity={0.04}>
+              {dotCoords.map((coord, idx) => {
+                if (activeIndices.has(idx)) return null
+                return (
+                  <circle
+                    key={`dot-bg-${idx}`}
+                    cx={coord.cx}
+                    cy={coord.cy}
+                    r={6.5}
+                  />
+                )
+              })}
+            </g>
 
-              return (
-                <circle
-                  key={`matrix-dot-${idx}`}
-                  cx={coord.cx}
-                  cy={coord.cy}
-                  r={6.5}
-                  fill="#ffffff"
-                  opacity={isActive ? 1 : 0.04}
-                  stroke={isActive ? 'rgba(0, 240, 255, 0.65)' : 'none'}
-                  strokeWidth={isActive ? 1.4 : 0}
-                  filter={isActive ? 'url(#matrixCyanGlow)' : undefined}
-                  style={{
-                    transformOrigin: `${coord.cx}px ${coord.cy}px`,
-                    transform: isActive ? 'scale(1)' : 'scale(0.85)',
-                    transition: 'opacity 0.22s ease-out, transform 0.22s ease-out, stroke 0.22s ease-out',
-                  }}
-                  suppressHydrationWarning
-                />
-              )
-            })}
+            {/* Active dots: single group filter runs once per frame across all devices */}
+            <g filter="url(#matrixCyanGlowGroup)">
+              {dotCoords.map((coord, idx) => {
+                if (!activeIndices.has(idx)) return null
+                return (
+                  <circle
+                    key={`dot-act-${idx}`}
+                    cx={coord.cx}
+                    cy={coord.cy}
+                    r={6.5}
+                    fill="#ffffff"
+                    stroke="rgba(0, 240, 255, 0.7)"
+                    strokeWidth={1.5}
+                  />
+                )
+              })}
+            </g>
           </svg>
         </div>
       )}
