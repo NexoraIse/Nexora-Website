@@ -199,7 +199,7 @@ export default function HomeSectionPreviews({
 
   return (
     <>
-    <section aria-labelledby="home-sections-heading" className="px-4 pt-16 pb-0 sm:px-6 sm:pt-24 md:px-16 lg:px-24 xl:px-32">
+    <section aria-labelledby="home-sections-heading" className="home-section-previews px-4 pt-16 pb-0 sm:px-6 sm:pt-24 md:px-16 lg:px-24 xl:px-32">
       <div className="mx-auto max-w-7xl">
         <HomeScrollTransition>
           <>

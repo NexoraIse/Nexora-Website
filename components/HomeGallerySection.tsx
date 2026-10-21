@@ -335,7 +335,7 @@ export default function HomeGallerySection() {
                 userPaused ? "Resume gallery animation" : "Pause gallery animation"
               }
               aria-pressed={userPaused}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#081324] border border-cyan-500/25 text-[#00f0ff] text-xs font-mono hover:border-cyan-400 hover:bg-[#0c1c36] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff]"
+              className="inline-flex min-h-11 items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#081324] border border-cyan-500/25 text-[#00f0ff] text-xs font-mono hover:border-cyan-400 hover:bg-[#0c1c36] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] sm:min-h-0"
             >
               {userPaused ? (
                 <>

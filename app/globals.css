@@ -2568,6 +2568,12 @@ body::-webkit-scrollbar {
   white-space: nowrap;
 }
 
+@media (max-width: 639px) {
+  .mission-section {
+    --mission-heading-size: clamp(2.5rem, 11.5vw, 4rem);
+  }
+}
+
 .home-learn-practice-section {
   position: relative;
   padding: 36px 0 12px;
@@ -3980,6 +3986,93 @@ body::-webkit-scrollbar {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   clip-path: inset(50%);
+}
+
+@media (max-width: 639px) {
+  .home-section-previews {
+    padding-top: clamp(3rem, 12vw, 3.5rem);
+  }
+
+  .home-events-section {
+    padding-top: 44px;
+  }
+
+  .home-events-header {
+    margin-bottom: 21px;
+  }
+
+  .home-events-header h2 {
+    font-size: clamp(2rem, 9.5vw, 2.35rem);
+    line-height: 1.02;
+  }
+
+  .home-events-header > p:last-child {
+    font-size: 13px;
+  }
+
+  .home-event-description {
+    -webkit-line-clamp: 2;
+  }
+
+  .home-event-action,
+  .home-events-footer > a,
+  .home-events-empty > a,
+  .home-events-ticket-card--compact .home-event-action {
+    min-height: 44px;
+  }
+
+  .home-connect-cta {
+    min-height: 44px;
+  }
+
+  .home-learn-practice-section {
+    padding-top: 28px;
+  }
+
+  .home-learn-section-header {
+    margin-bottom: 18px;
+  }
+
+  .home-learn-tab {
+    min-height: 42px;
+  }
+
+  .home-learn-panel-cta {
+    min-height: 44px;
+  }
+
+  .home-practice-option {
+    min-height: 44px;
+    font-size: 9px;
+  }
+
+  .home-achievements-section {
+    padding-top: 50px;
+    padding-bottom: 48px;
+  }
+
+  .home-achievements-header {
+    margin-bottom: 20px;
+  }
+
+  .home-achievement-row,
+  .home-achievement-row--featured {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .home-gallery-section {
+    padding-top: 48px;
+    padding-bottom: 56px;
+  }
+
+  .home-gallery-section > div:first-of-type {
+    margin-bottom: 24px;
+  }
+
+  .home-gallery-row {
+    height: clamp(7rem, 34vw, 8.25rem);
+  }
 }
 
 @media (hover: none) {
