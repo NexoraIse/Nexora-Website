@@ -55,7 +55,7 @@ export async function GET(request: Request) {
       await poll()
       interval = setInterval(() => {
         void poll()
-      }, 2_000)
+      }, 1_000)
 
       const abortSignal = request.signal
       abortSignal.addEventListener('abort', cleanup)

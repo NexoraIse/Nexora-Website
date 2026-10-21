@@ -43,6 +43,8 @@ export default function HomepageLaunchGate({ initialLaunchState, children }: Hom
 
     if (isOverlayStatus(nextStatus)) {
       setOverlayMounted(true)
+    } else {
+      setOverlayMounted(false)
     }
 
     // When transitioning from a launch phase to LAUNCHED or NORMAL, refresh server components
