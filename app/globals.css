@@ -190,7 +190,6 @@ body::-webkit-scrollbar {
 
 .hero-color-reveal {
   background: linear-gradient(180deg, #68bdff 0%, #8ed2ff 58%, #bfe7fb 100%);
-  transition: --cursor-x 90ms ease-out, --cursor-y 90ms ease-out;
   -webkit-mask-image: radial-gradient(
     circle 190px at var(--cursor-x, -300px) var(--cursor-y, -300px),
     #000 0%,
@@ -211,7 +210,6 @@ body::-webkit-scrollbar {
 
 .hero-landscape-reveal {
   overflow: hidden;
-  transition: --cursor-x 90ms ease-out, --cursor-y 90ms ease-out;
   -webkit-mask-image: radial-gradient(
     circle 190px at var(--cursor-x, -300px) var(--cursor-y, -300px),
     #000 0%,

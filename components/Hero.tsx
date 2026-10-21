@@ -179,18 +179,33 @@ export default function Hero({
     const landscapeReveal = landscapeRevealRef.current;
     if (!scene || !section || !landscapeContainer || !skyReveal || !landscapeReveal) return;
 
+    let pointerX = 0;
+    let pointerY = 0;
+    let frameId: number | null = null;
+
     const onPointerMove = (event: PointerEvent) => {
       if (event.pointerType === 'touch') return;
 
-      const skyBounds = section.getBoundingClientRect();
-      const landscapeBounds = landscapeContainer.getBoundingClientRect();
-      skyReveal.style.setProperty('--cursor-x', `${event.clientX - skyBounds.left}px`);
-      skyReveal.style.setProperty('--cursor-y', `${event.clientY - skyBounds.top}px`);
-      landscapeReveal.style.setProperty('--cursor-x', `${event.clientX - landscapeBounds.left}px`);
-      landscapeReveal.style.setProperty('--cursor-y', `${event.clientY - landscapeBounds.top}px`);
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (frameId !== null) return;
+
+      frameId = window.requestAnimationFrame(() => {
+        frameId = null;
+        const skyBounds = section.getBoundingClientRect();
+        const landscapeBounds = landscapeContainer.getBoundingClientRect();
+        skyReveal.style.setProperty('--cursor-x', `${pointerX - skyBounds.left}px`);
+        skyReveal.style.setProperty('--cursor-y', `${pointerY - skyBounds.top}px`);
+        landscapeReveal.style.setProperty('--cursor-x', `${pointerX - landscapeBounds.left}px`);
+        landscapeReveal.style.setProperty('--cursor-y', `${pointerY - landscapeBounds.top}px`);
+      });
     };
 
     const hideReveal = () => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+        frameId = null;
+      }
       skyReveal.style.setProperty('--cursor-x', '-300px');
       skyReveal.style.setProperty('--cursor-y', '-300px');
       landscapeReveal.style.setProperty('--cursor-x', '-300px');
@@ -203,6 +218,7 @@ export default function Hero({
     return () => {
       scene.removeEventListener('pointermove', onPointerMove);
       scene.removeEventListener('pointerleave', hideReveal);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
     };
   }, []);
 
