@@ -1,365 +1,476 @@
 'use client'
 
-import React, { useEffect, useRef, useState, useMemo } from 'react'
-import Preloader from '@/components/Preloader'
-import type { PublicLaunchState } from '@/lib/launch/types'
+import Image from 'next/image'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
+import { useAudio } from '@/components/AudioProvider'
+import { ANIMATION_SECONDS, COUNTDOWN_SECONDS, type PublicLaunchState } from '@/lib/launch/types'
+import { BOOT_LOG_LINES, CORE_CONFIG, LaunchCoreScene, easeOutExpo } from './LaunchCoreScene'
+import type { LaunchCoreVisual } from './LaunchCoreScene'
+import './LaunchOverlay.css'
+
+const TEXT = {
+  standby: 'TRANSMISSION STANDBY',
+  launch: 'NEXORA',
+} as const
+
+const TIMING = {
+  bootTypeMs: 2100,
+  stateTickMs: 80,
+  impactMs: 820,
+  silenceEnd: CORE_CONFIG.launch.silenceEnd,
+  blastEnd: CORE_CONFIG.launch.blastEnd,
+  dissolveMs: 850,
+  normalDissolveMs: 250,
+  digitMs: 760,
+  shakeMs: 980,
+  logoPulseMs: 4300,
+  logoTransitionMs: 220,
+} as const
+
+const VOLUME = {
+  drone: 0.024,
+  riser: 0.045,
+  impact: 0.13,
+  launchNote: 0.055,
+} as const
+
+const LAUNCH_SCORE = [
+  { progress: 0.18, notes: [146.83, 293.66, 440] },
+  { progress: 0.3, notes: [220, 329.63, 440] },
+  { progress: 0.42, notes: [293.66, 440, 587.33] },
+  { progress: 0.54, notes: [369.99, 440, 587.33] },
+  { progress: 0.66, notes: [440, 587.33, 659.25] },
+  { progress: 0.77, notes: [293.66, 369.99, 440, 587.33] },
+  { progress: 0.84, notes: [440, 587.33, 739.99, 880] },
+] as const
+
+type PreviewStatus = 'STAY_TUNED' | 'COUNTDOWN_RUNNING' | 'ANIMATION'
+const PREVIEW_STATUSES: readonly PreviewStatus[] = ['STAY_TUNED', 'COUNTDOWN_RUNNING', 'ANIMATION']
 
 type LaunchOverlayProps = {
   state: PublicLaunchState
   onOverlayDone: () => void
 }
 
-// 14 columns x 9 rows master matrix
-const COLS = 14
-const ROWS = 9
-
-// Standard 9x6 geometric digit patterns for precise dot matrix typography
-const DIGITS_MAP: Record<string, string[]> = {
-  '0': [
-    '.xxxx.',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    '.xxxx.',
-  ],
-  '1': [
-    '.xx.',
-    'xxx.',
-    '.xx.',
-    '.xx.',
-    '.xx.',
-    '.xx.',
-    '.xx.',
-    '.xx.',
-    'xxxx',
-  ],
-  '2': [
-    '.xxxx.',
-    'xx..xx',
-    '....xx',
-    '...xx.',
-    '..xx..',
-    '.xx...',
-    'xx....',
-    'xx....',
-    'xxxxxx',
-  ],
-  '3': [
-    'xxxxx.',
-    '....xx',
-    '....xx',
-    '..xxx.',
-    '....xx',
-    '....xx',
-    '....xx',
-    'xx..xx',
-    '.xxxx.',
-  ],
-  '4': [
-    '...xx.',
-    '..xxx.',
-    '.xxxx.',
-    'xx..xx',
-    'xx..xx',
-    'xxxxxx',
-    '...xx.',
-    '...xx.',
-    '...xx.',
-  ],
-  '5': [
-    'xxxxxx',
-    'xx....',
-    'xxxxx.',
-    '....xx',
-    '....xx',
-    '....xx',
-    '....xx',
-    'xx..xx',
-    '.xxxx.',
-  ],
-  '6': [
-    '.xxxx.',
-    'xx....',
-    'xx....',
-    'xxxxx.',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    '.xxxx.',
-  ],
-  '7': [
-    'xxxxxx',
-    '....xx',
-    '...xx.',
-    '...xx.',
-    '..xx..',
-    '..xx..',
-    '.xx...',
-    '.xx...',
-    '.xx...',
-  ],
-  '8': [
-    '.xxxx.',
-    'xx..xx',
-    'xx..xx',
-    '.xxxx.',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    '.xxxx.',
-  ],
-  '9': [
-    '.xxxx.',
-    'xx..xx',
-    'xx..xx',
-    'xx..xx',
-    '.xxxxx',
-    '....xx',
-    '....xx',
-    '....xx',
-    '.xxxx.',
-  ],
+type LaunchStyle = CSSProperties & {
+  '--boot-type-duration': string
+  '--dissolve-duration': string
+  '--digit-duration': string
+  '--shake-duration': string
+  '--logo-pulse-duration': string
+  '--logo-transition-duration': string
+  '--logo-opacity'?: number
 }
 
-function computeActiveDots(num: number): number[] {
-  const active: number[] = []
-  if (num === 10) {
-    // "1" at col 1..4, "0" at col 7..12 in 14-col grid
-    for (let r = 0; r < 9; r++) {
-      for (let c = 0; c < 4; c++) {
-        if (DIGITS_MAP['1'][r][c] === 'x') active.push(r * 14 + (1 + c))
-      }
-      for (let c = 0; c < 6; c++) {
-        if (DIGITS_MAP['0'][r][c] === 'x') active.push(r * 14 + (7 + c))
-      }
-    }
-  } else {
-    // Center single 6-col digit at cols 4..9 in 14-col grid
-    const pattern = num === 1 ? [
-      '..xx..',
-      '.xxx..',
-      '..xx..',
-      '..xx..',
-      '..xx..',
-      '..xx..',
-      '..xx..',
-      '..xx..',
-      'xxxxxx',
-    ] : DIGITS_MAP[String(num)]
+type AudioRuntime = {
+  context: AudioContext
+  drone: OscillatorNode
+  droneGain: GainNode
+  riser: OscillatorNode
+  riserGain: GainNode
+}
 
-    for (let r = 0; r < 9; r++) {
-      for (let c = 0; c < 6; c++) {
-        if (pattern[r][c] === 'x') active.push(r * 14 + (4 + c))
-      }
+function clamp(value: number, min = 0, max = 1) {
+  return Math.min(max, Math.max(min, value))
+}
+
+function parseTime(value: string | null | undefined) {
+  if (!value) return null
+  const parsed = Date.parse(value)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function getPreviewState() {
+  if (process.env.NODE_ENV !== 'development') return null
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('followState') === '1') return null
+  const requested = params.get('launchPreview')
+  if (!PREVIEW_STATUSES.includes(requested as PreviewStatus)) return null
+  return {
+    status: requested as PreviewStatus,
+    elapsed: clamp(Number(params.get('elapsed') || 0), 0, requested === 'COUNTDOWN_RUNNING' ? 10 : ANIMATION_SECONDS),
+  }
+}
+
+function makePreviewState(
+  status: PreviewStatus,
+  elapsed: number,
+  fallback: PublicLaunchState,
+): PublicLaunchState {
+  const now = Date.now()
+  const serverTime = new Date(now).toISOString()
+  if (status === 'STAY_TUNED') {
+    return { ...fallback, status, serverTime }
+  }
+  if (status === 'COUNTDOWN_RUNNING') {
+    const countdownStartedAt = new Date(now - elapsed * 1000).toISOString()
+    const countdownEndsAt = new Date(now + (10 - elapsed) * 1000).toISOString()
+    return { ...fallback, status, countdownStartedAt, countdownEndsAt, serverTime }
+  }
+  const animationStartedAt = new Date(now - elapsed * 1000).toISOString()
+  const animationEndsAt = new Date(now + (ANIMATION_SECONDS - elapsed) * 1000).toISOString()
+  return { ...fallback, status, animationStartedAt, animationEndsAt, serverTime }
+}
+
+function playImpact(runtime: AudioRuntime) {
+  const { context } = runtime
+  const buffer = context.createBuffer(1, Math.ceil(context.sampleRate * TIMING.impactMs / 1000), context.sampleRate)
+  const channel = buffer.getChannelData(0)
+  for (let index = 0; index < channel.length; index += 1) {
+    channel[index] = (Math.random() * 2 - 1) * (1 - index / channel.length) ** 2
+  }
+
+  const noise = context.createBufferSource()
+  const filter = context.createBiquadFilter()
+  const gain = context.createGain()
+  noise.buffer = buffer
+  filter.type = 'lowpass'
+  filter.frequency.value = 520
+  gain.gain.setValueAtTime(VOLUME.impact, context.currentTime)
+  gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + TIMING.impactMs / 1000)
+  noise.connect(filter)
+  filter.connect(gain)
+  gain.connect(context.destination)
+  noise.start()
+  noise.stop(context.currentTime + TIMING.impactMs / 1000)
+}
+
+function playLaunchChord(runtime: AudioRuntime, notes: readonly number[]) {
+  const { context } = runtime
+  const startTime = context.currentTime
+  const duration = 0.78
+  const gain = context.createGain()
+  gain.gain.setValueAtTime(0.001, startTime)
+  gain.gain.linearRampToValueAtTime(VOLUME.launchNote, startTime + 0.035)
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration)
+  gain.connect(context.destination)
+  let endedOscillators = 0
+
+  for (const frequency of notes) {
+    const oscillator = context.createOscillator()
+    oscillator.type = 'sine'
+    oscillator.frequency.setValueAtTime(frequency, startTime)
+    oscillator.connect(gain)
+    oscillator.start(startTime)
+    oscillator.stop(startTime + duration)
+    oscillator.onended = () => {
+      oscillator.disconnect()
+      endedOscillators += 1
+      if (endedOscillators === notes.length) gain.disconnect()
     }
   }
-  return active
 }
 
-// Precompute active dot indices for 1..10
-const ACTIVE_DOTS_BY_NUMBER: Record<number, number[]> = {}
-for (let i = 1; i <= 10; i++) {
-  ACTIVE_DOTS_BY_NUMBER[i] = computeActiveDots(i)
-}
-
-export default function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayProps) {
-  const [currentNumber, setCurrentNumber] = useState<number | null>(null)
-  const [showPreloader, setShowPreloader] = useState(false)
-  const [isStandby, setIsStandby] = useState(false)
-
-  const onOverlayDoneRef = useRef(onOverlayDone)
-  useEffect(() => {
-    onOverlayDoneRef.current = onOverlayDone
+function LaunchOverlay({ state, onOverlayDone }: LaunchOverlayProps) {
+  const [now, setNow] = useState(() => Date.now())
+  const [serverOffset, setServerOffset] = useState<number | null>(null)
+  const [previewState, setPreviewState] = useState<PublicLaunchState | null>(null)
+  const [webglUnavailable, setWebglUnavailable] = useState(false)
+  const { setLaunchAudioActive } = useAudio()
+  const initialStateRef = useRef(state)
+  const audioRef = useRef<AudioRuntime | null>(null)
+  const visualRef = useRef<LaunchCoreVisual>({
+    status: state.status === 'LAUNCHED' || state.status === 'NORMAL' ? 'ANIMATION' : state.status,
+    countdown: null,
+    countdownProgress: 0,
+    launchProgress: 0,
   })
+  const previousStatusRef = useRef(state.status)
+  const launchImpactPlayedRef = useRef(false)
+  const lastLaunchProgressRef = useRef<number | null>(null)
+  const activeState = previewState ?? state
+  const preview = previewState !== null
+  const serverTime = parseTime(activeState.serverTime)
+  const serverNow = serverTime === null
+    ? null
+    : serverOffset === null ? serverTime : now + serverOffset
+  const countdownEnd = parseTime(activeState.countdownEndsAt)
+  const animationStart = parseTime(activeState.animationStartedAt)
+  const animationEnd = parseTime(activeState.animationEndsAt)
+  const countdownRemaining = countdownEnd !== null && serverNow !== null
+    ? Math.max(0, (countdownEnd - serverNow) / 1000)
+    : null
+  const countdown = countdownRemaining === null ? null : Math.ceil(countdownRemaining)
+  const countdownProgress = activeState.status === 'COUNTDOWN_RUNNING' && countdownRemaining !== null
+    ? clamp((COUNTDOWN_SECONDS - countdownRemaining) / COUNTDOWN_SECONDS)
+    : activeState.status === 'ANIMATION' || activeState.status === 'LAUNCHED' ? 1 : 0
 
-  // Dot coordinates in SVG canvas (560 x 360)
-  const dotCoords = useMemo(() => {
-    const coords: { cx: number; cy: number }[] = []
-    const colGap = 36
-    const rowGap = 36
-    const startX = 46
-    const startY = 36
+  const launchProgress = useMemo(() => {
+    if (serverNow === null || animationStart === null) return 0
+    const end = animationEnd ?? animationStart + ANIMATION_SECONDS * 1000
+    if (end <= animationStart) return 1
+    return clamp((serverNow - animationStart) / (end - animationStart))
+  }, [animationEnd, animationStart, serverNow])
 
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        coords.push({
-          cx: startX + c * colGap,
-          cy: startY + r * rowGap,
-        })
-      }
+  const visual = useMemo<LaunchCoreVisual>(() => ({
+    status: activeState.status === 'NORMAL' ? 'STAY_TUNED' :
+      activeState.status === 'LAUNCHED' ? 'ANIMATION' : activeState.status,
+    countdown,
+    countdownProgress,
+    launchProgress,
+  }), [activeState.status, countdown, countdownProgress, launchProgress])
+
+  useEffect(() => {
+    visualRef.current = visual
+  }, [visual])
+  const systemProgress = activeState.status === 'COUNTDOWN_RUNNING'
+    ? Math.round(countdownProgress * 100)
+    : activeState.status === 'STAY_TUNED' ? 100 : Math.round(launchProgress * 100)
+  const shownBootLines = BOOT_LOG_LINES.filter(({ progress }) =>
+    activeState.status === 'STAY_TUNED' ? progress === 0 : countdownProgress >= progress,
+  )
+
+  useEffect(() => {
+    const preview = getPreviewState()
+    if (preview) {
+      setPreviewState(makePreviewState(preview.status, preview.elapsed, initialStateRef.current))
     }
-    return coords
   }, [])
 
-  // Active indices for the current number (if any)
-  const activeIndices = useMemo(() => {
-    if (currentNumber === null) return new Set<number>()
-    return new Set(ACTIVE_DOTS_BY_NUMBER[currentNumber] || [])
-  }, [currentNumber])
-
-  // Master Synchronized State Machine across all devices
   useEffect(() => {
-    const { status, countdownEndsAt, serverTime } = state
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [])
 
-    // If website is already launched or in normal state, dismiss overlay immediately
-    if (status === 'LAUNCHED' || status === 'NORMAL') {
-      onOverlayDoneRef.current?.()
-      return
+  useEffect(() => {
+    setLaunchAudioActive(true)
+    return () => setLaunchAudioActive(false)
+  }, [setLaunchAudioActive])
+
+  useEffect(() => {
+    let runtime: AudioRuntime | null = null
+    try {
+      if (window.AudioContext) {
+        const context = new window.AudioContext()
+        const drone = context.createOscillator()
+        const droneGain = context.createGain()
+        const riser = context.createOscillator()
+        const riserGain = context.createGain()
+
+        drone.type = 'sine'
+        drone.frequency.value = 39
+        droneGain.gain.value = VOLUME.drone
+        riser.type = 'sawtooth'
+        riser.frequency.value = 54
+        riserGain.gain.value = 0.001
+        drone.connect(droneGain)
+        droneGain.connect(context.destination)
+        riser.connect(riserGain)
+        riserGain.connect(context.destination)
+        drone.start()
+        riser.start()
+        runtime = { context, drone, droneGain, riser, riserGain }
+        audioRef.current = runtime
+        void context.resume().catch(() => {
+          // The visual sequence continues without audio when autoplay is blocked.
+        })
+      }
+    } catch (error) {
+      console.error('Launch audio could not be initialized:', error)
     }
 
-    // If website is placed in STAY_TUNED standby mode
-    if (status === 'STAY_TUNED') {
-      setIsStandby(true)
-      setShowPreloader(false)
-      setCurrentNumber(null)
-      return
+    return () => {
+      if (!runtime) return
+      runtime.drone.stop()
+      runtime.riser.stop()
+      void runtime.context.close()
+      audioRef.current = null
     }
+  }, [])
 
-    // If website is in ANIMATION mode, show Preloader directly
-    if (status === 'ANIMATION') {
-      setIsStandby(false)
-      setShowPreloader(true)
-      return
-    }
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setNow(Date.now())
+      const runtime = audioRef.current
+      if (!runtime) return
 
-    // When status is COUNTDOWN_RUNNING: sync across all devices via server timestamp
-    if (status === 'COUNTDOWN_RUNNING') {
-      setIsStandby(false)
-
-      // Calculate clock offset between server and client device
-      const serverMs = serverTime ? new Date(serverTime).getTime() : Date.now()
-      const clientMs = Date.now()
-      const clockOffset = serverMs - clientMs
-
-      const targetEndMs = countdownEndsAt
-        ? new Date(countdownEndsAt).getTime()
-        : Date.now() + 10000
-
-      let blankTimeout: NodeJS.Timeout | null = null
-      let animationFrameId: number | null = null
-
-      const updateSync = () => {
-        const nowAdjusted = Date.now() + clockOffset
-        const diffMs = targetEndMs - nowAdjusted
-        const remainingSec = Math.ceil(diffMs / 1000)
-
-        if (remainingSec >= 1 && remainingSec <= 10) {
-          setCurrentNumber(remainingSec)
-          animationFrameId = requestAnimationFrame(updateSync)
-        } else {
-          // Countdown reached 0 on all devices: clear digit to pure black screen
-          setCurrentNumber(null)
-
-          // 300ms pure black pause, then launch Nexora preloader animation
-          blankTimeout = setTimeout(() => {
-            setShowPreloader(true)
-          }, 300)
+      const current = visualRef.current
+      if (current.status === 'ANIMATION') {
+        runtime.droneGain.gain.setTargetAtTime(0.001, runtime.context.currentTime, 0.025)
+        runtime.riserGain.gain.setTargetAtTime(0.001, runtime.context.currentTime, 0.025)
+        const previousProgress = lastLaunchProgressRef.current
+        if (
+          !launchImpactPlayedRef.current &&
+          previousProgress !== null &&
+          previousProgress < TIMING.blastEnd &&
+          current.launchProgress >= TIMING.blastEnd
+        ) {
+          playImpact(runtime)
+          launchImpactPlayedRef.current = true
         }
+        const dueCues = previousProgress === null
+          ? LAUNCH_SCORE.filter(({ progress }) => progress <= current.launchProgress).slice(-1)
+          : LAUNCH_SCORE.filter(({ progress }) =>
+              progress > previousProgress && progress <= current.launchProgress,
+            )
+        for (const cue of dueCues) {
+          playLaunchChord(runtime, cue.notes)
+        }
+        lastLaunchProgressRef.current = current.launchProgress
+      } else {
+        lastLaunchProgressRef.current = null
+        const remaining = current.countdown ?? 10
+        const ramp = current.status === 'COUNTDOWN_RUNNING'
+          ? clamp((10 - remaining) / 10)
+          : 0
+        runtime.droneGain.gain.setTargetAtTime(VOLUME.drone * (1 - ramp * 0.94), runtime.context.currentTime, 0.2)
+        runtime.riser.frequency.setTargetAtTime(54 + ramp * 180, runtime.context.currentTime, 0.1)
+        runtime.riserGain.gain.setTargetAtTime(VOLUME.riser * ramp, runtime.context.currentTime, 0.12)
       }
+    }, TIMING.stateTickMs)
+    return () => window.clearInterval(timer)
+  }, [])
 
-      updateSync()
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setServerOffset(serverTime === null ? null : serverTime - Date.now())
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [serverTime])
 
-      return () => {
-        if (animationFrameId) cancelAnimationFrame(animationFrameId)
-        if (blankTimeout) clearTimeout(blankTimeout)
-      }
+  useEffect(() => {
+    if (preview) return
+    if (activeState.status === 'NORMAL') {
+      const timer = window.setTimeout(onOverlayDone, TIMING.normalDissolveMs)
+      return () => window.clearTimeout(timer)
     }
-  }, [state])
+    if (activeState.status === 'LAUNCHED') {
+      const timer = window.setTimeout(onOverlayDone, TIMING.dissolveMs)
+      return () => window.clearTimeout(timer)
+    }
+  }, [activeState.status, onOverlayDone, preview])
 
-  // Direct render of Preloader so the curtain-lift (-translate-y-full) reveals the homepage underneath
-  if (showPreloader) {
-    return <Preloader onFinish={onOverlayDone} />
+  useEffect(() => {
+    const previousStatus = previousStatusRef.current
+    if (activeState.status !== previousStatus) {
+      previousStatusRef.current = activeState.status
+      launchImpactPlayedRef.current = false
+    }
+  }, [activeState.status])
+
+  const contentStyle: LaunchStyle = {
+    '--boot-type-duration': `${TIMING.bootTypeMs}ms`,
+    '--dissolve-duration': `${activeState.status === 'NORMAL' ? TIMING.normalDissolveMs : TIMING.dissolveMs}ms`,
+    '--digit-duration': `${TIMING.digitMs}ms`,
+    '--shake-duration': `${TIMING.shakeMs}ms`,
+    '--logo-pulse-duration': `${TIMING.logoPulseMs}ms`,
+    '--logo-transition-duration': `${TIMING.logoTransitionMs}ms`,
+    '--logo-opacity': activeState.status === 'ANIMATION'
+      ? easeOutExpo(clamp((launchProgress - CORE_CONFIG.launch.lockStart) / 0.18))
+      : activeState.status === 'LAUNCHED' ? 1 : 0,
   }
+
+  const isLaunchPhase = activeState.status === 'ANIMATION' || activeState.status === 'LAUNCHED'
+  const launchFlashOpacity = isLaunchPhase
+    ? clamp(1 - Math.abs(launchProgress - 0.19) / 0.03)
+    : 0
+  const logoClassName = [
+    'launch-brand',
+    activeState.status === 'STAY_TUNED' ? 'launch-brand-standby' : '',
+    isLaunchPhase ? 'launch-brand-lock' : '',
+  ].filter(Boolean).join(' ')
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center overflow-hidden bg-[#000000] text-white select-none"
+      className={`launch-overlay${activeState.status === 'NORMAL' || activeState.status === 'LAUNCHED' ? ' launch-overlay-dissolving' : ''}`}
+      data-final-countdown={activeState.status === 'COUNTDOWN_RUNNING' && countdown !== null && countdown <= 10}
+      data-launch-phase={
+        isLaunchPhase && launchProgress < CORE_CONFIG.launch.silenceEnd
+          ? 'implode'
+          : isLaunchPhase && launchProgress < CORE_CONFIG.launch.blastEnd
+            ? 'silence'
+            : isLaunchPhase && launchProgress < CORE_CONFIG.launch.scatterEnd
+              ? 'blast'
+              : isLaunchPhase && launchProgress < CORE_CONFIG.launch.morphEnd
+                ? 'morph'
+                : isLaunchPhase ? 'locked' : undefined
+      }
+      data-status={activeState.status}
+      style={contentStyle}
+      onPointerDown={(event) => {
+        event.stopPropagation()
+        if (document.fullscreenElement || !document.documentElement.requestFullscreen) return
+        void document.documentElement.requestFullscreen().catch(() => {
+          // Fullscreen remains optional when the browser denies the request.
+        })
+        void audioRef.current?.context.resume().catch(() => {
+          // The sequence stays silent if the browser continues to block audio.
+        })
+      }}
       role="dialog"
       aria-modal="true"
       aria-live="polite"
-      suppressHydrationWarning
+      aria-label="Nexora launch transmission"
     >
-      {/* ── 1. STAY TUNED STANDBY SCREEN ── */}
-      {isStandby && (
-        <div className="flex flex-col items-center justify-center text-center px-4 animate-in fade-in duration-300">
-          <img
+      <LaunchCoreScene
+        visual={visual}
+        onUnavailable={() => setWebglUnavailable(true)}
+      />
+      {launchFlashOpacity > 0 && (
+        <div
+          className="launch-flash"
+          style={{ opacity: launchFlashOpacity }}
+          aria-hidden="true"
+        />
+      )}
+
+      {webglUnavailable && <div className="launch-fallback-x" aria-hidden="true">X</div>}
+
+      <div className="launch-hud" aria-hidden="true">
+        {activeState.status === 'STAY_TUNED' && <div className="launch-scanline" />}
+        {(activeState.status === 'STAY_TUNED' || activeState.status === 'COUNTDOWN_RUNNING') && (
+          <>
+            <div className="launch-boot-log">
+              {shownBootLines.map((line) => <p key={line.text}>{line.text}</p>)}
+              {activeState.status === 'STAY_TUNED' && <p className="launch-log-idle">[ SYS ] signal integrity nominal</p>}
+            </div>
+            {activeState.status === 'COUNTDOWN_RUNNING' && (
+              <div className="launch-system-progress">
+                <span>SYSTEM INITIALISING</span>
+                <span>{systemProgress}%</span>
+                <i><b style={{ width: `${systemProgress}%` }} /></i>
+              </div>
+            )}
+            {activeState.status === 'STAY_TUNED' && (
+              <div className="launch-transmission">
+                {TEXT.standby.split('').map((character, index) => (
+                  <span
+                    key={`${character}-${index}`}
+                    className={character === ' ' ? 'launch-transmission-space' : undefined}
+                    style={{ animationDelay: `${index * 54}ms` }}
+                  >
+                    {character === ' ' ? '\u00a0' : character}
+                  </span>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {activeState.status === 'COUNTDOWN_RUNNING' && countdown !== null && (
+          <div className="launch-countdown-readout" key={countdown}>
+            <span className="launch-countdown-label">T-MINUS</span>
+            <span className="launch-countdown-digits">{String(countdown).padStart(2, '0')}</span>
+          </div>
+        )}
+
+        {(activeState.status === 'STAY_TUNED' || isLaunchPhase) && (
+          <Image
             src="/logo-navbar.png"
-            alt="NEXORA"
-            className="h-12 sm:h-18 w-auto object-contain select-none mb-6 drop-shadow-[0_0_25px_rgba(0,240,255,0.75)] animate-pulse"
+            alt={TEXT.launch}
+            width={960}
+            height={320}
+            priority
+            className={logoClassName}
           />
-          <h1 className="font-[var(--font-clash-display)] text-3xl sm:text-6xl font-black tracking-[0.2em] text-white drop-shadow-[0_0_20px_rgba(0,240,255,0.8)]">
-            STAY TUNED
-          </h1>
-          <p className="mt-4 font-[var(--font-ibm-plex-mono)] text-xs tracking-[0.3em] text-cyan-300/80 uppercase">
-            TRANSMISSION STANDBY
-          </p>
-        </div>
-      )}
-
-      {/* ── 2. HIGH-PERFORMANCE SVG DOT-MATRIX COUNTDOWN (10 TO 1) ── */}
-      {!isStandby && (
-        <div className="relative flex items-center justify-center w-full max-w-[92vw] sm:max-w-[85vw] md:max-w-[700px] lg:max-w-[820px]">
-          <svg
-            className="w-full h-auto overflow-visible"
-            viewBox="0 0 560 360"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{ willChange: 'transform', transform: 'translateZ(0)' }}
-          >
-            <defs>
-              {/* Single grouped glow filter: eliminates 50 separate filter passes on mobile GPUs */}
-              <filter id="matrixCyanGlowGroup" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
-                <feFlood floodColor="#00f0ff" floodOpacity="0.85" result="cyanHalo" />
-                <feComposite in="cyanHalo" in2="blur" operator="in" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-
-            {/* Inactive background dots: grouped and static for zero CPU/GPU overhead */}
-            <g fill="#ffffff" opacity={0.04}>
-              {dotCoords.map((coord, idx) => {
-                if (activeIndices.has(idx)) return null
-                return (
-                  <circle
-                    key={`dot-bg-${idx}`}
-                    cx={coord.cx}
-                    cy={coord.cy}
-                    r={6.5}
-                  />
-                )
-              })}
-            </g>
-
-            {/* Active dots: single group filter runs once per frame across all devices */}
-            <g filter="url(#matrixCyanGlowGroup)">
-              {dotCoords.map((coord, idx) => {
-                if (!activeIndices.has(idx)) return null
-                return (
-                  <circle
-                    key={`dot-act-${idx}`}
-                    cx={coord.cx}
-                    cy={coord.cy}
-                    r={6.5}
-                    fill="#ffffff"
-                    stroke="rgba(0, 240, 255, 0.7)"
-                    strokeWidth={1.5}
-                  />
-                )
-              })}
-            </g>
-          </svg>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
+
+export default LaunchOverlay

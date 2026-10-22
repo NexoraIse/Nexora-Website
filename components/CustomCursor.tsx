@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'motion/react';
 import { setCursorMode, subscribeCursorMode, type CursorMode } from '@/hooks/useCursorMode';
@@ -10,8 +10,7 @@ let lastX = 0;
 let lastY = 0;
 let initialized = false;
 
-const CURSOR_SPRING = { stiffness: 520, damping: 46, mass: 0.35 };
-const RING_SPRING = { stiffness: 260, damping: 32, mass: 0.5 };
+const RING_SPRING = { stiffness: 720, damping: 48, mass: 0.4 };
 const HOVER_SELECTOR = 'a, button, [role="button"], input, select, textarea, [data-cursor]';
 
 export default function CustomCursor() {
@@ -21,13 +20,12 @@ export default function CustomCursor() {
   const [hovering, setHovering] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [mode, setMode] = useState<CursorMode>('');
+  const hoveringRef = useRef(false);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const cursorX = useSpring(mouseX, CURSOR_SPRING);
-  const cursorY = useSpring(mouseY, CURSOR_SPRING);
-  const ringX = useSpring(cursorX, RING_SPRING);
-  const ringY = useSpring(cursorY, RING_SPRING);
+  const ringX = useSpring(mouseX, RING_SPRING);
+  const ringY = useSpring(mouseY, RING_SPRING);
 
   useEffect(() => {
     if (hidden || isAdminPage || modalOpen) return;
@@ -39,8 +37,6 @@ export default function CustomCursor() {
     }
     mouseX.set(lastX);
     mouseY.set(lastY);
-    cursorX.jump(lastX);
-    cursorY.jump(lastY);
     ringX.jump(lastX);
     ringY.jump(lastY);
 
@@ -55,7 +51,11 @@ export default function CustomCursor() {
       rafId = requestAnimationFrame(() => {
         rafId = null;
         const target = document.elementFromPoint(lastX, lastY);
-        setHovering(!!target?.closest(HOVER_SELECTOR));
+        const nextHovering = !!target?.closest(HOVER_SELECTOR);
+        if (nextHovering !== hoveringRef.current) {
+          hoveringRef.current = nextHovering;
+          setHovering(nextHovering);
+        }
 
         const cursorElement = target?.closest<HTMLElement>('[data-cursor]');
         setCursorMode(cursorElement?.dataset.cursor ?? '');
@@ -68,7 +68,7 @@ export default function CustomCursor() {
       window.removeEventListener('mousemove', onMouseMove);
       if (rafId !== null) cancelAnimationFrame(rafId);
     };
-  }, [hidden, isAdminPage, modalOpen, cursorX, cursorY, ringX, ringY, mouseX, mouseY]);
+  }, [hidden, isAdminPage, modalOpen, ringX, ringY, mouseX, mouseY]);
 
   useEffect(() => subscribeCursorMode(setMode), []);
 
@@ -99,6 +99,7 @@ export default function CustomCursor() {
 
   useEffect(() => {
     queueMicrotask(() => {
+      hoveringRef.current = false;
       setHovering(false);
       setCursorMode('');
     });
@@ -112,8 +113,8 @@ export default function CustomCursor() {
         aria-hidden="true"
         className="fixed left-0 top-0 z-[999999] pointer-events-none"
         style={{
-          x: cursorX,
-          y: cursorY,
+          x: mouseX,
+          y: mouseY,
           translate: '-50% -50%',
           width: 8,
           height: 8,
@@ -150,7 +151,7 @@ export default function CustomCursor() {
             key={mode}
             aria-hidden="true"
             className="fixed left-0 top-0 z-[999999] pointer-events-none whitespace-nowrap rounded-full border border-sky-400/40 bg-[#060913] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.15em] text-[#00f0ff] shadow-lg"
-            style={{ x: cursorX, y: cursorY, translate: '16px 16px', willChange: 'transform' }}
+            style={{ x: mouseX, y: mouseY, translate: '16px 16px', willChange: 'transform' }}
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.85 }}

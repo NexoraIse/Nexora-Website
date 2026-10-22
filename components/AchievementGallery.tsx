@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Award, Sparkles } from "lucide-react";
 import type { AchievementItem } from "@/lib/types";
+import { getAchievementDateLabel } from "@/lib/achievement-sorting";
 
 export type Achievement = {
   id?: string;
@@ -11,7 +12,7 @@ export type Achievement = {
   title: string;
   description: string;
   event: string;
-  date: string;
+  date?: string;
   image?: string;
   isSample?: boolean;
 };
@@ -42,7 +43,7 @@ export default function AchievementGallery({ initialAchievements }: AchievementG
             title: a.title,
             description: a.description,
             event: a.competitionOrEvent || a.studentOrTeamName || 'Nexora Department',
-            date: a.dateDisplay || (a.achievementDate ? new Date(a.achievementDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Date not listed'),
+            date: getAchievementDateLabel(a),
             image: a.image || undefined,
             isSample: false,
           }));
@@ -178,7 +179,9 @@ export default function AchievementGallery({ initialAchievements }: AchievementG
               </p>
               <div className="relative mt-auto flex flex-col gap-2 border-t border-[var(--theme-primary,#00f0ff)]/15 pt-4 text-xs text-[var(--theme-primary,#00f0ff)]/70 font-mono sm:flex-row sm:items-center sm:justify-between">
                 <span>{achievement.event}</span>
-                <span className="text-[var(--theme-bg-hero,#dce6ef)]">{achievement.date}</span>
+                {achievement.date && (
+                  <span className="text-[var(--theme-bg-hero,#dce6ef)]">{achievement.date}</span>
+                )}
               </div>
             </article>
           ))}

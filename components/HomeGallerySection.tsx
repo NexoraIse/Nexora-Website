@@ -301,7 +301,7 @@ export default function HomeGallerySection() {
       `}</style>
 
       {/* Header Container - aligned with existing homepage section headers */}
-      <div className="relative mx-auto w-[min(calc(100%-2rem),80rem)] mb-8 sm:mb-10">
+      <div className="relative mx-auto mb-8 w-[min(calc(100%-2rem),80rem)] sm:mb-10 sm:w-[min(calc(100%-3rem),80rem)] md:w-[min(calc(100%-8rem),80rem)] lg:w-[min(calc(100%-12rem),80rem)] xl:w-[min(calc(100%-16rem),80rem)]">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <header className="max-w-2xl">
             <p className="text-[10px] font-mono font-semibold tracking-[0.2em] text-[#00f0ff] uppercase">
@@ -335,7 +335,7 @@ export default function HomeGallerySection() {
                 userPaused ? "Resume gallery animation" : "Pause gallery animation"
               }
               aria-pressed={userPaused}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#081324] border border-cyan-500/25 text-[#00f0ff] text-xs font-mono hover:border-cyan-400 hover:bg-[#0c1c36] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff]"
+              className="inline-flex min-h-11 items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#081324] border border-cyan-500/25 text-[#00f0ff] text-xs font-mono hover:border-cyan-400 hover:bg-[#0c1c36] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] sm:min-h-0"
             >
               {userPaused ? (
                 <>
@@ -542,4 +542,3 @@ export default function HomeGallerySection() {
     </section>
   );
 }
-

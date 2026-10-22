@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
 import HomeEventsSection from '@/components/HomeEventsSection'
 import HomeAchievementsSection from '@/components/HomeAchievementsSection'
@@ -29,6 +30,42 @@ type CommunityProfile = {
 type PreviewData = {
   profiles: CommunityProfile[]
   errors: Partial<Record<'profiles', string>>
+}
+
+function HomeScrollTransition({ children }: { children: ReactNode }) {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const prefersReducedMotion = useReducedMotion()
+  const [isMobile, setIsMobile] = useState(false)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'start 55%'],
+  })
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 110,
+    damping: 30,
+    restDelta: 0.001,
+  })
+  const opacity = useTransform(smoothProgress, [0, 1], isMobile ? [0.78, 1] : [0.44, 1])
+  const y = useTransform(smoothProgress, [0, 1], isMobile ? [44, 0] : [104, 0])
+  const scale = useTransform(smoothProgress, [0, 1], isMobile ? [0.98, 1] : [0.93, 1])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 640px)')
+    const updateViewport = () => setIsMobile(mediaQuery.matches)
+    updateViewport()
+    mediaQuery.addEventListener('change', updateViewport)
+    return () => mediaQuery.removeEventListener('change', updateViewport)
+  }, [])
+
+  return (
+    <motion.div
+      ref={sectionRef}
+      className="home-scroll-transition"
+      style={prefersReducedMotion ? undefined : { opacity, y, scale }}
+    >
+      {children}
+    </motion.div>
+  )
 }
 
 const AVATAR_POSITIONS = [
@@ -162,48 +199,60 @@ export default function HomeSectionPreviews({
 
   return (
     <>
-    <section aria-labelledby="home-sections-heading" className="px-4 py-20 sm:px-6 sm:py-24 md:px-16 lg:px-24 xl:px-32">
+    <section aria-labelledby="home-sections-heading" className="home-section-previews px-4 pt-16 pb-0 sm:px-6 sm:pt-24 md:px-16 lg:px-24 xl:px-32">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 max-w-3xl">
-          <p className="home-section-eyebrow">Nexora · Your ISE community</p>
-          <h2 id="home-sections-heading" className="mt-3 font-clash text-3xl font-bold tracking-tight text-[var(--theme-bg-hero,#dce6ef)] sm:text-4xl">
-            Find your next <span className="text-[var(--theme-primary,#00f0ff)]">starting point.</span>
-          </h2>
-          <p className="mt-3 max-w-2xl font-cabinet text-sm leading-6 text-white/65 sm:text-base">
-            Explore what the ISE community is learning, building, sharing, and celebrating.
-          </p>
-        </div>
-
-        <section className="home-connect-preview" aria-labelledby="home-connect-heading">
-          <div className="home-connect-copy">
-            <p className="home-preview-label">Nexora Connect</p>
-            <h3 id="home-connect-heading">Good people make the path easier.</h3>
-            <p>Find students and graduates by skill, role, or company. Reach out for guidance, collaboration, referral advice, and interview insights.</p>
-            <Link href="/connect" className="home-connect-cta">
-              Explore Everyone <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-            {preview.errors.profiles && <p className="home-preview-error" role="status">{preview.errors.profiles}</p>}
-            {!preview.errors.profiles && profiles.length === 0 && (
-              <p className="home-connect-empty" role="status">
-                {profilesLoading ? 'Finding public member profiles…' : 'Public member profiles will appear here as the community grows.'}
+        <HomeScrollTransition>
+          <>
+            <div className="mb-8 max-w-3xl sm:mb-10">
+              <p className="home-section-eyebrow">Nexora · Your ISE community</p>
+              <h2 id="home-sections-heading" className="mt-3 font-clash text-3xl font-bold tracking-tight text-[var(--theme-bg-hero,#dce6ef)] sm:text-4xl">
+                Find your next <span className="text-[var(--theme-primary,#00f0ff)]">starting point.</span>
+              </h2>
+              <p className="mt-3 max-w-2xl font-cabinet text-sm leading-6 text-white/65 sm:text-base">
+                Explore what the ISE community is learning, building, sharing, and celebrating.
               </p>
-            )}
-          </div>
+            </div>
 
-          <div className="home-connect-orbit" aria-label="Public student and graduate profiles">
-            {profiles.map((profile, index) => (
-              <MemberAvatar key={profile.slug} profile={profile} position={positions[index]} index={index} />
-            ))}
-          </div>
-        </section>
+            <section className="home-connect-preview" aria-labelledby="home-connect-heading">
+              <div className="home-connect-copy">
+                <p className="home-preview-label">Nexora Connect</p>
+                <h3 id="home-connect-heading">Good people make the path easier.</h3>
+                <p>Find students and graduates by skill, role, or company. Reach out for guidance, collaboration, referral advice, and interview insights.</p>
+                <Link href="/connect" className="home-connect-cta">
+                  Explore Everyone <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+                {preview.errors.profiles && <p className="home-preview-error" role="status">{preview.errors.profiles}</p>}
+                {!preview.errors.profiles && profiles.length === 0 && (
+                  <p className="home-connect-empty" role="status">
+                    {profilesLoading ? 'Finding public member profiles…' : 'Public member profiles will appear here as the community grows.'}
+                  </p>
+                )}
+              </div>
 
-        <HomeEventsSection events={events} initialNow={initialNow} />
+              <div className="home-connect-orbit" aria-label="Public student and graduate profiles">
+                {profiles.map((profile, index) => (
+                  <MemberAvatar key={profile.slug} profile={profile} position={positions[index]} index={index} />
+                ))}
+              </div>
+            </section>
+          </>
+        </HomeScrollTransition>
 
-        <HomeLearnPracticeSection data={learning} codeTokens={codeTokens} />
+        <HomeScrollTransition>
+          <HomeEventsSection events={events} initialNow={initialNow} />
+        </HomeScrollTransition>
+
+        <HomeScrollTransition>
+          <HomeLearnPracticeSection data={learning} codeTokens={codeTokens} />
+        </HomeScrollTransition>
       </div>
     </section>
-    <HomeAchievementsSection achievements={achievements} unavailable={achievementsUnavailable} />
-    <HomeGallerySection />
+    <HomeScrollTransition>
+      <HomeAchievementsSection achievements={achievements} unavailable={achievementsUnavailable} />
+    </HomeScrollTransition>
+    <HomeScrollTransition>
+      <HomeGallerySection />
+    </HomeScrollTransition>
     </>
   )
 }

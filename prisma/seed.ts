@@ -1,7 +1,6 @@
 import { prisma } from '../lib/prisma';
 import bcrypt from 'bcryptjs';
 import { INITIAL_EVENTS } from '../lib/data/initial-events';
-import { INITIAL_ACHIEVEMENTS } from '../lib/data/initial-achievements';
 
 /**
  * =============================================================================
@@ -105,33 +104,6 @@ async function seed() {
     seededEventsCount++;
   }
   console.log(`✓ Seeded ${seededEventsCount} initial events.`);
-
-  // 4. Seed verified ISE achievements
-  console.log('🏆 Seeding initial achievements...');
-  for (const achievement of INITIAL_ACHIEVEMENTS) {
-    const data = {
-      title: achievement.title,
-      description: achievement.description,
-      studentOrTeamName: achievement.studentOrTeamName ?? null,
-      category: achievement.category,
-      competitionOrEvent: achievement.competitionOrEvent ?? null,
-      awardOrPosition: achievement.awardOrPosition ?? null,
-      achievementDate: achievement.achievementDate
-        ? new Date(achievement.achievementDate)
-        : null,
-      dateDisplay: achievement.dateDisplay ?? null,
-      image: achievement.image ?? null,
-      externalUrl: achievement.externalUrl ?? null,
-      status: 'PUBLISHED' as const,
-    };
-
-    await prisma.achievement.upsert({
-      where: { slug: achievement.slug },
-      update: data,
-      create: { ...data, slug: achievement.slug },
-    });
-  }
-  console.log(`✓ Seeded ${INITIAL_ACHIEVEMENTS.length} initial achievements.`);
 
   console.log('✨ Database seeding completed successfully.');
 }

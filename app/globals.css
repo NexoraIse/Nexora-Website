@@ -190,7 +190,6 @@ body::-webkit-scrollbar {
 
 .hero-color-reveal {
   background: linear-gradient(180deg, #68bdff 0%, #8ed2ff 58%, #bfe7fb 100%);
-  transition: --cursor-x 90ms ease-out, --cursor-y 90ms ease-out;
   -webkit-mask-image: radial-gradient(
     circle 190px at var(--cursor-x, -300px) var(--cursor-y, -300px),
     #000 0%,
@@ -211,7 +210,6 @@ body::-webkit-scrollbar {
 
 .hero-landscape-reveal {
   overflow: hidden;
-  transition: --cursor-x 90ms ease-out, --cursor-y 90ms ease-out;
   -webkit-mask-image: radial-gradient(
     circle 190px at var(--cursor-x, -300px) var(--cursor-y, -300px),
     #000 0%,
@@ -1646,8 +1644,28 @@ body::-webkit-scrollbar {
 }
 
 .home-events-section {
+  position: relative;
   padding: 76px 0 26px;
   color: #e2e8f0;
+}
+
+.home-events-section::before,
+.home-learn-practice-section::before,
+.home-gallery-section::before,
+.home-achievements-inner::before {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(0 240 255 / 12%) 12%, rgb(0 240 255 / 42%) 50%, rgb(0 240 255 / 12%) 88%, transparent);
+  box-shadow: 0 0 18px rgb(0 240 255 / 12%);
+  content: "";
+}
+
+.home-events-section::before,
+.home-learn-practice-section::before,
+.home-gallery-section::before {
+  top: 0;
+  right: 0;
+  left: 0;
 }
 
 .home-events-header {
@@ -2438,6 +2456,21 @@ body::-webkit-scrollbar {
 
 }
 
+@media (max-width: 639px) {
+  .home-connect-preview {
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .home-connect-orbit {
+    min-height: 228px;
+  }
+
+  .home-connect-avatar {
+    scale: .78;
+  }
+}
+
 @media (min-width: 1024px) {
   .home-connect-preview {
     grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
@@ -2516,8 +2549,32 @@ body::-webkit-scrollbar {
   border-color: rgb(0 240 255 / 45%);
 }
 
+.mission-scroll-word {
+  position: relative;
+  display: inline-block;
+  color: rgb(220 230 239 / 32%);
+}
+
+.mission-scroll-word[data-accent="true"] {
+  color: rgb(0 240 255 / 32%);
+}
+
+.mission-scroll-word-fill {
+  position: absolute;
+  inset: 0;
+  color: var(--theme-bg-hero, #dce6ef);
+  white-space: nowrap;
+}
+
+@media (max-width: 639px) {
+  .mission-section {
+    --mission-heading-size: clamp(2.5rem, 11.5vw, 4rem);
+  }
+}
+
 .home-learn-practice-section {
-  padding: 36px 0 18px;
+  position: relative;
+  padding: 36px 0 12px;
   color: #e2e8f0;
 }
 
@@ -3156,6 +3213,18 @@ body::-webkit-scrollbar {
 }
 
 @media (max-width: 359px) {
+  .home-connect-preview {
+    padding: 15px;
+  }
+
+  .home-connect-orbit {
+    min-height: 208px;
+  }
+
+  .home-connect-avatar {
+    scale: .68;
+  }
+
   .home-learn-panel {
     padding-right: 12px;
     padding-left: 12px;
@@ -3188,7 +3257,7 @@ body::-webkit-scrollbar {
 
 .home-achievements-section {
   position: relative;
-  padding: 116px 0 78px;
+  padding: 68px 0 78px;
   background: transparent;
   color: #e2e8f0;
 }
@@ -3197,6 +3266,12 @@ body::-webkit-scrollbar {
   position: relative;
   width: min(calc(100% - 2rem), 80rem);
   margin: 0 auto;
+}
+
+.home-achievements-inner::before {
+  top: -36px;
+  right: 0;
+  left: 0;
 }
 
 .home-achievements-header {
@@ -3328,62 +3403,11 @@ body::-webkit-scrollbar {
   padding: 30px 0;
 }
 
-.home-achievement-row--featured.has-image {
-  grid-template-columns: 64px minmax(0, 1fr) minmax(190px, 27%) minmax(120px, 190px);
-}
-
 .home-achievement-row--featured .home-achievement-copy h3 {
   font-size: clamp(1.9rem, 3.3vw, 3rem);
 }
 
-.home-achievement-feature-image,
-.home-achievement-inline-image {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border: 1px solid rgb(0 240 255 / 24%);
-  background: #08141c;
-}
-
-.home-achievement-feature-image {
-  height: 150px;
-}
-
-.home-achievement-feature-image img,
-.home-achievement-inline-image img,
 .home-achievement-cursor-preview img {
-  object-fit: cover;
-}
-
-.home-achievement-photo-toggle {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.home-achievement-photo-toggle:focus-visible {
-  position: static;
-  width: auto;
-  height: auto;
-  clip-path: none;
-  margin-top: 10px;
-  border: 1px solid #00f0ff;
-  padding: 5px 8px;
-  color: #e2e8f0;
-  font-family: var(--font-ibm-plex-mono), monospace;
-  font-size: 9px;
-}
-
-.home-achievement-inline-image {
-  display: none;
-  height: 190px;
-  margin-top: 12px;
-}
-
-.home-achievement-inline-image img {
   object-fit: cover;
 }
 
@@ -3423,8 +3447,7 @@ body::-webkit-scrollbar {
   transform: translateY(-2px);
 }
 
-.home-achievements-footer a:focus-visible,
-.home-achievement-photo-toggle:focus-visible {
+.home-achievements-footer a:focus-visible {
   outline: 2px solid #00f0ff;
   outline-offset: 3px;
 }
@@ -3459,28 +3482,21 @@ body::-webkit-scrollbar {
   }
 }
 
-@media (hover: none), (max-width: 767px) {
-  .home-achievement-photo-toggle {
-    position: static;
-    width: auto;
-    height: auto;
-    clip-path: none;
-    margin-top: 10px;
-    border: 1px solid #00f0ff;
-    padding: 5px 8px;
-    color: #e2e8f0;
-    font-family: var(--font-ibm-plex-mono), monospace;
-    font-size: 9px;
+@media (min-width: 1024px) {
+  .home-achievements-inner {
+    width: min(calc(100% - 12rem), 80rem);
   }
+}
 
-  .home-achievement-row.is-expanded .home-achievement-inline-image {
-    display: block;
+@media (min-width: 1280px) {
+  .home-achievements-inner {
+    width: min(calc(100% - 16rem), 80rem);
   }
 }
 
 @media (max-width: 767px) {
   .home-achievements-section {
-    padding-top: 102px;
+    padding-top: 64px;
     padding-bottom: 58px;
   }
 
@@ -3501,13 +3517,8 @@ body::-webkit-scrollbar {
     font-size: 1.3rem;
   }
 
-  .home-achievement-feature-image,
   .home-achievement-position {
     grid-column: 2;
-  }
-
-  .home-achievement-feature-image {
-    height: 190px;
   }
 
   .home-achievement-position {
@@ -3973,6 +3984,93 @@ body::-webkit-scrollbar {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   clip-path: inset(50%);
+}
+
+@media (max-width: 639px) {
+  .home-section-previews {
+    padding-top: clamp(3rem, 12vw, 3.5rem);
+  }
+
+  .home-events-section {
+    padding-top: 44px;
+  }
+
+  .home-events-header {
+    margin-bottom: 21px;
+  }
+
+  .home-events-header h2 {
+    font-size: clamp(2rem, 9.5vw, 2.35rem);
+    line-height: 1.02;
+  }
+
+  .home-events-header > p:last-child {
+    font-size: 13px;
+  }
+
+  .home-event-description {
+    -webkit-line-clamp: 2;
+  }
+
+  .home-event-action,
+  .home-events-footer > a,
+  .home-events-empty > a,
+  .home-events-ticket-card--compact .home-event-action {
+    min-height: 44px;
+  }
+
+  .home-connect-cta {
+    min-height: 44px;
+  }
+
+  .home-learn-practice-section {
+    padding-top: 28px;
+  }
+
+  .home-learn-section-header {
+    margin-bottom: 18px;
+  }
+
+  .home-learn-tab {
+    min-height: 42px;
+  }
+
+  .home-learn-panel-cta {
+    min-height: 44px;
+  }
+
+  .home-practice-option {
+    min-height: 44px;
+    font-size: 9px;
+  }
+
+  .home-achievements-section {
+    padding-top: 50px;
+    padding-bottom: 48px;
+  }
+
+  .home-achievements-header {
+    margin-bottom: 20px;
+  }
+
+  .home-achievement-row,
+  .home-achievement-row--featured {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .home-gallery-section {
+    padding-top: 48px;
+    padding-bottom: 56px;
+  }
+
+  .home-gallery-section > div:first-of-type {
+    margin-bottom: 24px;
+  }
+
+  .home-gallery-row {
+    height: clamp(7rem, 34vw, 8.25rem);
+  }
 }
 
 @media (hover: none) {

@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import AchievementGallery from "@/components/AchievementGallery";
 import ContourBackdrop from "@/components/ContourBackdrop";
 import { prisma } from "@/lib/prisma";
-import { INITIAL_ACHIEVEMENTS } from "@/lib/data/initial-achievements";
+import { getAchievementDateLabel, sortAchievementsByDate } from "@/lib/achievement-sorting";
 import "./achievements.css";
 
 export const metadata: Metadata = {
@@ -16,52 +16,21 @@ async function getAchievements() {
   try {
     const list = await prisma.achievement.findMany({
       where: { status: "PUBLISHED" },
-      orderBy: [
-        { achievementDate: { sort: "desc", nulls: "last" } },
-        { createdAt: "desc" },
-      ],
+      orderBy: { createdAt: "desc" },
     });
-    if (list.length > 0) {
-      return list.map((a) => ({
-        id: a.id,
-        category: a.category,
-        title: a.title,
-        description: a.description,
-        event: a.competitionOrEvent || a.studentOrTeamName || "Nexora Department",
-        date:
-          a.dateDisplay ||
-          (a.achievementDate
-            ? new Date(a.achievementDate).toLocaleDateString("en-US", {
-                month: "short",
-                year: "numeric",
-              })
-            : "Date not listed"),
-        image: a.image || undefined,
-        isSample: false,
-      }));
-    }
-    return INITIAL_ACHIEVEMENTS.map((a) => ({
+    return sortAchievementsByDate(list).map((a) => ({
       id: a.id,
       category: a.category,
       title: a.title,
       description: a.description,
       event: a.competitionOrEvent || a.studentOrTeamName || "Nexora Department",
-      date: a.dateDisplay || "Date not listed",
+      date: getAchievementDateLabel(a),
       image: a.image || undefined,
       isSample: false,
     }));
   } catch (error) {
     console.error("Failed to load achievements on server:", error);
-    return INITIAL_ACHIEVEMENTS.map((a) => ({
-      id: a.id,
-      category: a.category,
-      title: a.title,
-      description: a.description,
-      event: a.competitionOrEvent || a.studentOrTeamName || "Nexora Department",
-      date: a.dateDisplay || "Date not listed",
-      image: a.image || undefined,
-      isSample: false,
-    }));
+    return [];
   }
 }
 
